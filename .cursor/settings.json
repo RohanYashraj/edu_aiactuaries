@@ -1,0 +1,10 @@
+{
+  "plugins": {
+    "clerk": {
+      "enabled": true
+    },
+    "convex": {
+      "enabled": true
+    }
+  }
+}
