@@ -1,166 +1,203 @@
-"use client";
-
-import {
-  Authenticated,
-  Unauthenticated,
-  useMutation,
-  useQuery,
-} from "convex/react";
-import { api } from "../convex/_generated/api";
-import Link from "next/link";
-import { SignUpButton } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { SignInButton } from "@clerk/nextjs";
-import { UserButton } from "@clerk/nextjs";
+import Link from "next/link";
+import { ArrowRight, Award, BookOpen, Briefcase, Sparkles } from "lucide-react";
 
-export default function Home() {
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+
+const highlights = [
+  {
+    icon: Award,
+    title: "Professional Certifications",
+    description:
+      "Industry-recognised programmes in actuarial data science and AI.",
+  },
+  {
+    icon: BookOpen,
+    title: "Hands-on Workshops",
+    description:
+      "Practical sessions bridging theory and real-world applications.",
+  },
+  {
+    icon: Sparkles,
+    title: "Powered by AI",
+    description:
+      "Cutting-edge curriculum designed for the age of artificial intelligence.",
+  },
+  {
+    icon: Briefcase,
+    title: "Career Opportunities",
+    description:
+      "Connect with top employers seeking actuarial and data science talent.",
+  },
+] as const;
+
+export default async function Home() {
+  const { userId } = await auth();
+
   return (
-    <>
-      <header className="sticky top-0 z-10 bg-background p-4 border-b-2 border-slate-200 dark:border-slate-800 flex flex-row justify-between items-center">
-        Convex + Next.js + Clerk
-        <UserButton />
-      </header>
-      <main className="p-8 flex flex-col gap-8">
-        <h1 className="text-4xl font-bold text-center">
-          Convex + Next.js + Clerk
-        </h1>
-        <Authenticated>
-          <Content />
-        </Authenticated>
-        <Unauthenticated>
-          <SignInForm />
-        </Unauthenticated>
+    <div className="flex min-h-screen flex-col">
+      <Header />
+
+      <main className="flex-1">
+        {/* Hero */}
+        <section className="hero-glow relative flex flex-col items-center justify-center overflow-hidden px-4 py-28 text-center sm:py-36">
+          <div className="animate-fade-in-up mx-auto max-w-3xl">
+            <Badge
+              variant="outline"
+              className="mb-6 border-gold/30 bg-gold-light/50 px-4 py-1.5 text-xs font-medium tracking-wider uppercase"
+            >
+              Centre of Excellence
+            </Badge>
+            <h1 className="font-display text-4xl leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+              Sri Sathya Sai Center
+              <span className="mt-1 block">of Excellence</span>
+            </h1>
+            <p className="mt-4 text-lg text-gold sm:text-xl">
+              in Actuarial Data Science & AI
+            </p>
+            <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-muted-foreground">
+              Pioneering the future of Actuarial Science through AI and Data
+              Science. Building the next generation of actuarial professionals
+              equipped for a data-driven world.
+            </p>
+
+            {userId ? (
+              <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+                <Link href="/certifications">
+                  <Button size="lg" className="gap-2 shadow-md shadow-primary/20">
+                    Explore Certifications
+                    <ArrowRight className="size-4" />
+                  </Button>
+                </Link>
+                <Link href="/dashboard">
+                  <Button variant="outline" size="lg">
+                    Go to Dashboard
+                  </Button>
+                </Link>
+              </div>
+            ) : (
+              <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+                <Link href="/waitlist">
+                  <Button size="lg" className="gap-2 shadow-md shadow-primary/20">
+                    Join the Waitlist
+                    <ArrowRight className="size-4" />
+                  </Button>
+                </Link>
+                <SignInButton mode="modal">
+                  <Button variant="outline" size="lg">
+                    Already have an account? Sign In
+                  </Button>
+                </SignInButton>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Highlights */}
+        <section className="border-t border-border bg-muted/40 px-4 py-20 sm:py-24">
+          <div className="mx-auto max-w-6xl">
+            <h2 className="font-display mb-12 text-center text-2xl tracking-tight sm:text-3xl">
+              Why Choose Us
+            </h2>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {highlights.map(({ icon: Icon, title, description }, i) => (
+                <Card
+                  key={title}
+                  className="animate-fade-in-up border-transparent bg-background shadow-sm"
+                  style={{ animationDelay: `${i * 100}ms` }}
+                >
+                  <CardHeader>
+                    <div className="mb-3 flex size-11 items-center justify-center rounded-xl bg-primary/10">
+                      <Icon className="size-5 text-primary" />
+                    </div>
+                    <CardTitle className="text-base">{title}</CardTitle>
+                    <CardDescription className="leading-relaxed">
+                      {description}
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Featured Certification */}
+        <section className="px-4 py-20 sm:py-24">
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="font-display mb-2 text-2xl tracking-tight sm:text-3xl">
+              Flagship Programme
+            </h2>
+            <p className="mb-8 text-muted-foreground">
+              The certification that sets us apart.
+            </p>
+            <Card className="gradient-border border-0 bg-card p-[2px] text-left">
+              <div className="rounded-[inherit] bg-card p-0">
+                <CardHeader className="p-6 sm:p-8">
+                  <div className="flex items-center gap-4">
+                    <div className="flex size-12 items-center justify-center rounded-xl bg-gold text-gold-foreground shadow-md shadow-gold/20">
+                      <Award className="size-6" />
+                    </div>
+                    <div>
+                      <Badge className="mb-1 bg-gold/15 text-gold hover:bg-gold/20">
+                        Flagship
+                      </Badge>
+                      <CardTitle className="font-display text-xl sm:text-2xl">
+                        AI Actuaries Certification
+                      </CardTitle>
+                    </div>
+                  </div>
+                  <CardDescription className="mt-4 text-base leading-relaxed">
+                    Our premier certification blending actuarial science with
+                    cutting-edge AI and machine learning. Designed for
+                    professionals ready to lead the transformation of the
+                    insurance and risk industry.
+                  </CardDescription>
+                </CardHeader>
+              </div>
+            </Card>
+            <Link href="/certifications" className="mt-8 inline-block">
+              <Button variant="outline" className="gap-2">
+                View All Certifications
+                <ArrowRight className="size-4" />
+              </Button>
+            </Link>
+          </div>
+        </section>
+
+        {/* CTA */}
+        {!userId && (
+          <section className="relative overflow-hidden border-t border-border px-4 py-20 text-center sm:py-24">
+            <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-gold/5" />
+            <div className="relative mx-auto max-w-xl">
+              <h2 className="font-display text-2xl tracking-tight sm:text-3xl">
+                Ready to Get Started?
+              </h2>
+              <p className="mt-4 leading-relaxed text-muted-foreground">
+                Join our waitlist to be among the first to access world-class
+                actuarial data science education.
+              </p>
+              <Link href="/waitlist" className="mt-8 inline-block">
+                <Button size="lg" className="gap-2 shadow-md shadow-primary/20">
+                  Join the Waitlist
+                  <ArrowRight className="size-4" />
+                </Button>
+              </Link>
+            </div>
+          </section>
+        )}
       </main>
-    </>
-  );
-}
 
-function SignInForm() {
-  return (
-    <div className="flex flex-col gap-8 w-96 mx-auto">
-      <p>Log in to see the numbers</p>
-      <SignInButton mode="modal">
-        <button className="bg-foreground text-background px-4 py-2 rounded-md">
-          Sign in
-        </button>
-      </SignInButton>
-      <SignUpButton mode="modal">
-        <button className="bg-foreground text-background px-4 py-2 rounded-md">
-          Sign up
-        </button>
-      </SignUpButton>
-    </div>
-  );
-}
-
-function Content() {
-  const { viewer, numbers } =
-    useQuery(api.myFunctions.listNumbers, {
-      count: 10,
-    }) ?? {};
-  const addNumber = useMutation(api.myFunctions.addNumber);
-
-  if (viewer === undefined || numbers === undefined) {
-    return (
-      <div className="mx-auto">
-        <p>loading... (consider a loading skeleton)</p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex flex-col gap-8 max-w-lg mx-auto">
-      <p>Welcome {viewer ?? "Anonymous"}!</p>
-      <p>
-        Click the button below and open this page in another window - this data
-        is persisted in the Convex cloud database!
-      </p>
-      <p>
-        <button
-          className="bg-foreground text-background text-sm px-4 py-2 rounded-md"
-          onClick={() => {
-            void addNumber({ value: Math.floor(Math.random() * 10) });
-          }}
-        >
-          Add a random number
-        </button>
-      </p>
-      <p>
-        Numbers:{" "}
-        {numbers?.length === 0
-          ? "Click the button!"
-          : (numbers?.join(", ") ?? "...")}
-      </p>
-      <p>
-        Edit{" "}
-        <code className="text-sm font-bold font-mono bg-slate-200 dark:bg-slate-800 px-1 py-0.5 rounded-md">
-          convex/myFunctions.ts
-        </code>{" "}
-        to change your backend
-      </p>
-      <p>
-        Edit{" "}
-        <code className="text-sm font-bold font-mono bg-slate-200 dark:bg-slate-800 px-1 py-0.5 rounded-md">
-          app/page.tsx
-        </code>{" "}
-        to change your frontend
-      </p>
-      <p>
-        See the{" "}
-        <Link href="/server" className="underline hover:no-underline">
-          /server route
-        </Link>{" "}
-        for an example of loading data in a server component
-      </p>
-      <div className="flex flex-col">
-        <p className="text-lg font-bold">Useful resources:</p>
-        <div className="flex gap-2">
-          <div className="flex flex-col gap-2 w-1/2">
-            <ResourceCard
-              title="Convex docs"
-              description="Read comprehensive documentation for all Convex features."
-              href="https://docs.convex.dev/home"
-            />
-            <ResourceCard
-              title="Stack articles"
-              description="Learn about best practices, use cases, and more from a growing
-            collection of articles, videos, and walkthroughs."
-              href="https://www.typescriptlang.org/docs/handbook/2/basic-types.html"
-            />
-          </div>
-          <div className="flex flex-col gap-2 w-1/2">
-            <ResourceCard
-              title="Templates"
-              description="Browse our collection of templates to get started quickly."
-              href="https://www.convex.dev/templates"
-            />
-            <ResourceCard
-              title="Discord"
-              description="Join our developer community to ask questions, trade tips & tricks,
-            and show off your projects."
-              href="https://www.convex.dev/community"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ResourceCard({
-  title,
-  description,
-  href,
-}: {
-  title: string;
-  description: string;
-  href: string;
-}) {
-  return (
-    <div className="flex flex-col gap-2 bg-slate-200 dark:bg-slate-800 p-4 rounded-md h-28 overflow-auto">
-      <a href={href} className="text-sm underline hover:no-underline">
-        {title}
-      </a>
-      <p className="text-xs">{description}</p>
+      <Footer />
     </div>
   );
 }
