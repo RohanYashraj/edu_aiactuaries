@@ -31,16 +31,16 @@ todos:
     status: completed
   - id: phase-4-landing
     content: "Phase 4: Build landing page with hero, highlights, featured certification, waitlist CTA"
-    status: pending
+    status: completed
   - id: phase-4-certifications
     content: "Phase 4: Build certifications page with AI Actuaries highlight card + grid"
-    status: pending
+    status: completed
   - id: phase-4-workshops
     content: "Phase 4: Build workshops page with status tabs and card grid"
-    status: pending
+    status: completed
   - id: phase-4-jobs
     content: "Phase 4: Build jobs listing page, job detail page, and employer post-job form"
-    status: pending
+    status: completed
   - id: phase-5-design
     content: "Phase 5: Apply design system -- custom fonts, color palette, animations, responsive polish"
     status: pending

@@ -1,6 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { useRouter } from "next/navigation";
+import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -21,15 +25,100 @@ import {
 } from "@/components/ui/select";
 
 export default function PostJobPage() {
+  const router = useRouter();
+  const currentUser = useQuery(api.users.getCurrentUser);
+  const createJob = useMutation(api.jobs.create);
+
   const [isPending, setIsPending] = useState(false);
+  const [jobType, setJobType] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+
+  const isEmployer = currentUser?.role === "employer";
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setError(null);
     setIsPending(true);
-    // TODO: Phase 4 — wire to Convex jobs.create mutation
-    await new Promise((r) => setTimeout(r, 1000));
-    setIsPending(false);
-    alert("Job posting will be connected to Convex in Phase 4.");
+
+    const form = new FormData(e.currentTarget);
+    const title = form.get("title") as string;
+    const company = form.get("company") as string;
+    const location = form.get("location") as string;
+    const description = form.get("description") as string;
+
+    if (!jobType) {
+      setError("Please select a job type.");
+      setIsPending(false);
+      return;
+    }
+
+    try {
+      await createJob({
+        title,
+        company,
+        location,
+        description,
+        type: jobType as "full-time" | "part-time" | "contract" | "internship",
+      });
+      setSuccess(true);
+      setTimeout(() => router.push("/dashboard"), 2000);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to create job posting.",
+      );
+    } finally {
+      setIsPending(false);
+    }
+  }
+
+  if (currentUser === undefined) {
+    return (
+      <div className="mx-auto max-w-2xl py-16 text-center text-muted-foreground">
+        Loading...
+      </div>
+    );
+  }
+
+  if (!isEmployer) {
+    return (
+      <div className="mx-auto max-w-2xl">
+        <Card>
+          <CardContent className="flex flex-col items-center gap-4 py-12">
+            <AlertCircle className="size-10 text-muted-foreground" />
+            <div className="text-center">
+              <p className="text-lg font-medium">Employer Access Required</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Only employer accounts can post jobs. Contact an administrator to
+                upgrade your account role.
+              </p>
+            </div>
+            <Button variant="outline" onClick={() => router.push("/dashboard")}>
+              Back to Dashboard
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (success) {
+    return (
+      <div className="mx-auto max-w-2xl">
+        <Card>
+          <CardContent className="flex flex-col items-center gap-4 py-12">
+            <CheckCircle2 className="size-10 text-green-600" />
+            <div className="text-center">
+              <p className="text-lg font-medium">Job Posted Successfully</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Your listing has been created as a draft. Redirecting to
+                dashboard...
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   return (
@@ -45,8 +134,8 @@ export default function PostJobPage() {
         <CardHeader>
           <CardTitle className="text-lg">Job Details</CardTitle>
           <CardDescription>
-            All fields are required. Your listing will be reviewed before
-            publishing.
+            Your listing will be created as a draft. You can publish it from your
+            dashboard.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -84,7 +173,7 @@ export default function PostJobPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="type">Job Type</Label>
-                <Select name="type" required>
+                <Select value={jobType} onValueChange={setJobType}>
                   <SelectTrigger id="type">
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
@@ -109,7 +198,18 @@ export default function PostJobPage() {
               />
             </div>
 
-            <Button type="submit" disabled={isPending} className="w-full sm:w-auto">
+            {error && (
+              <div className="flex items-center gap-2 rounded-md border border-destructive/50 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                <AlertCircle className="size-4 shrink-0" />
+                {error}
+              </div>
+            )}
+
+            <Button
+              type="submit"
+              disabled={isPending}
+              className="w-full sm:w-auto"
+            >
               {isPending ? "Submitting..." : "Submit Job Post"}
             </Button>
           </form>

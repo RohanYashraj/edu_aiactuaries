@@ -36,7 +36,9 @@ export default defineSchema({
     ),
     order: v.number(),
     imageUrl: v.optional(v.string()),
-  }).index("by_slug", ["slug"]),
+  })
+    .index("by_slug", ["slug"])
+    .index("by_status", ["status"]),
 
   jobs: defineTable({
     title: v.string(),
