@@ -72,39 +72,51 @@ export function CertificationsList() {
   return (
     <>
       {highlighted && (
-        <Card className="mb-12 border-2 border-primary/20 bg-linear-to-br from-primary/5 to-transparent">
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className="flex size-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                <Award className="size-5" />
+        <Card className="gradient-border mb-14 border-0 bg-card p-[2px]">
+          <div className="rounded-[inherit] bg-card">
+            <CardHeader className="p-6 sm:p-8">
+              <div className="flex items-center gap-4">
+                <div className="flex size-12 items-center justify-center rounded-xl bg-gold text-gold-foreground shadow-md shadow-gold/20">
+                  <Award className="size-6" />
+                </div>
+                <div>
+                  <Badge className="mb-1 bg-gold/15 text-gold hover:bg-gold/20">
+                    Flagship Programme
+                  </Badge>
+                  <CardTitle className="font-display text-2xl">
+                    {highlighted.title}
+                  </CardTitle>
+                </div>
               </div>
-              <div>
-                <Badge variant="default" className="mb-1">
-                  Flagship Programme
-                </Badge>
-                <CardTitle className="text-2xl">{highlighted.title}</CardTitle>
+              <CardDescription className="mt-4 text-base leading-relaxed">
+                {highlighted.description}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="px-6 pb-6 sm:px-8 sm:pb-8">
+              <div className="flex items-center gap-3">
+                <Badge variant="secondary">Enrolling</Badge>
+                <Button className="shadow-sm shadow-primary/15">
+                  Learn More
+                </Button>
               </div>
-            </div>
-            <CardDescription className="mt-3 text-base">
-              {highlighted.description}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-3">
-              <Badge variant="secondary">Enrolling</Badge>
-              <Button>Learn More</Button>
-            </div>
-          </CardContent>
+            </CardContent>
+          </div>
         </Card>
       )}
 
       {others.length > 0 && (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {others.map((cert) => (
-            <Card key={cert.title} className="flex flex-col">
+          {others.map((cert, i) => (
+            <Card
+              key={cert.title}
+              className="animate-fade-in-up flex flex-col"
+              style={{ animationDelay: `${i * 100}ms` }}
+            >
               <CardHeader>
                 <CardTitle className="text-lg">{cert.title}</CardTitle>
-                <CardDescription>{cert.description}</CardDescription>
+                <CardDescription className="leading-relaxed">
+                  {cert.description}
+                </CardDescription>
               </CardHeader>
               <CardContent className="mt-auto">
                 <div className="flex items-center justify-between">

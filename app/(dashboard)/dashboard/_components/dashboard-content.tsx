@@ -52,22 +52,23 @@ export function DashboardContent() {
   return (
     <div className="space-y-8">
       {/* Welcome */}
-      <div className="flex items-center gap-4">
+      <div className="animate-fade-in-up flex items-center gap-4">
         {currentUser && (
-          <Avatar className="size-12">
-            <AvatarImage
-              src={currentUser.imageUrl}
-              alt={currentUser.name}
-            />
-            <AvatarFallback>{initials}</AvatarFallback>
+          <Avatar className="size-14 border-2 border-gold/20 shadow-md shadow-gold/10">
+            <AvatarImage src={currentUser.imageUrl} alt={currentUser.name} />
+            <AvatarFallback className="bg-primary text-lg text-primary-foreground">
+              {initials}
+            </AvatarFallback>
           </Avatar>
         )}
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">
+          <h1 className="font-display text-2xl tracking-tight sm:text-3xl">
             Welcome back{currentUser ? `, ${currentUser.name}` : ""}!
           </h1>
-          <div className="mt-1 flex items-center gap-2">
-            <Badge variant="secondary" className="capitalize">
+          <div className="mt-1.5 flex items-center gap-2">
+            <Badge
+              className="bg-gold/15 capitalize text-gold hover:bg-gold/20"
+            >
               {currentUser?.role ?? "member"}
             </Badge>
             {currentUser?.email && (
@@ -83,9 +84,9 @@ export function DashboardContent() {
 
       {/* Quick stats cards */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        <Card>
+        <Card className="animate-fade-in-up" style={{ animationDelay: "0ms" }}>
           <CardHeader className="flex flex-row items-center gap-3 space-y-0">
-            <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10">
+            <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10">
               <GraduationCap className="size-5 text-primary" />
             </div>
             <div>
@@ -105,9 +106,12 @@ export function DashboardContent() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card
+          className="animate-fade-in-up"
+          style={{ animationDelay: "100ms" }}
+        >
           <CardHeader className="flex flex-row items-center gap-3 space-y-0">
-            <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10">
+            <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10">
               <BookOpen className="size-5 text-primary" />
             </div>
             <div>
@@ -127,10 +131,13 @@ export function DashboardContent() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card
+          className="animate-fade-in-up"
+          style={{ animationDelay: "200ms" }}
+        >
           <CardHeader className="flex flex-row items-center gap-3 space-y-0">
-            <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10">
-              <Briefcase className="size-5 text-primary" />
+            <div className="flex size-10 items-center justify-center rounded-xl bg-gold/10">
+              <Briefcase className="size-5 text-gold" />
             </div>
             <div>
               <CardTitle className="text-base">Job Posts</CardTitle>
@@ -182,7 +189,7 @@ export function DashboardContent() {
               {myJobs.slice(0, 5).map((job) => (
                 <div
                   key={job._id}
-                  className="flex items-center justify-between rounded-md border border-border px-4 py-3"
+                  className="flex items-center justify-between rounded-lg border border-border px-4 py-3 transition-colors hover:bg-muted/50"
                 >
                   <div>
                     <p className="text-sm font-medium">{job.title}</p>
@@ -220,21 +227,23 @@ export function DashboardContent() {
             <div className="grid gap-3 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Name</span>
-                <span>{currentUser.name}</span>
+                <span className="font-medium">{currentUser.name}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Email</span>
-                <span>{currentUser.email}</span>
+                <span className="font-medium">{currentUser.email}</span>
               </div>
               {currentUser.username && (
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Username</span>
-                  <span>@{currentUser.username}</span>
+                  <span className="font-medium">@{currentUser.username}</span>
                 </div>
               )}
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Role</span>
-                <Badge variant="secondary" className="capitalize">
+                <Badge
+                  className="bg-gold/15 capitalize text-gold hover:bg-gold/20"
+                >
                   {currentUser.role}
                 </Badge>
               </div>

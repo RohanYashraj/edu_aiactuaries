@@ -8,9 +8,9 @@ export const metadata = {
 
 export default function WorkshopsPage() {
   return (
-    <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-      <div className="mb-12 text-center">
-        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+    <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
+      <div className="mb-14 text-center">
+        <h1 className="font-display text-3xl tracking-tight sm:text-4xl">
           Workshops
         </h1>
         <p className="mt-3 text-muted-foreground">

@@ -12,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 const highlights = [
   {
@@ -49,23 +50,31 @@ export default async function Home() {
 
       <main className="flex-1">
         {/* Hero */}
-        <section className="flex flex-col items-center justify-center px-4 py-24 text-center sm:py-32">
-          <div className="mx-auto max-w-3xl">
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-              Sri Sathya Sai Center of Excellence
+        <section className="hero-glow relative flex flex-col items-center justify-center overflow-hidden px-4 py-28 text-center sm:py-36">
+          <div className="animate-fade-in-up mx-auto max-w-3xl">
+            <Badge
+              variant="outline"
+              className="mb-6 border-gold/30 bg-gold-light/50 px-4 py-1.5 text-xs font-medium tracking-wider uppercase"
+            >
+              Centre of Excellence
+            </Badge>
+            <h1 className="font-display text-4xl leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+              Sri Sathya Sai Center
+              <span className="mt-1 block">of Excellence</span>
             </h1>
-            <p className="mt-3 text-lg text-muted-foreground sm:text-xl">
+            <p className="mt-4 text-lg text-gold sm:text-xl">
               in Actuarial Data Science & AI
             </p>
-            <p className="mx-auto mt-6 max-w-xl text-muted-foreground">
+            <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-muted-foreground">
               Pioneering the future of Actuarial Science through AI and Data
-              Science. Building the next generation of actuarial professionals.
+              Science. Building the next generation of actuarial professionals
+              equipped for a data-driven world.
             </p>
 
             {userId ? (
               <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
                 <Link href="/certifications">
-                  <Button size="lg" className="gap-2">
+                  <Button size="lg" className="gap-2 shadow-md shadow-primary/20">
                     Explore Certifications
                     <ArrowRight className="size-4" />
                   </Button>
@@ -79,7 +88,7 @@ export default async function Home() {
             ) : (
               <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
                 <Link href="/waitlist">
-                  <Button size="lg" className="gap-2">
+                  <Button size="lg" className="gap-2 shadow-md shadow-primary/20">
                     Join the Waitlist
                     <ArrowRight className="size-4" />
                   </Button>
@@ -95,20 +104,26 @@ export default async function Home() {
         </section>
 
         {/* Highlights */}
-        <section className="border-t border-border bg-muted/30 px-4 py-16 sm:py-20">
+        <section className="border-t border-border bg-muted/40 px-4 py-20 sm:py-24">
           <div className="mx-auto max-w-6xl">
-            <h2 className="mb-10 text-center text-2xl font-bold tracking-tight sm:text-3xl">
+            <h2 className="font-display mb-12 text-center text-2xl tracking-tight sm:text-3xl">
               Why Choose Us
             </h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {highlights.map(({ icon: Icon, title, description }) => (
-                <Card key={title} className="border-transparent bg-background">
+              {highlights.map(({ icon: Icon, title, description }, i) => (
+                <Card
+                  key={title}
+                  className="animate-fade-in-up border-transparent bg-background shadow-sm"
+                  style={{ animationDelay: `${i * 100}ms` }}
+                >
                   <CardHeader>
-                    <div className="mb-2 flex size-10 items-center justify-center rounded-lg bg-primary/10">
+                    <div className="mb-3 flex size-11 items-center justify-center rounded-xl bg-primary/10">
                       <Icon className="size-5 text-primary" />
                     </div>
                     <CardTitle className="text-base">{title}</CardTitle>
-                    <CardDescription>{description}</CardDescription>
+                    <CardDescription className="leading-relaxed">
+                      {description}
+                    </CardDescription>
                   </CardHeader>
                 </Card>
               ))}
@@ -117,30 +132,40 @@ export default async function Home() {
         </section>
 
         {/* Featured Certification */}
-        <section className="px-4 py-16 sm:py-20">
+        <section className="px-4 py-20 sm:py-24">
           <div className="mx-auto max-w-3xl text-center">
-            <h2 className="mb-4 text-2xl font-bold tracking-tight sm:text-3xl">
+            <h2 className="font-display mb-2 text-2xl tracking-tight sm:text-3xl">
               Flagship Programme
             </h2>
-            <Card className="border-2 border-primary/20 bg-linear-to-br from-primary/5 to-transparent text-left">
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <div className="flex size-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                    <Award className="size-5" />
+            <p className="mb-8 text-muted-foreground">
+              The certification that sets us apart.
+            </p>
+            <Card className="gradient-border border-0 bg-card p-[2px] text-left">
+              <div className="rounded-[inherit] bg-card p-0">
+                <CardHeader className="p-6 sm:p-8">
+                  <div className="flex items-center gap-4">
+                    <div className="flex size-12 items-center justify-center rounded-xl bg-gold text-gold-foreground shadow-md shadow-gold/20">
+                      <Award className="size-6" />
+                    </div>
+                    <div>
+                      <Badge className="mb-1 bg-gold/15 text-gold hover:bg-gold/20">
+                        Flagship
+                      </Badge>
+                      <CardTitle className="font-display text-xl sm:text-2xl">
+                        AI Actuaries Certification
+                      </CardTitle>
+                    </div>
                   </div>
-                  <CardTitle className="text-xl">
-                    AI Actuaries Certification
-                  </CardTitle>
-                </div>
-                <CardDescription className="mt-3 text-base">
-                  Our premier certification blending actuarial science with
-                  cutting-edge AI and machine learning. Designed for
-                  professionals ready to lead the transformation of the
-                  insurance and risk industry.
-                </CardDescription>
-              </CardHeader>
+                  <CardDescription className="mt-4 text-base leading-relaxed">
+                    Our premier certification blending actuarial science with
+                    cutting-edge AI and machine learning. Designed for
+                    professionals ready to lead the transformation of the
+                    insurance and risk industry.
+                  </CardDescription>
+                </CardHeader>
+              </div>
             </Card>
-            <Link href="/certifications" className="mt-6 inline-block">
+            <Link href="/certifications" className="mt-8 inline-block">
               <Button variant="outline" className="gap-2">
                 View All Certifications
                 <ArrowRight className="size-4" />
@@ -151,17 +176,18 @@ export default async function Home() {
 
         {/* CTA */}
         {!userId && (
-          <section className="border-t border-border bg-muted/30 px-4 py-16 text-center sm:py-20">
-            <div className="mx-auto max-w-xl">
-              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+          <section className="relative overflow-hidden border-t border-border px-4 py-20 text-center sm:py-24">
+            <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-gold/5" />
+            <div className="relative mx-auto max-w-xl">
+              <h2 className="font-display text-2xl tracking-tight sm:text-3xl">
                 Ready to Get Started?
               </h2>
-              <p className="mt-3 text-muted-foreground">
+              <p className="mt-4 leading-relaxed text-muted-foreground">
                 Join our waitlist to be among the first to access world-class
                 actuarial data science education.
               </p>
               <Link href="/waitlist" className="mt-8 inline-block">
-                <Button size="lg" className="gap-2">
+                <Button size="lg" className="gap-2 shadow-md shadow-primary/20">
                   Join the Waitlist
                   <ArrowRight className="size-4" />
                 </Button>

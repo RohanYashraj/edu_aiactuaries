@@ -64,9 +64,18 @@ const statusVariant: Record<WorkshopStatus, "default" | "secondary" | "outline">
   completed: "outline",
 };
 
-function WorkshopCard({ workshop }: { workshop: WorkshopItem }) {
+function WorkshopCard({
+  workshop,
+  index,
+}: {
+  workshop: WorkshopItem;
+  index: number;
+}) {
   return (
-    <Card className="flex flex-col">
+    <Card
+      className="animate-fade-in-up flex flex-col"
+      style={{ animationDelay: `${index * 100}ms` }}
+    >
       <CardHeader>
         <div className="flex items-start justify-between gap-2">
           <CardTitle className="text-lg">{workshop.title}</CardTitle>
@@ -77,7 +86,9 @@ function WorkshopCard({ workshop }: { workshop: WorkshopItem }) {
             {workshop.status}
           </Badge>
         </div>
-        <CardDescription>{workshop.description}</CardDescription>
+        <CardDescription className="leading-relaxed">
+          {workshop.description}
+        </CardDescription>
       </CardHeader>
       <CardContent className="mt-auto">
         <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
@@ -117,8 +128,8 @@ function StatusTab({
   }
   return (
     <div className="grid gap-6 sm:grid-cols-2">
-      {workshops.map((w) => (
-        <WorkshopCard key={w.title} workshop={w} />
+      {workshops.map((w, i) => (
+        <WorkshopCard key={w.title} workshop={w} index={i} />
       ))}
     </div>
   );

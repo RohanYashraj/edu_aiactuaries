@@ -34,9 +34,9 @@ export function JobsList() {
 
   if (jobs.length === 0) {
     return (
-      <div className="rounded-lg border border-dashed border-border py-16 text-center">
-        <Briefcase className="mx-auto mb-3 size-10 text-muted-foreground/50" />
-        <p className="text-lg font-medium">No job openings right now</p>
+      <div className="rounded-xl border border-dashed border-border py-16 text-center">
+        <Briefcase className="mx-auto mb-3 size-10 text-muted-foreground/40" />
+        <p className="font-display text-lg">No job openings right now</p>
         <p className="mt-1 text-sm text-muted-foreground">
           Check back soon — employers are actively posting new opportunities.
         </p>
@@ -46,8 +46,12 @@ export function JobsList() {
 
   return (
     <div className="grid gap-6">
-      {jobs.map((job) => (
-        <Card key={job._id}>
+      {jobs.map((job, i) => (
+        <Card
+          key={job._id}
+          className="animate-fade-in-up"
+          style={{ animationDelay: `${i * 80}ms` }}
+        >
           <CardHeader>
             <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
               <div>
@@ -72,7 +76,7 @@ export function JobsList() {
             </div>
           </CardHeader>
           <CardContent>
-            <p className="mb-4 line-clamp-2 text-sm text-muted-foreground">
+            <p className="mb-4 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
               {job.description}
             </p>
             <Link href={`/jobs/${job._id}`}>

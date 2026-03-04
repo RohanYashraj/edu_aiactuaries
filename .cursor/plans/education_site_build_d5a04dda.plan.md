@@ -43,7 +43,7 @@ todos:
     status: completed
   - id: phase-5-design
     content: "Phase 5: Apply design system -- custom fonts, color palette, animations, responsive polish"
-    status: pending
+    status: completed
   - id: phase-6-extras
     content: "Phase 6: Seed data, role management, employer dashboard, SEO metadata, error states"
     status: pending

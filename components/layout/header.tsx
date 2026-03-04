@@ -27,11 +27,17 @@ export function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-lg">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="text-sm font-bold tracking-tight sm:text-base">
-            SSS CoE — Actuarial DS & AI
+        <Link href="/" className="group flex items-center gap-2.5">
+          <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-xs font-bold text-primary-foreground shadow-sm">
+            SS
+          </span>
+          <span className="hidden text-sm font-semibold tracking-tight sm:inline">
+            SSS CoE
+            <span className="ml-1 text-xs font-normal text-muted-foreground">
+              Actuarial DS & AI
+            </span>
           </span>
         </Link>
 
@@ -48,6 +54,7 @@ export function Header() {
                 <Button
                   variant={isActive ? "secondary" : "ghost"}
                   size="sm"
+                  className={isActive ? "font-semibold" : ""}
                 >
                   {label}
                 </Button>
@@ -78,7 +85,9 @@ export function Header() {
               </Button>
             </Link>
             <SignInButton mode="modal">
-              <Button size="sm">Sign In</Button>
+              <Button size="sm" className="shadow-sm shadow-primary/15">
+                Sign In
+              </Button>
             </SignInButton>
           </SignedOut>
 
@@ -92,7 +101,7 @@ export function Header() {
             </SheetTrigger>
             <SheetContent side="right">
               <SheetHeader>
-                <SheetTitle>Navigation</SheetTitle>
+                <SheetTitle className="font-display">Navigation</SheetTitle>
               </SheetHeader>
               <Separator />
               <nav className="flex flex-col gap-1 px-4">
