@@ -32,7 +32,10 @@ export default async function DashboardLayout({
                 SS
               </span>
               <span className="hidden text-sm font-semibold tracking-tight sm:inline">
-                Dashboard
+                SSS CoE
+                <span className="ml-1 text-xs font-normal text-primary-foreground/60">
+                  Dashboard
+                </span>
               </span>
             </Link>
             <Separator
