@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
-import { DM_Serif_Display, Plus_Jakarta_Sans, Geist_Mono } from "next/font/google";
+import {
+  DM_Serif_Display,
+  Plus_Jakarta_Sans,
+  Geist_Mono,
+} from "next/font/google";
 import "./globals.css";
 import ConvexClientProvider from "@/components/ConvexClientProvider";
 import { ClerkProvider } from "@clerk/nextjs";
@@ -27,7 +31,7 @@ export const metadata: Metadata = {
   description:
     "Pioneering the future of Actuarial Science through AI and Data Science. Professional certifications, workshops, and career opportunities.",
   icons: {
-    icon: "/convex.svg",
+    icon: "/icon.png",
   },
 };
 

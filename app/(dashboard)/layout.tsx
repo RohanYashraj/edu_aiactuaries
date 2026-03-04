@@ -29,7 +29,7 @@ export default async function DashboardLayout({
           <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center gap-2.5">
               <span className="flex size-8 items-center justify-center rounded-lg bg-gold text-xs font-bold text-gold-foreground shadow-sm">
-                S
+                edu.
               </span>
               <span className="hidden text-sm font-semibold tracking-tight sm:inline">
                 SSS CoE

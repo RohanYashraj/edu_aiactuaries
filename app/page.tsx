@@ -54,13 +54,13 @@ export default async function Home() {
           <div className="animate-fade-in-up mx-auto max-w-3xl">
             <Badge
               variant="outline"
-              className="mb-6 border-gold/30 bg-gold-light/50 px-4 py-1.5 text-xs font-medium tracking-wider uppercase"
+              className="mb-6 border-gold/30 bg-gold-light/50 px-4 py-1.5 text-xs font-medium tracking-wider"
             >
-              Centre of Excellence
+              Powered by aiactuaries.org
             </Badge>
             <h1 className="font-display text-4xl leading-tight tracking-tight sm:text-5xl lg:text-6xl">
-              Sri Sathya Sai Center
-              <span className="mt-1 block">of Excellence</span>
+              Sri Sathya Sai
+              <span className="mt-1 block">Center of Excellence</span>
             </h1>
             <p className="mt-4 text-lg text-gold sm:text-xl">
               in Actuarial Data Science & AI
@@ -74,7 +74,10 @@ export default async function Home() {
             {userId ? (
               <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
                 <Link href="/certifications">
-                  <Button size="lg" className="gap-2 shadow-md shadow-primary/20">
+                  <Button
+                    size="lg"
+                    className="gap-2 shadow-md shadow-primary/20"
+                  >
                     Explore Certifications
                     <ArrowRight className="size-4" />
                   </Button>
@@ -88,8 +91,11 @@ export default async function Home() {
             ) : (
               <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
                 <Link href="/waitlist">
-                  <Button size="lg" className="gap-2 shadow-md shadow-primary/20">
-                    Join the Waitlist
+                  <Button
+                    size="lg"
+                    className="gap-2 shadow-md shadow-primary/20"
+                  >
+                    Apply
                     <ArrowRight className="size-4" />
                   </Button>
                 </Link>
@@ -183,12 +189,12 @@ export default async function Home() {
                 Ready to Get Started?
               </h2>
               <p className="mt-4 leading-relaxed text-muted-foreground">
-                Join our waitlist to be among the first to access world-class
-                actuarial data science education.
+                Apply for membership to be among the first to access world-class
+                Actuarial Data Science & AI education.
               </p>
               <Link href="/waitlist" className="mt-8 inline-block">
                 <Button size="lg" className="gap-2 shadow-md shadow-primary/20">
-                  Join the Waitlist
+                  Apply
                   <ArrowRight className="size-4" />
                 </Button>
               </Link>

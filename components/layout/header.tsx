@@ -32,7 +32,7 @@ export function Header() {
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center gap-2.5">
             <span className="flex size-8 items-center justify-center rounded-lg bg-gold text-xs font-bold text-gold-foreground shadow-sm">
-              SS
+              edu.
             </span>
             <span className="hidden text-sm font-semibold tracking-tight sm:inline">
               SSS CoE
@@ -50,9 +50,7 @@ export function Header() {
           <nav className="hidden items-center gap-1 md:flex">
             {navLinks.map(({ href, label }) => {
               const isActive =
-                href === "/"
-                  ? pathname === "/"
-                  : pathname.startsWith(href);
+                href === "/" ? pathname === "/" : pathname.startsWith(href);
 
               return (
                 <Link key={href} href={href}>
@@ -93,15 +91,6 @@ export function Header() {
           </SignedIn>
 
           <SignedOut>
-            <Link href="/waitlist" className="hidden sm:inline-flex">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-primary-foreground/80 hover:bg-primary-foreground/10 hover:text-primary-foreground"
-              >
-                Join Waitlist
-              </Button>
-            </Link>
             <SignInButton mode="modal">
               <Button
                 size="sm"
@@ -132,9 +121,7 @@ export function Header() {
               <nav className="flex flex-col gap-1 px-4">
                 {navLinks.map(({ href, label }) => {
                   const isActive =
-                    href === "/"
-                      ? pathname === "/"
-                      : pathname.startsWith(href);
+                    href === "/" ? pathname === "/" : pathname.startsWith(href);
 
                   return (
                     <SheetClose asChild key={href}>
@@ -153,7 +140,10 @@ export function Header() {
                 <SignedIn>
                   <SheetClose asChild>
                     <Link href="/dashboard">
-                      <Button variant="outline" className="w-full justify-start">
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start"
+                      >
                         Dashboard
                       </Button>
                     </Link>
@@ -162,8 +152,11 @@ export function Header() {
                 <SignedOut>
                   <SheetClose asChild>
                     <Link href="/waitlist">
-                      <Button variant="outline" className="w-full justify-start">
-                        Join Waitlist
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start gap-2 "
+                      >
+                        Apply
                       </Button>
                     </Link>
                   </SheetClose>
