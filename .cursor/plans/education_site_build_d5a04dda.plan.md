@@ -13,13 +13,13 @@ todos:
     status: pending
   - id: phase-2-schema
     content: "Phase 2: Define full Convex schema (users, certifications, workshops, jobs) in convex/schema.ts"
-    status: pending
+    status: completed
   - id: phase-2-webhook
     content: "Phase 2: Create Clerk webhook handler at app/api/webhooks/clerk/route.ts with verifyWebhook"
-    status: pending
+    status: completed
   - id: phase-2-user-mutations
     content: "Phase 2: Create convex/users.ts with upsertFromClerk, deleteByClerkId, getByClerkId functions"
-    status: pending
+    status: completed
   - id: phase-3-routes
     content: "Phase 3: Set up route groups (marketing) and (dashboard) with layouts, stub all pages"
     status: pending
