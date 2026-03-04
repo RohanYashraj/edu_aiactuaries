@@ -1,81 +1,177 @@
 import { auth } from "@clerk/nextjs/server";
-import { SignInButton, UserButton } from "@clerk/nextjs";
+import { SignInButton } from "@clerk/nextjs";
 import Link from "next/link";
+import { ArrowRight, Award, BookOpen, Briefcase, Sparkles } from "lucide-react";
+
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+const highlights = [
+  {
+    icon: Award,
+    title: "Professional Certifications",
+    description:
+      "Industry-recognised programmes in actuarial data science and AI.",
+  },
+  {
+    icon: BookOpen,
+    title: "Hands-on Workshops",
+    description:
+      "Practical sessions bridging theory and real-world applications.",
+  },
+  {
+    icon: Sparkles,
+    title: "Powered by AI",
+    description:
+      "Cutting-edge curriculum designed for the age of artificial intelligence.",
+  },
+  {
+    icon: Briefcase,
+    title: "Career Opportunities",
+    description:
+      "Connect with top employers seeking actuarial and data science talent.",
+  },
+] as const;
 
 export default async function Home() {
   const { userId } = await auth();
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-10 border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-        <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4">
-          <span className="text-sm font-semibold tracking-tight">
-            SSS CoE — Actuarial DS &amp; AI
-          </span>
-          <div className="flex items-center gap-3">
+      <Header />
+
+      <main className="flex-1">
+        {/* Hero */}
+        <section className="flex flex-col items-center justify-center px-4 py-24 text-center sm:py-32">
+          <div className="mx-auto max-w-3xl">
+            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+              Sri Sathya Sai Center of Excellence
+            </h1>
+            <p className="mt-3 text-lg text-muted-foreground sm:text-xl">
+              in Actuarial Data Science & AI
+            </p>
+            <p className="mx-auto mt-6 max-w-xl text-muted-foreground">
+              Pioneering the future of Actuarial Science through AI and Data
+              Science. Building the next generation of actuarial professionals.
+            </p>
+
             {userId ? (
-              <UserButton />
+              <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+                <Link href="/certifications">
+                  <Button size="lg" className="gap-2">
+                    Explore Certifications
+                    <ArrowRight className="size-4" />
+                  </Button>
+                </Link>
+                <Link href="/dashboard">
+                  <Button variant="outline" size="lg">
+                    Go to Dashboard
+                  </Button>
+                </Link>
+              </div>
             ) : (
-              <>
-                <Link
-                  href="/waitlist"
-                  className="rounded-md border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-accent"
-                >
-                  Join Waitlist
+              <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+                <Link href="/waitlist">
+                  <Button size="lg" className="gap-2">
+                    Join the Waitlist
+                    <ArrowRight className="size-4" />
+                  </Button>
                 </Link>
                 <SignInButton mode="modal">
-                  <button className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90">
-                    Sign In
-                  </button>
+                  <Button variant="outline" size="lg">
+                    Already have an account? Sign In
+                  </Button>
                 </SignInButton>
-              </>
+              </div>
             )}
           </div>
-        </div>
-      </header>
+        </section>
 
-      <main className="flex flex-1 flex-col items-center justify-center px-4">
-        <div className="mx-auto max-w-2xl text-center">
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            Sri Sathya Sai Center of Excellence
-          </h1>
-          <p className="mt-2 text-lg text-muted-foreground">
-            in Actuarial Data Science &amp; AI
-          </p>
-          <p className="mt-6 text-muted-foreground">
-            Pioneering the future of Actuarial Science through AI and Data
-            Science.
-          </p>
+        {/* Highlights */}
+        <section className="border-t border-border bg-muted/30 px-4 py-16 sm:py-20">
+          <div className="mx-auto max-w-6xl">
+            <h2 className="mb-10 text-center text-2xl font-bold tracking-tight sm:text-3xl">
+              Why Choose Us
+            </h2>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {highlights.map(({ icon: Icon, title, description }) => (
+                <Card key={title} className="border-transparent bg-background">
+                  <CardHeader>
+                    <div className="mb-2 flex size-10 items-center justify-center rounded-lg bg-primary/10">
+                      <Icon className="size-5 text-primary" />
+                    </div>
+                    <CardTitle className="text-base">{title}</CardTitle>
+                    <CardDescription>{description}</CardDescription>
+                  </CardHeader>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
 
-          {userId ? (
-            <div className="mt-8 rounded-lg border border-border bg-card p-6">
-              <p className="text-lg font-medium">Welcome back!</p>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Your dashboard and full features are coming soon.
+        {/* Featured Certification */}
+        <section className="px-4 py-16 sm:py-20">
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="mb-4 text-2xl font-bold tracking-tight sm:text-3xl">
+              Flagship Programme
+            </h2>
+            <Card className="border-2 border-primary/20 bg-linear-to-br from-primary/5 to-transparent text-left">
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <div className="flex size-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                    <Award className="size-5" />
+                  </div>
+                  <CardTitle className="text-xl">
+                    AI Actuaries Certification
+                  </CardTitle>
+                </div>
+                <CardDescription className="mt-3 text-base">
+                  Our premier certification blending actuarial science with
+                  cutting-edge AI and machine learning. Designed for
+                  professionals ready to lead the transformation of the
+                  insurance and risk industry.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+            <Link href="/certifications" className="mt-6 inline-block">
+              <Button variant="outline" className="gap-2">
+                View All Certifications
+                <ArrowRight className="size-4" />
+              </Button>
+            </Link>
+          </div>
+        </section>
+
+        {/* CTA */}
+        {!userId && (
+          <section className="border-t border-border bg-muted/30 px-4 py-16 text-center sm:py-20">
+            <div className="mx-auto max-w-xl">
+              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+                Ready to Get Started?
+              </h2>
+              <p className="mt-3 text-muted-foreground">
+                Join our waitlist to be among the first to access world-class
+                actuarial data science education.
               </p>
-            </div>
-          ) : (
-            <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-              <Link
-                href="/waitlist"
-                className="rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-              >
-                Join the Waitlist
+              <Link href="/waitlist" className="mt-8 inline-block">
+                <Button size="lg" className="gap-2">
+                  Join the Waitlist
+                  <ArrowRight className="size-4" />
+                </Button>
               </Link>
-              <SignInButton mode="modal">
-                <button className="rounded-md border border-border px-6 py-3 text-sm font-medium transition-colors hover:bg-accent">
-                  Already have an account? Sign In
-                </button>
-              </SignInButton>
             </div>
-          )}
-        </div>
+          </section>
+        )}
       </main>
 
-      <footer className="border-t border-border py-6 text-center text-sm text-muted-foreground">
-        &copy; {new Date().getFullYear()} Sri Sathya Sai Center of Excellence
-        in Actuarial Data Science &amp; AI
-      </footer>
+      <Footer />
     </div>
   );
 }

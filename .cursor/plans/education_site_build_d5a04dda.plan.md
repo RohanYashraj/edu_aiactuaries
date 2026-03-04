@@ -10,7 +10,7 @@ todos:
     status: completed
   - id: phase-1-clerk-waitlist
     content: "Phase 1: Enable Waitlist + Restricted sign-up in Clerk Dashboard, replace SignUpButton with Waitlist CTA"
-    status: pending
+    status: completed
   - id: phase-2-schema
     content: "Phase 2: Define full Convex schema (users, certifications, workshops, jobs) in convex/schema.ts"
     status: completed
@@ -22,13 +22,13 @@ todos:
     status: completed
   - id: phase-3-routes
     content: "Phase 3: Set up route groups (marketing) and (dashboard) with layouts, stub all pages"
-    status: pending
+    status: completed
   - id: phase-3-shadcn
     content: "Phase 3: Install shadcn components (button, card, badge, input, sheet, etc.)"
-    status: pending
+    status: completed
   - id: phase-3-shell
     content: "Phase 3: Build shared header + footer components with navigation"
-    status: pending
+    status: completed
   - id: phase-4-landing
     content: "Phase 4: Build landing page with hero, highlights, featured certification, waitlist CTA"
     status: pending
