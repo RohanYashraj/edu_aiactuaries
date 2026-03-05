@@ -60,10 +60,10 @@ export default async function Home() {
             </Badge>
             <h1 className="font-display text-4xl leading-tight tracking-tight sm:text-5xl lg:text-6xl">
               Sri Sathya Sai
-              <span className="mt-1 block">Center of Excellence</span>
+              <span className="mt-1 block">Institute of Actuaries</span>
             </h1>
             <p className="mt-4 text-lg text-gold sm:text-xl">
-              in Actuarial Data Science & AI
+              for Actuarial Data Science & AI
             </p>
             <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-muted-foreground">
               Pioneering the future of Actuarial Science through AI and Data
@@ -84,7 +84,7 @@ export default async function Home() {
                 </Link>
                 <Link href="/dashboard">
                   <Button variant="outline" size="lg">
-                    Go to Dashboard
+                    Dashboard
                   </Button>
                 </Link>
               </div>
@@ -95,7 +95,7 @@ export default async function Home() {
                     size="lg"
                     className="gap-2 shadow-md shadow-primary/20"
                   >
-                    Apply
+                    Apply Now
                     <ArrowRight className="size-4" />
                   </Button>
                 </Link>
@@ -194,7 +194,7 @@ export default async function Home() {
               </p>
               <Link href="/waitlist" className="mt-8 inline-block">
                 <Button size="lg" className="gap-2 shadow-md shadow-primary/20">
-                  Apply
+                  Apply Now
                   <ArrowRight className="size-4" />
                 </Button>
               </Link>

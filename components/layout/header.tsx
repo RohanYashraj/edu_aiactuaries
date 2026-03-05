@@ -17,7 +17,6 @@ import {
 import { Separator } from "@/components/ui/separator";
 
 const navLinks = [
-  { href: "/", label: "Home" },
   { href: "/certifications", label: "Certifications" },
   { href: "/workshops", label: "Workshops" },
   { href: "/jobs", label: "Jobs" },
@@ -29,28 +28,21 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-primary-foreground/10 bg-primary text-primary-foreground">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+        {/* Logo (links to home) */}
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center gap-2.5">
             <span className="flex size-8 items-center justify-center rounded-lg bg-gold text-xs font-bold text-gold-foreground shadow-sm">
               edu.
             </span>
-            <span className="hidden text-sm font-semibold tracking-tight sm:inline">
-              SSS CoE
-              <span className="ml-1 text-xs font-normal text-primary-foreground/60">
-                Actuarial DS & AI
-              </span>
-            </span>
           </Link>
-          <Separator
-            orientation="vertical"
-            className="hidden h-6 bg-primary-foreground/15 md:block"
-          />
+        </div>
 
+        {/* Right-aligned navigation + auth */}
+        <div className="flex items-center gap-3">
           {/* Desktop navigation */}
           <nav className="hidden items-center gap-1 md:flex">
             {navLinks.map(({ href, label }) => {
-              const isActive =
-                href === "/" ? pathname === "/" : pathname.startsWith(href);
+              const isActive = pathname.startsWith(href);
 
               return (
                 <Link key={href} href={href}>
@@ -69,9 +61,6 @@ export function Header() {
               );
             })}
           </nav>
-        </div>
-
-        <div className="flex items-center gap-3">
           <SignedIn>
             <Link href="/dashboard" className="hidden md:inline-flex">
               <Button
