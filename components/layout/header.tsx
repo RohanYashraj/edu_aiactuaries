@@ -109,8 +109,7 @@ export function Header() {
               <Separator />
               <nav className="flex flex-col gap-1 px-4">
                 {navLinks.map(({ href, label }) => {
-                  const isActive =
-                    href === "/" ? pathname === "/" : pathname.startsWith(href);
+                  const isActive = pathname.startsWith(href);
 
                   return (
                     <SheetClose asChild key={href}>
