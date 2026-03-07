@@ -52,12 +52,19 @@ export default async function Home() {
         {/* Hero */}
         <section className="hero-glow relative flex flex-col items-center justify-center overflow-hidden px-4 py-28 text-center sm:py-36">
           <div className="animate-fade-in-up mx-auto max-w-3xl">
-            <Badge
-              variant="outline"
-              className="mb-6 border-gold/30 bg-gold-light/50 px-4 py-1.5 text-xs font-medium tracking-wider"
+            <Link
+              href="https://aiactuaries.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block"
             >
-              Powered by aiactuaries.org
-            </Badge>
+              <Badge
+                variant="outline"
+                className="mb-6 border-gold/30 bg-gold-light/50 px-4 py-1.5 text-xs font-medium tracking-wider hover:border-gold/50 hover:bg-gold-light/70 transition-colors"
+              >
+                Powered by aiactuaries.org
+              </Badge>
+            </Link>
             <h1 className="font-display text-4xl leading-tight tracking-tight sm:text-5xl lg:text-6xl">
               Sri Sathya Sai
               <span className="mt-1 block">Institute of Actuaries</span>
