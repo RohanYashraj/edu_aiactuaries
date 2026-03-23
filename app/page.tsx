@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { SignInButton } from "@clerk/nextjs";
 import Link from "next/link";
-import { ArrowRight, Award, BookOpen, Briefcase, Sparkles } from "lucide-react";
+import { MousePointerClick, ArrowRight, Award, BookOpen, Briefcase, Sparkles, ArrowRightToLine, Keyboard } from "lucide-react";
 
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -97,13 +97,18 @@ export default async function Home() {
               </div>
             ) : (
               <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-                <Link href="/waitlist">
+                <Link
+                  href="https://forms.gle/u6sKYR3WVXpgGDGS7"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Button
                     size="lg"
                     className="gap-2 shadow-md shadow-primary/20"
                   >
-                    Apply Now
-                    <ArrowRight className="size-4" />
+                    Become a Member
+                    <ArrowRightToLine className="size-4" />
+                    <Keyboard className="size-4" />
                   </Button>
                 </Link>
                 <SignInButton mode="modal">
@@ -199,10 +204,14 @@ export default async function Home() {
                 Apply for membership to be among the first to access world-class
                 Actuarial Data Science & AI education.
               </p>
-              <Link href="/waitlist" className="mt-8 inline-block">
+              <Link href="https://forms.gle/u6sKYR3WVXpgGDGS7"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-8 inline-block">
                 <Button size="lg" className="gap-2 shadow-md shadow-primary/20">
-                  Apply Now
-                  <ArrowRight className="size-4" />
+                  Become a Member
+                  <ArrowRightToLine className="size-4" />
+                  <Keyboard className="size-4" />
                 </Button>
               </Link>
             </div>

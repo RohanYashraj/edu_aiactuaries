@@ -17,6 +17,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 
 const navLinks = [
+  { href: "https://aiactuaries.org/our-board", label: "Our Board" },
   { href: "/certifications", label: "Certifications" },
   { href: "/workshops", label: "Workshops" },
   { href: "/jobs", label: "Jobs" },
