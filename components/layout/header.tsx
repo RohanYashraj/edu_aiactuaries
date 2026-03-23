@@ -17,10 +17,14 @@ import {
 import { Separator } from "@/components/ui/separator";
 
 const navLinks = [
-  { href: "https://aiactuaries.org/our-board", label: "Our Board" },
-  { href: "/certifications", label: "Certifications" },
-  { href: "/workshops", label: "Workshops" },
-  { href: "/jobs", label: "Jobs" },
+  {
+    href: "https://aiactuaries.org/our-board",
+    label: "Our Board",
+    external: true,
+  },
+  { href: "/certifications", label: "Certifications", external: false },
+  { href: "/workshops", label: "Workshops", external: false },
+  { href: "/jobs", label: "Jobs", external: false },
 ] as const;
 
 export function Header() {
@@ -42,11 +46,16 @@ export function Header() {
         <div className="flex items-center gap-3">
           {/* Desktop navigation */}
           <nav className="hidden items-center gap-1 md:flex">
-            {navLinks.map(({ href, label }) => {
+            {navLinks.map(({ href, label, external }) => {
               const isActive = pathname.startsWith(href);
 
               return (
-                <Link key={href} href={href}>
+                <Link
+                  key={href}
+                  href={href}
+                  target={external ? "_blank" : undefined}
+                  rel={external ? "noopener noreferrer" : undefined}
+                >
                   <Button
                     variant="ghost"
                     size="sm"
@@ -109,12 +118,16 @@ export function Header() {
               </SheetHeader>
               <Separator />
               <nav className="flex flex-col gap-1 px-4">
-                {navLinks.map(({ href, label }) => {
+                {navLinks.map(({ href, label, external }) => {
                   const isActive = pathname.startsWith(href);
 
                   return (
                     <SheetClose asChild key={href}>
-                      <Link href={href}>
+                      <Link
+                        href={href}
+                        target={external ? "_blank" : undefined}
+                        rel={external ? "noopener noreferrer" : undefined}
+                      >
                         <Button
                           variant={isActive ? "secondary" : "ghost"}
                           className="w-full justify-start"
