@@ -150,10 +150,10 @@ export default async function Home() {
                     </div>
                     {/* Knowledge Partner Logo Placeholder */}
                     <div className="flex flex-col items-start sm:items-end gap-1.5 shrink-0">
-                      <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                      <span className="font-semibold uppercase tracking-wider text-muted-foreground">
                         Knowledge Partner
                       </span>
-                      <div className="flex h-12 w-28 items-center justify-center rounded-md bg-muted/50 p-2">
+                      <div className="flex h-16 w-40 items-center justify-start sm:justify-end bg-transparent p-0">
                         <Image src="/ifoa.svg" alt="Knowledge Partner Logo" width={150} height={50} className="h-full w-auto object-contain dark:invert" />
                       </div>
                     </div>

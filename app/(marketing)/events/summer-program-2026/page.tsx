@@ -79,16 +79,15 @@ export default function SummerProgram2026Page() {
             </p>
           </div>
           <div className="flex flex-col items-start sm:items-center gap-2 shrink-0 sm:border-l sm:border-border sm:pl-6">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+            <span className="font-semibold uppercase tracking-wider text-muted-foreground">
               Knowledge Partner
             </span>
-            <div className="flex h-14 w-32 items-center justify-center rounded-md bg-background/50 p-2">
+            <div className="flex h-16 w-40 items-center justify-start sm:justify-center bg-transparent p-0">
               <Image src="/ifoa.svg" alt="IFoA Logo" width={150} height={34} className="h-full w-auto object-contain dark:invert" />
             </div>
           </div>
         </div>
       </div>
-<br />
       {/* Quick Info Grid */}
       <div className="mt-12 grid gap-6 sm:gap-8 sm:grid-cols-2">
         <div className="flex items-start gap-4">
@@ -144,7 +143,6 @@ export default function SummerProgram2026Page() {
         , in line with the guiding principle of providing education freely,
         inspired by Bhagawan Sri Sathya Sai Baba.
       </div>
-      <br />
 
       {/* Lists */}
       <div className="mt-12 grid gap-12 md:grid-cols-2">
@@ -164,7 +162,6 @@ export default function SummerProgram2026Page() {
             ))}
           </ul>
         </div>
-<br />
         <div>
           <h2 className="font-display mb-6 text-2xl">Course Coverage</h2>
           <ul className="space-y-4">
@@ -183,9 +180,8 @@ export default function SummerProgram2026Page() {
           </ul>
         </div>
       </div>
-<br />
       {/* Footer / CTA */}
-      <div className="mt-16 border-t border-border py-6">
+      <div className="mt-8 border-t border-border py-6">
         <p className="mb-8 text-muted-foreground">
           We look forward to welcoming motivated students who are keen to
           explore and build a foundation in actuarial data science.
