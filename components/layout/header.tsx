@@ -24,6 +24,7 @@ const navLinks = [
   },
   { href: "/certifications", label: "Certifications", external: false },
   { href: "/workshops", label: "Workshops", external: false },
+  { href: "/events", label: "Events", external: false },
   { href: "/jobs", label: "Jobs", external: false },
 ] as const;
 

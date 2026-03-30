@@ -1,7 +1,8 @@
 import { auth } from "@clerk/nextjs/server";
 import { SignInButton } from "@clerk/nextjs";
 import Link from "next/link";
-import { MousePointerClick, ArrowRight, Award, BookOpen, Briefcase, Sparkles, ArrowRightToLine, Keyboard } from "lucide-react";
+import Image from "next/image";
+import { MousePointerClick, ArrowRight, Award, BookOpen, Briefcase, Sparkles, ArrowRightToLine, Keyboard, Calendar } from "lucide-react";
 
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -121,8 +122,71 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* Highlights */}
+        {/* Upcoming Event */}
         <section className="border-t border-border bg-muted/40 px-4 py-20 sm:py-24">
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="font-display mb-2 text-2xl tracking-tight sm:text-3xl">
+              Upcoming Program
+            </h2>
+            <p className="mb-8 text-muted-foreground">
+              Registrations are now open for our summer course.
+            </p>
+            <Card className="gradient-border border-0 bg-card p-[2px] text-left">
+              <div className="rounded-[inherit] bg-card p-0">
+                <CardHeader className="p-6 sm:p-8">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+                    <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+                      <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-gold text-gold-foreground shadow-md shadow-gold/20">
+                        <Calendar className="size-6" />
+                      </div>
+                      <div>
+                        <Badge className="mb-2 bg-gold/15 text-gold hover:bg-gold/20">
+                          Registrations Open
+                        </Badge>
+                        <CardTitle className="font-display text-xl sm:text-2xl">
+                          Summer Course in Actuarial Data Science – 2026
+                        </CardTitle>
+                      </div>
+                    </div>
+                    {/* Knowledge Partner Logo Placeholder */}
+                    <div className="flex flex-col items-start sm:items-end gap-1.5 shrink-0">
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                        Knowledge Partner
+                      </span>
+                      <div className="flex h-12 w-28 items-center justify-center rounded-md bg-muted/50 p-2">
+                        <Image src="/ifoa.svg" alt="Knowledge Partner Logo" width={150} height={50} className="h-full w-auto object-contain dark:invert" />
+                      </div>
+                    </div>
+                  </div>
+                  <CardDescription className="mt-4 text-base leading-relaxed">
+                    Join the third edition of our 3-week program to build a strong foundation in actuarial data science. Delivered by experienced faculty and industry practitioners. Offered free of charge.
+                  </CardDescription>
+                  <div className="mt-6 flex flex-col sm:flex-row gap-3">
+                    <Link 
+                      href="https://lnkd.in/gsewFfW7"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Button className="w-full sm:w-auto gap-2">
+                        Register Now
+                        <ArrowRightToLine className="size-4" />
+                      </Button>
+                    </Link>
+                    <Link href="/events/summer-program-2026">
+                      <Button variant="outline" className="w-full sm:w-auto gap-2">
+                        View Details
+                        <ArrowRight className="size-4" />
+                      </Button>
+                    </Link>
+                  </div>
+                </CardHeader>
+              </div>
+            </Card>
+          </div>
+        </section>
+
+        {/* Highlights */}
+        <section className="border-t border-border px-4 py-20 sm:py-24">
           <div className="mx-auto max-w-6xl">
             <h2 className="font-display mb-12 text-center text-2xl tracking-tight sm:text-3xl">
               Why Choose Us
@@ -150,7 +214,7 @@ export default async function Home() {
         </section>
 
         {/* Featured Certification */}
-        <section className="px-4 py-20 sm:py-24">
+        <section className="border-t border-border bg-muted/40 px-4 py-20 sm:py-24">
           <div className="mx-auto max-w-3xl text-center">
             <h2 className="font-display mb-2 text-2xl tracking-tight sm:text-3xl">
               Flagship Programme
