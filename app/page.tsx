@@ -2,7 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { SignInButton } from "@clerk/nextjs";
 import Link from "next/link";
 import Image from "next/image";
-import { MousePointerClick, ArrowRight, Award, BookOpen, Briefcase, Sparkles, ArrowRightToLine, Keyboard, Calendar } from "lucide-react";
+import { ArrowRight, Award, ArrowRightToLine, Keyboard, Calendar } from "lucide-react";
 
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -14,31 +14,86 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
-const highlights = [
+const recentHighlights = [
   {
-    icon: Award,
-    title: "Professional Certifications",
-    description:
-      "Industry-recognised programmes in actuarial data science and AI.",
+    title: "Leadership Meeting and Partner Lunch",
+    content:
+      "Society of Actuaries leadership meeting followed by a partner lunch at Hotel Sheraton, Bangalore.",
+    date: "Bangalore",
+    organization: {
+      logoSrc: "/soa.png",
+      logoAlt: "Society of Actuaries",
+      name: "Society of Actuaries",
+      logoText: "SOA",
+    },
   },
   {
-    icon: BookOpen,
-    title: "Hands-on Workshops",
-    description:
-      "Practical sessions bridging theory and real-world applications.",
+    title: "Global Conference of Actuaries",
+    content:
+      "Participation in the Global Conference of Actuaries by the Institute of Actuaries of India at Jio World Convention Centre, Mumbai.",
+    date: "Mumbai",
+    organization: {
+      logoSrc: "/iai.png",
+      logoAlt: "Institute of Actuaries of India",
+      name: "IAI",
+      logoText: "IAI",
+    },
   },
   {
-    icon: Sparkles,
-    title: "Powered by AI",
-    description:
-      "Cutting-edge curriculum designed for the age of artificial intelligence.",
+    title: "International Leadership Meeting and Partner Dinner",
+    content:
+      "Casualty Actuarial Society international leadership meeting with an evening partner dinner in Mumbai.",
+    date: "Mumbai",
+    organization: {
+      logoSrc: "/cas.png",
+      logoAlt: "Casualty Actuarial Society",
+      name: "CAS",
+      logoText: "CAS",
+    },
   },
   {
-    icon: Briefcase,
-    title: "Career Opportunities",
-    description:
-      "Connect with top employers seeking actuarial and data science talent.",
+    title: "Industry-Academia Meet",
+    content:
+      "Institute and Faculty of Actuaries industry-academia engagement hosted at Christ University, Bangalore.",
+    date: "Bangalore",
+    organization: {
+      name: "IFoA",
+      logoSrc: "/ifoa.svg",
+      logoAlt: "IFoA",
+      logoClassName: "dark:invert",
+    },
+  },
+  {
+    title: "ACTEX Learning Meeting",
+    content:
+      "Meeting with ACTEX Learning to discuss actuarial education pathways and collaborative learning opportunities in Bangalore.",
+    date: "Bangalore",
+    organization: {
+      logoSrc: "/actex.png",
+      logoAlt: "ACTEX Learning",
+      name: "ACTEX Learning",
+      logoText: "AX",
+    },
+  },
+  {
+    title: "Webinar on AI Applications in Actuarial Science",
+    content:
+      "Delivered a webinar focused on practical AI applications in actuarial science for participants online and in Puttaparthi.",
+    date: "Online and Puttaparthi",
+    organization: {
+      logoSrc: "/aiactuaries.png",
+      logoAlt: "AIActuaries",
+      name: "AIActuaries",
+      logoText: "AIActuaries",
+    },
   },
 ] as const;
 
@@ -185,31 +240,67 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* Highlights */}
+        {/* Recent Highlights */}
         <section className="border-t border-border px-4 py-20 sm:py-24">
           <div className="mx-auto max-w-6xl">
             <h2 className="font-display mb-12 text-center text-2xl tracking-tight sm:text-3xl">
-              Why Choose Us
+              Recent Highlights
             </h2>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {highlights.map(({ icon: Icon, title, description }, i) => (
-                <Card
-                  key={title}
-                  className="animate-fade-in-up border-transparent bg-background shadow-sm"
-                  style={{ animationDelay: `${i * 100}ms` }}
-                >
-                  <CardHeader>
-                    <div className="mb-3 flex size-11 items-center justify-center rounded-xl bg-primary/10">
-                      <Icon className="size-5 text-primary" />
-                    </div>
-                    <CardTitle className="text-base">{title}</CardTitle>
-                    <CardDescription className="leading-relaxed">
-                      {description}
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-              ))}
-            </div>
+            <p className="mx-auto mb-8 max-w-2xl text-center text-sm text-muted-foreground sm:text-base">
+              Recent conversations and collaboration checkpoints with partner organizations.
+            </p>
+            <Carousel
+              className="w-full"
+              opts={{ loop: true, align: "start" }}
+            >
+              <div className="mb-3 flex items-center justify-end gap-1 md:hidden">
+                <CarouselPrevious className="static translate-y-0" />
+                <CarouselNext className="static translate-y-0" />
+              </div>
+              <div className="hidden justify-end gap-2 md:mb-4 md:flex">
+                <CarouselPrevious className="static translate-y-0" />
+                <CarouselNext className="static translate-y-0" />
+              </div>
+              <CarouselContent>
+                {recentHighlights.map((highlight, i) => (
+                  <CarouselItem
+                    key={`${highlight.title}-${highlight.date}`}
+                    className="basis-full md:basis-1/2 lg:basis-1/3"
+                  >
+                    <Card
+                      className="animate-fade-in-up h-full border-border/70 bg-background"
+                      style={{ animationDelay: `${i * 80}ms` }}
+                    >
+                      <CardHeader className="flex h-full flex-col space-y-3">
+                        <CardTitle className="text-sm font-semibold sm:text-base">
+                          {highlight.title}
+                        </CardTitle>
+                        <CardDescription className="text-xs leading-relaxed sm:text-sm">
+                          {highlight.content}
+                        </CardDescription>
+                        <div className="mt-auto grid grid-cols-2 items-end gap-3 pt-2">
+                          <div className="space-y-0.5">
+                            <p className="text-xs text-muted-foreground">{highlight.date}</p>
+                            <p className="text-xs font-medium text-muted-foreground">
+                              with {highlight.organization.name}
+                            </p>
+                          </div>
+                          <div className="flex justify-start">
+                            <Image
+                              src={highlight.organization.logoSrc}
+                              alt={highlight.organization.logoAlt}
+                              width={250}
+                              height={50}
+                              className="max-h-[60px] w-auto"
+                            />
+                          </div>
+                        </div>
+                      </CardHeader>
+                    </Card>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
           </div>
         </section>
 
