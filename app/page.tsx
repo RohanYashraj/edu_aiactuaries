@@ -286,19 +286,13 @@ export default async function Home() {
                             </p>
                           </div>
                           <div className="flex justify-start">
-                            {"logoSrc" in highlight.organization ? (
-                              <Image
-                                src={highlight.organization.logoSrc}
-                                alt={highlight.organization.logoAlt}
-                                width={250}
-                                height={50}
-                                className="max-h-[60px] w-auto"
-                              />
-                            ) : (
-                              <span className="text-sm font-semibold tracking-wide text-muted-foreground">
-                                {highlight.organization.logoText}
-                              </span>
-                            )}
+                            <Image
+                              src={highlight.organization.logoSrc}
+                              alt={highlight.organization.logoAlt}
+                              width={250}
+                              height={50}
+                              className="max-h-[60px] w-auto"
+                            />
                           </div>
                         </div>
                       </CardHeader>
