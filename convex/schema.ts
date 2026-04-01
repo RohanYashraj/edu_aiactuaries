@@ -46,11 +46,31 @@ export default defineSchema({
     employerId: v.id("users"),
     company: v.string(),
     location: v.string(),
+    slug: v.optional(v.string()),
     type: v.union(
       v.literal("full-time"),
       v.literal("part-time"),
       v.literal("contract"),
       v.literal("internship"),
+    ),
+    periodStart: v.optional(v.string()),
+    periodEnd: v.optional(v.string()),
+    applicationDeadline: v.optional(v.string()),
+    selectionCriteria: v.optional(v.string()),
+    applicationUrl: v.optional(v.string()),
+    commitmentHoursPerDay: v.optional(v.string()),
+    eligibilityCriteria: v.optional(v.array(v.string())),
+    weeklySchedule: v.optional(
+      v.array(
+        v.object({
+          week: v.number(),
+          title: v.string(),
+          focus: v.string(),
+          topics: v.array(v.string()),
+          tools: v.array(v.string()),
+          outcomes: v.array(v.string()),
+        }),
+      ),
     ),
     status: v.union(
       v.literal("draft"),
@@ -59,5 +79,6 @@ export default defineSchema({
     ),
   })
     .index("by_employerId", ["employerId"])
-    .index("by_status", ["status"]),
+    .index("by_status", ["status"])
+    .index("by_slug", ["slug"]),
 });

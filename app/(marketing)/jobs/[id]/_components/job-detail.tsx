@@ -3,7 +3,17 @@
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
-import { ArrowLeft, Briefcase, MapPin, Clock, Loader2 } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Briefcase,
+  Calendar,
+  CheckCircle2,
+  Clock,
+  Loader2,
+  MapPin,
+  Users,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -37,6 +47,153 @@ export function JobDetail({ jobId }: { jobId: string }) {
           </Button>
         </Link>
       </div>
+    );
+  }
+
+  const hasInternshipMetadata =
+    job.type === "internship" &&
+    job.periodStart &&
+    job.periodEnd &&
+    job.applicationDeadline &&
+    job.selectionCriteria &&
+    job.commitmentHoursPerDay &&
+    job.eligibilityCriteria &&
+    job.eligibilityCriteria.length > 0;
+
+  if (hasInternshipMetadata) {
+    return (
+      <article className="mx-auto max-w-3xl px-4 py-16 sm:px-6 sm:py-20">
+        <p className="mb-6 text-sm font-medium text-muted-foreground">
+          <Link href="/jobs" className="hover:text-foreground">
+            Jobs
+          </Link>
+          <span aria-hidden="true" className="mx-2">
+            /
+          </span>
+          <span className="text-foreground">Internship</span>
+        </p>
+
+        <div className="space-y-4">
+          <Badge className="bg-gold/15 text-gold hover:bg-gold/20">
+            Applications Open
+          </Badge>
+          <h1 className="font-display text-3xl tracking-tight sm:text-4xl md:text-5xl">
+            {job.title}
+          </h1>
+          <p className="text-muted-foreground">{job.description}</p>
+        </div>
+
+        <div className="mt-12 grid gap-6 sm:gap-8 sm:grid-cols-2">
+          <div className="flex items-start gap-4">
+            <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-gold/10">
+              <Calendar className="size-6 text-gold" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-foreground">Internship Period</h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {job.periodStart} - {job.periodEnd}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-4">
+            <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-gold/10">
+              <Clock className="size-6 text-gold" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-foreground">Commitment</h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {job.commitmentHoursPerDay}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-4">
+            <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-gold/10">
+              <Users className="size-6 text-gold" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-foreground">Selection Criteria</h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {job.selectionCriteria}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-4">
+            <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-gold/10">
+              <Calendar className="size-6 text-gold" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-foreground">
+                Last Date for Application
+              </h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {job.applicationDeadline}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-12">
+          <h2 className="font-display mb-6 text-2xl">Eligibility Criteria</h2>
+          <ul className="space-y-4">
+            {job.eligibilityCriteria?.map((item, i) => (
+              <li key={i} className="flex gap-3 text-muted-foreground">
+                <CheckCircle2 className="size-5 shrink-0 text-gold" />
+                <span className="leading-snug">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {job.weeklySchedule && job.weeklySchedule.length > 0 && (
+          <div className="mt-12 space-y-6">
+            <h2 className="font-display text-2xl">8-Week Program Roadmap</h2>
+            <div className="grid gap-4">
+              {job.weeklySchedule.map((week) => (
+                <div
+                  key={week.week}
+                  className="rounded-xl border border-border bg-card p-5"
+                >
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Week {week.week}
+                  </p>
+                  <h3 className="mt-1 text-lg font-semibold text-foreground">
+                    {week.title}
+                  </h3>
+                  <p className="mt-2 text-sm text-muted-foreground">{week.focus}</p>
+                  <p className="mt-3 text-sm text-muted-foreground">
+                    <span className="font-medium text-foreground">Topics:</span>{" "}
+                    {week.topics.join(" | ")}
+                  </p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    <span className="font-medium text-foreground">Tools:</span>{" "}
+                    {week.tools.join(" | ")}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="mt-8 border-t border-border py-6">
+          <p className="mb-8 text-muted-foreground">
+            Build a portfolio-ready actuarial AI project aligned with real
+            industry use cases.
+          </p>
+          <Button
+            asChild
+            size="lg"
+            className="w-full sm:w-auto bg-gold text-gold-foreground shadow-sm hover:bg-gold/90"
+          >
+            <a href={job.applicationUrl ?? "#"} target="_blank" rel="noreferrer">
+              Apply Now
+              <ArrowRight className="ml-2 size-4" />
+            </a>
+          </Button>
+        </div>
+      </article>
     );
   }
 
