@@ -23,66 +23,66 @@ import {
 } from "@/components/ui/carousel";
 
 const recentHighlights = [
-  {
-    title: "Leadership Meeting and Partner Lunch",
-    content:
-      "Society of Actuaries leadership meeting followed by a partner lunch at Hotel Sheraton, Bangalore.",
-    date: "Bangalore",
-    organization: {
-      logoSrc: "/soa.png",
-      logoAlt: "Society of Actuaries",
-      name: "Society of Actuaries",
-      logoText: "SOA",
-    },
-  },
-  {
-    title: "Global Conference of Actuaries",
-    content:
-      "Participation in the Global Conference of Actuaries by the Institute of Actuaries of India at Jio World Convention Centre, Mumbai.",
-    date: "Mumbai",
-    organization: {
-      logoSrc: "/iai.png",
-      logoAlt: "Institute of Actuaries of India",
-      name: "IAI",
-      logoText: "IAI",
-    },
-  },
-  {
-    title: "International Leadership Meeting and Partner Dinner",
-    content:
-      "Casualty Actuarial Society international leadership meeting with an evening partner dinner in Mumbai.",
-    date: "Mumbai",
-    organization: {
-      logoSrc: "/cas.png",
-      logoAlt: "Casualty Actuarial Society",
-      name: "CAS",
-      logoText: "CAS",
-    },
-  },
-  {
-    title: "Industry-Academia Meet",
-    content:
-      "Institute and Faculty of Actuaries industry-academia engagement hosted at Christ University, Bangalore.",
-    date: "Bangalore",
-    organization: {
-      name: "IFoA",
-      logoSrc: "/ifoa.svg",
-      logoAlt: "IFoA",
-      logoClassName: "dark:invert",
-    },
-  },
-  {
-    title: "ACTEX Learning Meeting",
-    content:
-      "Meeting with ACTEX Learning to discuss actuarial education pathways and collaborative learning opportunities in Bangalore.",
-    date: "Bangalore",
-    organization: {
-      logoSrc: "/actex.png",
-      logoAlt: "ACTEX Learning",
-      name: "ACTEX Learning",
-      logoText: "AX",
-    },
-  },
+  // {
+  //   title: "Leadership Meeting and Partner Lunch",
+  //   content:
+  //     "Society of Actuaries leadership meeting followed by a partner lunch at Hotel Sheraton, Bangalore.",
+  //   date: "Bangalore",
+  //   organization: {
+  //     logoSrc: "/soa.png",
+  //     logoAlt: "Society of Actuaries",
+  //     name: "Society of Actuaries",
+  //     logoText: "SOA",
+  //   },
+  // },
+  // {
+  //   title: "Global Conference of Actuaries",
+  //   content:
+  //     "Participation in the Global Conference of Actuaries by the Institute of Actuaries of India at Jio World Convention Centre, Mumbai.",
+  //   date: "Mumbai",
+  //   organization: {
+  //     logoSrc: "/iai.png",
+  //     logoAlt: "Institute of Actuaries of India",
+  //     name: "IAI",
+  //     logoText: "IAI",
+  //   },
+  // },
+  // {
+  //   title: "International Leadership Meeting and Partner Dinner",
+  //   content:
+  //     "Casualty Actuarial Society international leadership meeting with an evening partner dinner in Mumbai.",
+  //   date: "Mumbai",
+  //   organization: {
+  //     logoSrc: "/cas.png",
+  //     logoAlt: "Casualty Actuarial Society",
+  //     name: "CAS",
+  //     logoText: "CAS",
+  //   },
+  // },
+  // {
+  //   title: "Industry-Academia Meet",
+  //   content:
+  //     "Institute and Faculty of Actuaries industry-academia engagement hosted at Christ University, Bangalore.",
+  //   date: "Bangalore",
+  //   organization: {
+  //     name: "IFoA",
+  //     logoSrc: "/ifoa.svg",
+  //     logoAlt: "IFoA",
+  //     logoClassName: "dark:invert",
+  //   },
+  // },
+  // {
+  //   title: "ACTEX Learning Meeting",
+  //   content:
+  //     "Meeting with ACTEX Learning to discuss actuarial education pathways and collaborative learning opportunities in Bangalore.",
+  //   date: "Bangalore",
+  //   organization: {
+  //     logoSrc: "/actex.png",
+  //     logoAlt: "ACTEX Learning",
+  //     name: "ACTEX Learning",
+  //     logoText: "AX",
+  //   },
+  // },
   {
     title: "Webinar on AI Applications in Actuarial Science",
     content:
