@@ -302,22 +302,22 @@ export default async function Home() {
 
         {/* Recent Highlights */}
         <section className="border-t border-border px-4 py-20 sm:py-24">
-          <div className="mx-auto max-w-6xl">
-            <h2 className="font-display mb-12 text-center text-2xl tracking-tight sm:text-3xl">
+          <div className="mx-auto max-w-6xl text-center">
+            <h2 className="font-display mb-2 text-2xl tracking-tight sm:text-3xl">
               Recent Highlights
             </h2>
-            <p className="mx-auto mb-8 max-w-2xl text-center text-sm text-muted-foreground sm:text-base">
+            <p className="mx-auto mb-8 max-w-2xl text-muted-foreground">
               Recent conversations and collaboration checkpoints with partner organizations.
             </p>
             <Carousel
-              className="w-full"
-              opts={{ loop: true, align: "start" }}
+              className="mx-auto w-full max-w-5xl"
+              opts={{ loop: true, align: "center" }}
             >
-              <div className="mb-3 flex items-center justify-end gap-1 md:hidden">
+              <div className="mb-3 flex items-center justify-center gap-1 md:hidden">
                 <CarouselPrevious className="static translate-y-0" />
                 <CarouselNext className="static translate-y-0" />
               </div>
-              <div className="hidden justify-end gap-2 md:mb-4 md:flex">
+              <div className="hidden justify-center gap-2 md:mb-4 md:flex">
                 <CarouselPrevious className="static translate-y-0" />
                 <CarouselNext className="static translate-y-0" />
               </div>
@@ -331,21 +331,21 @@ export default async function Home() {
                       className="animate-fade-in-up h-full border-border/70 bg-background"
                       style={{ animationDelay: `${i * 80}ms` }}
                     >
-                      <CardHeader className="flex h-full flex-col space-y-3">
+                      <CardHeader className="flex h-full flex-col items-center space-y-3 text-center">
                         <CardTitle className="text-sm font-semibold sm:text-base">
                           {highlight.title}
                         </CardTitle>
                         <CardDescription className="text-xs leading-relaxed sm:text-sm">
                           {highlight.content}
                         </CardDescription>
-                        <div className="mt-auto grid grid-cols-2 items-end gap-3 pt-2">
-                          <div className="space-y-0.5">
+                        <div className="mt-auto flex flex-col items-center gap-3 pt-2">
+                          <div className="space-y-0.5 text-center">
                             <p className="text-xs text-muted-foreground">{highlight.date}</p>
                             <p className="text-xs font-medium text-muted-foreground">
                               with {highlight.organization.name}
                             </p>
                           </div>
-                          <div className="flex justify-start">
+                          <div className="flex justify-center">
                             <Image
                               src={highlight.organization.logoSrc}
                               alt={highlight.organization.logoAlt}
