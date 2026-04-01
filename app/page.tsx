@@ -186,57 +186,99 @@ export default async function Home() {
             <p className="mb-8 text-muted-foreground">
               Registrations are now open for our summer course.
             </p>
-            <Card className="gradient-border border-0 bg-card p-[2px] text-left">
-              <div className="rounded-[inherit] bg-card p-0">
-                <CardHeader className="p-6 sm:p-8">
-                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
-                    <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+            <div className="space-y-6 text-left">
+              <Card className="gradient-border border-0 bg-card p-[2px]">
+                <div className="rounded-[inherit] bg-card p-0">
+                  <CardHeader className="p-6 sm:p-8">
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+                      <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+                        <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-gold text-gold-foreground shadow-md shadow-gold/20">
+                          <Calendar className="size-6" />
+                        </div>
+                        <div>
+                          <Badge className="mb-2 bg-gold/15 text-gold hover:bg-gold/20">
+                            Registrations Open
+                          </Badge>
+                          <CardTitle className="font-display text-xl sm:text-2xl">
+                            Summer Course in Actuarial Data Science – 2026
+                          </CardTitle>
+                        </div>
+                      </div>
+                      {/* Knowledge Partner Logo Placeholder */}
+                      <div className="flex flex-col items-start sm:items-end gap-1.5 shrink-0">
+                        <span className="font-semibold uppercase tracking-wider text-muted-foreground">
+                          Knowledge Partner
+                        </span>
+                        <div className="flex h-16 w-40 items-center justify-start sm:justify-end bg-transparent p-0">
+                          <Image src="/ifoa.svg" alt="Knowledge Partner Logo" width={150} height={50} className="h-full w-auto object-contain dark:invert" />
+                        </div>
+                      </div>
+                    </div>
+                    <CardDescription className="mt-4 text-base leading-relaxed">
+                      Join the third edition of our 3-week program to build a strong foundation in actuarial data science. Delivered by experienced faculty and industry practitioners. Offered free of charge.
+                    </CardDescription>
+                    <div className="mt-6 flex flex-col sm:flex-row gap-3">
+                      <Link 
+                        href="https://lnkd.in/gsewFfW7"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Button className="w-full sm:w-auto gap-2">
+                          Register Now
+                          <ArrowRightToLine className="size-4" />
+                        </Button>
+                      </Link>
+                      <Link href="/events/summer-program-2026">
+                        <Button variant="outline" className="w-full sm:w-auto gap-2">
+                          View Details
+                          <ArrowRight className="size-4" />
+                        </Button>
+                      </Link>
+                    </div>
+                  </CardHeader>
+                </div>
+              </Card>
+
+              <Card className="gradient-border border-0 bg-card p-[2px]">
+                <div className="rounded-[inherit] bg-card p-0">
+                  <CardHeader className="p-6 sm:p-8">
+                    <div className="flex items-start gap-4">
                       <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-gold text-gold-foreground shadow-md shadow-gold/20">
                         <Calendar className="size-6" />
                       </div>
                       <div>
                         <Badge className="mb-2 bg-gold/15 text-gold hover:bg-gold/20">
-                          Registrations Open
+                          Internship Applications Open
                         </Badge>
                         <CardTitle className="font-display text-xl sm:text-2xl">
-                          Summer Course in Actuarial Data Science – 2026
+                          AI Actuarial Internship Program (AI-AIP)
                         </CardTitle>
                       </div>
                     </div>
-                    {/* Knowledge Partner Logo Placeholder */}
-                    <div className="flex flex-col items-start sm:items-end gap-1.5 shrink-0">
-                      <span className="font-semibold uppercase tracking-wider text-muted-foreground">
-                        Knowledge Partner
-                      </span>
-                      <div className="flex h-16 w-40 items-center justify-start sm:justify-end bg-transparent p-0">
-                        <Image src="/ifoa.svg" alt="Knowledge Partner Logo" width={150} height={50} className="h-full w-auto object-contain dark:invert" />
-                      </div>
+                    <CardDescription className="mt-4 text-base leading-relaxed">
+                      8-week full-time internship from May 2, 2026 to June 27, 2026 focused on actuarial AI applications across pricing, reserving, claims analytics, and fraud detection.
+                    </CardDescription>
+                    <p className="mt-3 text-sm text-muted-foreground">
+                      Last Date for Application: <span className="font-medium text-foreground">24 April 2026</span>
+                    </p>
+                    <div className="mt-6 flex flex-col sm:flex-row gap-3">
+                      <Link href="/jobs/jn714k9hspp01s5vh153z52ra5840te4">
+                        <Button className="w-full sm:w-auto gap-2">
+                          View Internship
+                          <ArrowRightToLine className="size-4" />
+                        </Button>
+                      </Link>
+                      <Link href="/jobs">
+                        <Button variant="outline" className="w-full sm:w-auto gap-2">
+                          Apply Now
+                          <ArrowRight className="size-4" />
+                        </Button>
+                      </Link>
                     </div>
-                  </div>
-                  <CardDescription className="mt-4 text-base leading-relaxed">
-                    Join the third edition of our 3-week program to build a strong foundation in actuarial data science. Delivered by experienced faculty and industry practitioners. Offered free of charge.
-                  </CardDescription>
-                  <div className="mt-6 flex flex-col sm:flex-row gap-3">
-                    <Link 
-                      href="https://lnkd.in/gsewFfW7"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Button className="w-full sm:w-auto gap-2">
-                        Register Now
-                        <ArrowRightToLine className="size-4" />
-                      </Button>
-                    </Link>
-                    <Link href="/events/summer-program-2026">
-                      <Button variant="outline" className="w-full sm:w-auto gap-2">
-                        View Details
-                        <ArrowRight className="size-4" />
-                      </Button>
-                    </Link>
-                  </div>
-                </CardHeader>
-              </div>
-            </Card>
+                  </CardHeader>
+                </div>
+              </Card>
+            </div>
           </div>
         </section>
 
