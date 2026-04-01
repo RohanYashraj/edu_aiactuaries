@@ -49,24 +49,12 @@ export function JobsList() {
       {jobs.map((job, i) => (
         <Card
           key={job._id}
-          className="animate-fade-in-up"
-          style={{ animationDelay: `${i * 80}ms` }}
+          className="animate-fade-in-up flex flex-col"
+          style={{ animationDelay: `${i * 100}ms` }}
         >
           <CardHeader>
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-              <div>
-                <CardTitle className="text-lg">{job.title}</CardTitle>
-                <CardDescription className="mt-1 flex flex-wrap items-center gap-3">
-                  <span className="flex items-center gap-1.5">
-                    <Briefcase className="size-3.5" />
-                    {job.company}
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <MapPin className="size-3.5" />
-                    {job.location}
-                  </span>
-                </CardDescription>
-              </div>
+            <div className="flex items-start justify-between gap-2">
+              <CardTitle className="text-lg">{job.title}</CardTitle>
               <Badge
                 variant={typeColors[job.type] ?? "outline"}
                 className="shrink-0 capitalize"
@@ -74,13 +62,23 @@ export function JobsList() {
                 {job.type.replace("-", " ")}
               </Badge>
             </div>
-          </CardHeader>
-          <CardContent>
-            <p className="mb-4 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+            <CardDescription className="line-clamp-2 leading-relaxed">
               {job.description}
-            </p>
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="mt-auto">
+            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+              <span className="flex items-center gap-1.5">
+                <Briefcase className="size-4" />
+                {job.company}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <MapPin className="size-4" />
+                {job.location}
+              </span>
+            </div>
             <Link href={`/jobs/${job._id}`}>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className="mt-5">
                 View Details
               </Button>
             </Link>
