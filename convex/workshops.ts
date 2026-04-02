@@ -6,6 +6,7 @@ export const list = query({
   handler: async (ctx) => {
     return await ctx.db
       .query("workshops")
+      .withIndex("by_order")
       .order("asc")
       .collect();
   },
@@ -22,7 +23,9 @@ export const listByStatus = query({
   handler: async (ctx, args) => {
     return await ctx.db
       .query("workshops")
-      .withIndex("by_status", (q) => q.eq("status", args.status))
+      .withIndex("by_status_and_order", (q) =>
+        q.eq("status", args.status),
+      )
       .order("asc")
       .collect();
   },

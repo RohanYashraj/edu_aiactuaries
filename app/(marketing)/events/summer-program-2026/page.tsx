@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Image from "next/image";
 import {
   ArrowRight,
@@ -10,8 +9,8 @@ import {
   Users,
 } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { DetailHero } from "@/components/marketing";
 
 export const metadata = {
   title: "Summer Course in Actuarial Data Science 2026 — Events — SSS CoE",
@@ -22,26 +21,14 @@ export const metadata = {
 export default function SummerProgram2026Page() {
   return (
     <article className="mx-auto max-w-3xl px-4 py-16 sm:px-6 sm:py-20">
-      {/* Breadcrumb */}
-      <p className="mb-6 text-sm font-medium text-muted-foreground">
-        <Link href="/events" className="hover:text-foreground">
-          Events
-        </Link>
-        <span aria-hidden="true" className="mx-2">
-          /
-        </span>
-        <span className="text-foreground">Summer Program 2026</span>
-      </p>
-
-      {/* Header */}
-      <div className="space-y-4">
-        <Badge className="bg-gold/15 text-gold hover:bg-gold/20">
-          Registrations Open
-        </Badge>
-        <h1 className="font-display text-3xl tracking-tight sm:text-4xl md:text-5xl">
-          Summer Course in Actuarial Data Science – 2026
-        </h1>
-      </div>
+      <DetailHero
+        breadcrumbs={[
+          { label: "Events", href: "/events" },
+          { label: "Summer Program 2026" },
+        ]}
+        badge="Registrations Open"
+        title="Summer Course in Actuarial Data Science - 2026"
+      />
 
       {/* Intro */}
       <div className="mt-8 space-y-6 leading-relaxed text-muted-foreground">

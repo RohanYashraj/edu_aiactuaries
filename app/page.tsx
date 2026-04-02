@@ -21,6 +21,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { FeatureCard, SectionHeader } from "@/components/marketing";
 
 const recentHighlights = [
   // {
@@ -94,6 +95,37 @@ const recentHighlights = [
       name: "AIActuaries",
       logoText: "AIActuaries",
     },
+  },
+] as const;
+
+function isExternalHref(href: string) {
+  return href.startsWith("http://") || href.startsWith("https://");
+}
+
+const upcomingPrograms = [
+  {
+    badge: "Registrations Open",
+    title: "Summer Course in Actuarial Data Science - 2026",
+    description:
+      "Join the third edition of our 3-week program to build a strong foundation in actuarial data science. Delivered by experienced faculty and industry practitioners. Offered free of charge.",
+    primaryLabel: "Register Now",
+    primaryHref: "https://lnkd.in/gsewFfW7",
+    secondaryLabel: "View Details",
+    secondaryHref: "/events/summer-program-2026",
+    footerText: null,
+    showKnowledgePartner: true,
+  },
+  {
+    badge: "Internship Applications Open",
+    title: "AI Actuarial Internship Program (AI-AIP)",
+    description:
+      "8-week full-time internship from May 2, 2026 to June 27, 2026 focused on actuarial AI applications across pricing, reserving, claims analytics, and fraud detection.",
+    primaryLabel: "View Internship",
+    primaryHref: "/jobs/jn714k9hspp01s5vh153z52ra5840te4",
+    secondaryLabel: "Apply Now",
+    secondaryHref: "https://forms.gle/W45WuyDViwxauJb26",
+    footerText: "Last Date for Application: 24 April 2026",
+    showKnowledgePartner: false,
   },
 ] as const;
 
@@ -179,85 +211,134 @@ export default async function Home() {
 
         {/* Upcoming Event */}
         <section className="border-t border-border bg-muted/40 px-4 py-20 sm:py-24">
-          <div className="mx-auto max-w-3xl text-center">
-            <h2 className="font-display mb-2 text-2xl tracking-tight sm:text-3xl">
-              Upcoming Program
-            </h2>
-            <p className="mb-8 text-muted-foreground">
-              Registrations are now open for our summer course.
-            </p>
-            <Card className="gradient-border border-0 bg-card p-[2px] text-left">
-              <div className="rounded-[inherit] bg-card p-0">
-                <CardHeader className="p-6 sm:p-8">
-                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
-                    <div className="flex flex-col sm:flex-row sm:items-start gap-4">
-                      <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-gold text-gold-foreground shadow-md shadow-gold/20">
-                        <Calendar className="size-6" />
-                      </div>
-                      <div>
-                        <Badge className="mb-2 bg-gold/15 text-gold hover:bg-gold/20">
-                          Registrations Open
-                        </Badge>
-                        <CardTitle className="font-display text-xl sm:text-2xl">
-                          Summer Course in Actuarial Data Science – 2026
-                        </CardTitle>
-                      </div>
+          <div className="mx-auto max-w-6xl text-center">
+            <SectionHeader
+              title="Upcoming Program"
+              description="Registrations are now open for our summer course."
+              className="mb-8"
+              titleClassName="text-2xl sm:text-3xl"
+              descriptionClassName="mt-2"
+            />
+            <div className="upcoming-marquee mask-[linear-gradient(to_right,transparent,black_8%,black_92%,transparent)] overflow-hidden text-left">
+              <div className="upcoming-marquee-track flex w-max gap-6">
+                {[...upcomingPrograms, ...upcomingPrograms].map((program, index) => (
+                  <FeatureCard
+                    key={`${program.title}-${index}`}
+                    aria-hidden={index >= upcomingPrograms.length}
+                    className="w-[min(86vw,38rem)] shrink-0"
+                  >
+                    <div className="p-0">
+                      <CardHeader className="p-6 sm:p-8">
+                        <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+                          <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+                            <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-gold text-gold-foreground shadow-md shadow-gold/20">
+                              <Calendar className="size-6" />
+                            </div>
+                            <div>
+                              <Badge className="mb-2 bg-gold/15 text-gold hover:bg-gold/20">
+                                {program.badge}
+                              </Badge>
+                              <CardTitle className="font-display text-xl sm:text-2xl">
+                                {program.title}
+                              </CardTitle>
+                            </div>
+                          </div>
+                          {program.showKnowledgePartner && (
+                            <div className="flex shrink-0 flex-col items-start gap-1.5 sm:items-end">
+                              <span className="font-semibold uppercase tracking-wider text-muted-foreground">
+                                Knowledge Partner
+                              </span>
+                              <div className="flex h-16 w-40 items-center justify-start bg-transparent p-0 sm:justify-end">
+                                <Image
+                                  src="/ifoa.svg"
+                                  alt="Knowledge Partner Logo"
+                                  width={150}
+                                  height={50}
+                                  className="h-full w-auto object-contain dark:invert"
+                                />
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                        <CardDescription className="mt-4 text-base leading-relaxed">
+                          {program.description}
+                        </CardDescription>
+                        {program.footerText && (
+                          <p className="mt-3 text-sm text-muted-foreground">
+                            <span className="font-medium text-foreground">
+                              {program.footerText}
+                            </span>
+                          </p>
+                        )}
+                        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                          <Link
+                            href={program.primaryHref}
+                            target={
+                              isExternalHref(program.primaryHref)
+                                ? "_blank"
+                                : undefined
+                            }
+                            rel={
+                              isExternalHref(program.primaryHref)
+                                ? "noopener noreferrer"
+                                : undefined
+                            }
+                          >
+                            <Button className="w-full gap-2 sm:w-auto">
+                              {program.primaryLabel}
+                              <ArrowRightToLine className="size-4" />
+                            </Button>
+                          </Link>
+                          <Link
+                            href={program.secondaryHref}
+                            target={
+                              isExternalHref(program.secondaryHref)
+                                ? "_blank"
+                                : undefined
+                            }
+                            rel={
+                              isExternalHref(program.secondaryHref)
+                                ? "noopener noreferrer"
+                                : undefined
+                            }
+                          >
+                            <Button
+                              variant="outline"
+                              className="w-full gap-2 sm:w-auto"
+                            >
+                              {program.secondaryLabel}
+                              <ArrowRight className="size-4" />
+                            </Button>
+                          </Link>
+                        </div>
+                      </CardHeader>
                     </div>
-                    {/* Knowledge Partner Logo Placeholder */}
-                    <div className="flex flex-col items-start sm:items-end gap-1.5 shrink-0">
-                      <span className="font-semibold uppercase tracking-wider text-muted-foreground">
-                        Knowledge Partner
-                      </span>
-                      <div className="flex h-16 w-40 items-center justify-start sm:justify-end bg-transparent p-0">
-                        <Image src="/ifoa.svg" alt="Knowledge Partner Logo" width={150} height={50} className="h-full w-auto object-contain dark:invert" />
-                      </div>
-                    </div>
-                  </div>
-                  <CardDescription className="mt-4 text-base leading-relaxed">
-                    Join the third edition of our 3-week program to build a strong foundation in actuarial data science. Delivered by experienced faculty and industry practitioners. Offered free of charge.
-                  </CardDescription>
-                  <div className="mt-6 flex flex-col sm:flex-row gap-3">
-                    <Link 
-                      href="https://lnkd.in/gsewFfW7"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Button className="w-full sm:w-auto gap-2">
-                        Register Now
-                        <ArrowRightToLine className="size-4" />
-                      </Button>
-                    </Link>
-                    <Link href="/events/summer-program-2026">
-                      <Button variant="outline" className="w-full sm:w-auto gap-2">
-                        View Details
-                        <ArrowRight className="size-4" />
-                      </Button>
-                    </Link>
-                  </div>
-                </CardHeader>
+                  </FeatureCard>
+                ))}
               </div>
-            </Card>
+            </div>
           </div>
         </section>
 
         {/* Recent Highlights */}
         <section className="border-t border-border px-4 py-20 sm:py-24">
-          <div className="mx-auto max-w-6xl">
-            <h2 className="font-display mb-12 text-center text-2xl tracking-tight sm:text-3xl">
-              Recent Highlights
-            </h2>
-            <p className="mx-auto mb-8 max-w-2xl text-center text-sm text-muted-foreground sm:text-base">
-              Recent conversations and collaboration checkpoints with partner organizations.
-            </p>
+          <div className="mx-auto max-w-6xl text-center">
+            <SectionHeader
+              title="Recent Highlights"
+              description="Recent conversations and collaboration checkpoints with partner organizations."
+              className="mb-8"
+              titleClassName="text-2xl sm:text-3xl"
+              descriptionClassName="mx-auto max-w-2xl mt-2"
+            />
             <Carousel
-              className="w-full"
-              opts={{ loop: true, align: "start" }}
+              className="mx-auto w-full max-w-5xl"
+              opts={{ loop: true, align: "center" }}
             >
-              <div className="mb-3 flex items-center justify-end gap-1 md:hidden">
+              <div className="mb-3 flex items-center justify-center gap-1 md:hidden">
                 <CarouselPrevious className="static translate-y-0" />
                 <CarouselNext className="static translate-y-0" />
               </div>
-              <div className="hidden justify-end gap-2 md:mb-4 md:flex">
+              <div className="hidden justify-center gap-2 md:mb-4 md:flex">
                 <CarouselPrevious className="static translate-y-0" />
                 <CarouselNext className="static translate-y-0" />
               </div>
@@ -271,21 +352,21 @@ export default async function Home() {
                       className="animate-fade-in-up h-full border-border/70 bg-background"
                       style={{ animationDelay: `${i * 80}ms` }}
                     >
-                      <CardHeader className="flex h-full flex-col space-y-3">
+                      <CardHeader className="flex h-full flex-col items-center space-y-3 text-center">
                         <CardTitle className="text-sm font-semibold sm:text-base">
                           {highlight.title}
                         </CardTitle>
                         <CardDescription className="text-xs leading-relaxed sm:text-sm">
                           {highlight.content}
                         </CardDescription>
-                        <div className="mt-auto grid grid-cols-2 items-end gap-3 pt-2">
-                          <div className="space-y-0.5">
+                        <div className="mt-auto flex flex-col items-center gap-3 pt-2">
+                          <div className="space-y-0.5 text-center">
                             <p className="text-xs text-muted-foreground">{highlight.date}</p>
                             <p className="text-xs font-medium text-muted-foreground">
                               with {highlight.organization.name}
                             </p>
                           </div>
-                          <div className="flex justify-start">
+                          <div className="flex justify-center">
                             <Image
                               src={highlight.organization.logoSrc}
                               alt={highlight.organization.logoAlt}
@@ -307,14 +388,15 @@ export default async function Home() {
         {/* Featured Certification */}
         <section className="border-t border-border bg-muted/40 px-4 py-20 sm:py-24">
           <div className="mx-auto max-w-3xl text-center">
-            <h2 className="font-display mb-2 text-2xl tracking-tight sm:text-3xl">
-              Flagship Programme
-            </h2>
-            <p className="mb-8 text-muted-foreground">
-              The certification that sets us apart.
-            </p>
-            <Card className="gradient-border border-0 bg-card p-[2px] text-left">
-              <div className="rounded-[inherit] bg-card p-0">
+            <SectionHeader
+              title="Flagship Programme"
+              description="The certification that sets us apart."
+              className="mb-8"
+              titleClassName="text-2xl sm:text-3xl"
+              descriptionClassName="mt-2"
+            />
+            <FeatureCard className="text-left">
+              <div className="p-0">
                 <CardHeader className="p-6 sm:p-8">
                   <div className="flex items-center gap-4">
                     <div className="flex size-12 items-center justify-center rounded-xl bg-gold text-gold-foreground shadow-md shadow-gold/20">
@@ -337,7 +419,7 @@ export default async function Home() {
                   </CardDescription>
                 </CardHeader>
               </div>
-            </Card>
+            </FeatureCard>
             <Link href="/certifications" className="mt-8 inline-block">
               <Button variant="outline" className="gap-2">
                 View All Certifications
