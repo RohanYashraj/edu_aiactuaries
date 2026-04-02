@@ -207,7 +207,7 @@ export const upsertAiAipInternship = mutation({
       periodEnd: "June 27, 2026",
       applicationDeadline: "April 24, 2026",
       selectionCriteria: "Applied candidates will be selected through an online interview process.",
-      applicationUrl: "#",
+      applicationUrl: "https://forms.gle/W45WuyDViwxauJb26",
       commitmentHoursPerDay: "6-8 hours/day",
       eligibilityCriteria: [
         "Students pursuing undergraduate or postgraduate programs in Actuarial Science, Statistics, Data Science, Mathematics, Economics, or related quantitative fields.",

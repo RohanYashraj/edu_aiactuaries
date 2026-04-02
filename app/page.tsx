@@ -98,6 +98,10 @@ const recentHighlights = [
   },
 ] as const;
 
+function isExternalHref(href: string) {
+  return href.startsWith("http://") || href.startsWith("https://");
+}
+
 const upcomingPrograms = [
   {
     badge: "Registrations Open",
@@ -106,7 +110,6 @@ const upcomingPrograms = [
       "Join the third edition of our 3-week program to build a strong foundation in actuarial data science. Delivered by experienced faculty and industry practitioners. Offered free of charge.",
     primaryLabel: "Register Now",
     primaryHref: "https://lnkd.in/gsewFfW7",
-    primaryExternal: true,
     secondaryLabel: "View Details",
     secondaryHref: "/events/summer-program-2026",
     footerText: null,
@@ -119,9 +122,8 @@ const upcomingPrograms = [
       "8-week full-time internship from May 2, 2026 to June 27, 2026 focused on actuarial AI applications across pricing, reserving, claims analytics, and fraud detection.",
     primaryLabel: "View Internship",
     primaryHref: "/jobs/jn714k9hspp01s5vh153z52ra5840te4",
-    primaryExternal: false,
     secondaryLabel: "Apply Now",
-    secondaryHref: "/jobs",
+    secondaryHref: "https://forms.gle/W45WuyDViwxauJb26",
     footerText: "Last Date for Application: 24 April 2026",
     showKnowledgePartner: false,
   },
@@ -271,9 +273,13 @@ export default async function Home() {
                         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                           <Link
                             href={program.primaryHref}
-                            target={program.primaryExternal ? "_blank" : undefined}
+                            target={
+                              isExternalHref(program.primaryHref)
+                                ? "_blank"
+                                : undefined
+                            }
                             rel={
-                              program.primaryExternal
+                              isExternalHref(program.primaryHref)
                                 ? "noopener noreferrer"
                                 : undefined
                             }
@@ -283,7 +289,19 @@ export default async function Home() {
                               <ArrowRightToLine className="size-4" />
                             </Button>
                           </Link>
-                          <Link href={program.secondaryHref}>
+                          <Link
+                            href={program.secondaryHref}
+                            target={
+                              isExternalHref(program.secondaryHref)
+                                ? "_blank"
+                                : undefined
+                            }
+                            rel={
+                              isExternalHref(program.secondaryHref)
+                                ? "noopener noreferrer"
+                                : undefined
+                            }
+                          >
                             <Button
                               variant="outline"
                               className="w-full gap-2 sm:w-auto"

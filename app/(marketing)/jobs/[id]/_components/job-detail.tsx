@@ -172,7 +172,11 @@ export function JobDetail({ jobId }: { jobId: string }) {
             size="lg"
             className="w-full sm:w-auto bg-gold text-gold-foreground shadow-sm hover:bg-gold/90"
           >
-            <a href={job.applicationUrl ?? "#"} target="_blank" rel="noreferrer">
+            <a
+              href={job.applicationUrl ?? "#"}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Apply Now
               <ArrowRight className="ml-2 size-4" />
             </a>
