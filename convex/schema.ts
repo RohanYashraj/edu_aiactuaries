@@ -21,7 +21,9 @@ export default defineSchema({
     highlight: v.boolean(),
     order: v.number(),
     imageUrl: v.optional(v.string()),
-  }).index("by_slug", ["slug"]),
+  })
+    .index("by_slug", ["slug"])
+    .index("by_order", ["order"]),
 
   workshops: defineTable({
     title: v.string(),
@@ -38,7 +40,9 @@ export default defineSchema({
     imageUrl: v.optional(v.string()),
   })
     .index("by_slug", ["slug"])
-    .index("by_status", ["status"]),
+    .index("by_status", ["status"])
+    .index("by_order", ["order"])
+    .index("by_status_and_order", ["status", "order"]),
 
   jobs: defineTable({
     title: v.string(),

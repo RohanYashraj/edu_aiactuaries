@@ -2,16 +2,10 @@
 
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { CalendarDays, MapPin, Loader2 } from "lucide-react";
+import { CalendarDays, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { LoadingState, MarketingListCard, MetaIconRow } from "@/components/marketing";
 
 type WorkshopStatus = "upcoming" | "ongoing" | "completed";
 
@@ -72,45 +66,45 @@ function WorkshopCard({
   index: number;
 }) {
   return (
-    <Card
-      className="animate-fade-in-up flex flex-col"
-      style={{ animationDelay: `${index * 100}ms` }}
-    >
-      <CardHeader>
-        <div className="flex items-start justify-between gap-2">
-          <CardTitle className="text-lg">{workshop.title}</CardTitle>
-          <Badge
-            variant={statusVariant[workshop.status]}
-            className="shrink-0 capitalize"
-          >
-            {workshop.status}
-          </Badge>
-        </div>
-        <CardDescription className="leading-relaxed">
-          {workshop.description}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="mt-auto">
-        <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-          {workshop.date && (
-            <span className="flex items-center gap-1.5">
-              <CalendarDays className="size-4" />
-              {new Date(workshop.date).toLocaleDateString("en-IN", {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-              })}
-            </span>
-          )}
-          {workshop.location && (
-            <span className="flex items-center gap-1.5">
-              <MapPin className="size-4" />
-              {workshop.location}
-            </span>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+    <MarketingListCard
+      title={workshop.title}
+      description={workshop.description}
+      badge={
+        <Badge
+          variant={statusVariant[workshop.status]}
+          className="shrink-0 capitalize"
+        >
+          {workshop.status}
+        </Badge>
+      }
+      footer={
+        <MetaIconRow
+          items={[
+            ...(workshop.date
+              ? [
+                  {
+                    icon: <CalendarDays className="size-4" />,
+                    label: new Date(workshop.date).toLocaleDateString("en-IN", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    }),
+                  },
+                ]
+              : []),
+            ...(workshop.location
+              ? [
+                  {
+                    icon: <MapPin className="size-4" />,
+                    label: workshop.location,
+                  },
+                ]
+              : []),
+          ]}
+        />
+      }
+      delayMs={index * 100}
+    />
   );
 }
 
@@ -139,11 +133,7 @@ export function WorkshopsList() {
   const convexData = useQuery(api.workshops.list);
 
   if (convexData === undefined) {
-    return (
-      <div className="flex justify-center py-16">
-        <Loader2 className="size-6 animate-spin text-muted-foreground" />
-      </div>
-    );
+    return <LoadingState />;
   }
 
   const workshops: WorkshopItem[] =

@@ -2,16 +2,11 @@
 
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Award, Loader2 } from "lucide-react";
+import { Award } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { FeatureCard, LoadingState, MarketingListCard } from "@/components/marketing";
 
 const fallbackCertifications = [
   {
@@ -48,11 +43,7 @@ export function CertificationsList() {
   const convexData = useQuery(api.certifications.list);
 
   if (convexData === undefined) {
-    return (
-      <div className="flex justify-center py-16">
-        <Loader2 className="size-6 animate-spin text-muted-foreground" />
-      </div>
-    );
+    return <LoadingState />;
   }
 
   const certifications =
@@ -72,8 +63,8 @@ export function CertificationsList() {
   return (
     <>
       {highlighted && (
-        <Card className="gradient-border mb-14 border-0 bg-card p-[2px]">
-          <div className="rounded-[inherit] bg-card">
+        <FeatureCard className="mb-14">
+          <div>
             <CardHeader className="p-6 sm:p-8">
               <div className="flex items-center gap-4">
                 <div className="flex size-12 items-center justify-center rounded-xl bg-gold text-gold-foreground shadow-md shadow-gold/20">
@@ -101,32 +92,26 @@ export function CertificationsList() {
               </div>
             </CardContent>
           </div>
-        </Card>
+        </FeatureCard>
       )}
 
       {others.length > 0 && (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {others.map((cert, i) => (
-            <Card
+            <MarketingListCard
               key={cert.title}
-              className="animate-fade-in-up flex flex-col"
-              style={{ animationDelay: `${i * 100}ms` }}
-            >
-              <CardHeader>
-                <CardTitle className="text-lg">{cert.title}</CardTitle>
-                <CardDescription className="leading-relaxed">
-                  {cert.description}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="mt-auto">
+              title={cert.title}
+              description={cert.description}
+              footer={
                 <div className="flex items-center justify-between">
                   <Badge variant="outline">Coming Soon</Badge>
                   <Button variant="ghost" size="sm">
                     Details
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
+              }
+              delayMs={i * 100}
+            />
           ))}
         </div>
       )}

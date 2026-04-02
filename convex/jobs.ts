@@ -1,4 +1,5 @@
 import { v } from "convex/values";
+import { paginationOptsValidator } from "convex/server";
 import { mutation, query } from "./_generated/server";
 
 export const listPublished = query({
@@ -9,6 +10,39 @@ export const listPublished = query({
       .withIndex("by_status", (q) => q.eq("status", "published"))
       .order("desc")
       .collect();
+  },
+});
+
+export const listPublishedSummary = query({
+  args: {},
+  handler: async (ctx) => {
+    const jobs = await ctx.db
+      .query("jobs")
+      .withIndex("by_status", (q) => q.eq("status", "published"))
+      .order("desc")
+      .take(50);
+
+    return jobs.map((job) => ({
+      _id: job._id,
+      title: job.title,
+      description: job.description,
+      company: job.company,
+      location: job.location,
+      type: job.type,
+      status: job.status,
+      slug: job.slug,
+    }));
+  },
+});
+
+export const listPublishedPaginated = query({
+  args: { paginationOpts: paginationOptsValidator },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("jobs")
+      .withIndex("by_status", (q) => q.eq("status", "published"))
+      .order("desc")
+      .paginate(args.paginationOpts);
   },
 });
 

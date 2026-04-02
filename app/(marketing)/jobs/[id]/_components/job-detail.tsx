@@ -10,7 +10,6 @@ import {
   Calendar,
   CheckCircle2,
   Clock,
-  Loader2,
   MapPin,
   Users,
 } from "lucide-react";
@@ -19,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
+import { DetailHero, LoadingState, MetaIconRow } from "@/components/marketing";
 
 export function JobDetail({ jobId }: { jobId: string }) {
   const job = useQuery(api.jobs.getById, {
@@ -26,11 +26,7 @@ export function JobDetail({ jobId }: { jobId: string }) {
   });
 
   if (job === undefined) {
-    return (
-      <div className="flex justify-center py-16">
-        <Loader2 className="size-6 animate-spin text-muted-foreground" />
-      </div>
-    );
+    return <LoadingState />;
   }
 
   if (job === null) {
@@ -63,25 +59,15 @@ export function JobDetail({ jobId }: { jobId: string }) {
   if (hasInternshipMetadata) {
     return (
       <article className="mx-auto max-w-3xl px-4 py-16 sm:px-6 sm:py-20">
-        <p className="mb-6 text-sm font-medium text-muted-foreground">
-          <Link href="/jobs" className="hover:text-foreground">
-            Jobs
-          </Link>
-          <span aria-hidden="true" className="mx-2">
-            /
-          </span>
-          <span className="text-foreground">Internship</span>
-        </p>
-
-        <div className="space-y-4">
-          <Badge className="bg-gold/15 text-gold hover:bg-gold/20">
-            Applications Open
-          </Badge>
-          <h1 className="font-display text-3xl tracking-tight sm:text-4xl md:text-5xl">
-            {job.title}
-          </h1>
-          <p className="text-muted-foreground">{job.description}</p>
-        </div>
+        <DetailHero
+          breadcrumbs={[
+            { label: "Jobs", href: "/jobs" },
+            { label: "Internship" },
+          ]}
+          badge="Applications Open"
+          title={job.title}
+          description={job.description}
+        />
 
         <div className="mt-12 grid gap-6 sm:gap-8 sm:grid-cols-2">
           <div className="flex items-start gap-4">
@@ -152,26 +138,25 @@ export function JobDetail({ jobId }: { jobId: string }) {
             <h2 className="font-display text-2xl">8-Week Program Roadmap</h2>
             <div className="grid gap-4">
               {job.weeklySchedule.map((week) => (
-                <div
-                  key={week.week}
-                  className="rounded-xl border border-border bg-card p-5"
-                >
-                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    Week {week.week}
-                  </p>
-                  <h3 className="mt-1 text-lg font-semibold text-foreground">
-                    {week.title}
-                  </h3>
-                  <p className="mt-2 text-sm text-muted-foreground">{week.focus}</p>
-                  <p className="mt-3 text-sm text-muted-foreground">
-                    <span className="font-medium text-foreground">Topics:</span>{" "}
-                    {week.topics.join(" | ")}
-                  </p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    <span className="font-medium text-foreground">Tools:</span>{" "}
-                    {week.tools.join(" | ")}
-                  </p>
-                </div>
+                <Card key={week.week} className="flex flex-col">
+                  <CardHeader>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      Week {week.week}
+                    </p>
+                    <CardTitle className="text-lg">{week.title}</CardTitle>
+                    <p className="text-sm text-muted-foreground">{week.focus}</p>
+                  </CardHeader>
+                  <CardContent className="mt-auto">
+                    <p className="text-sm text-muted-foreground">
+                      <span className="font-medium text-foreground">Topics:</span>{" "}
+                      {week.topics.join(" | ")}
+                    </p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      <span className="font-medium text-foreground">Tools:</span>{" "}
+                      {week.tools.join(" | ")}
+                    </p>
+                  </CardContent>
+                </Card>
               ))}
             </div>
           </div>
@@ -213,20 +198,22 @@ export function JobDetail({ jobId }: { jobId: string }) {
               {job.type.replace("-", " ")}
             </Badge>
             <CardTitle className="text-2xl">{job.title}</CardTitle>
-            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-              <span className="flex items-center gap-1.5">
-                <Briefcase className="size-4" />
-                {job.company}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <MapPin className="size-4" />
-                {job.location}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Clock className="size-4" />
-                {job.type.replace("-", " ")}
-              </span>
-            </div>
+            <MetaIconRow
+              items={[
+                {
+                  icon: <Briefcase className="size-4" />,
+                  label: job.company,
+                },
+                {
+                  icon: <MapPin className="size-4" />,
+                  label: job.location,
+                },
+                {
+                  icon: <Clock className="size-4" />,
+                  label: job.type.replace("-", " "),
+                },
+              ]}
+            />
           </div>
         </CardHeader>
         <CardContent className="space-y-6">

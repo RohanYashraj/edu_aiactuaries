@@ -211,6 +211,10 @@
   animation-play-state: paused;
 }
 
+.upcoming-marquee:focus-within .upcoming-marquee-track {
+  animation-play-state: paused;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .upcoming-marquee-track {
     animation: none;

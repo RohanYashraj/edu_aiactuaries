@@ -21,6 +21,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { FeatureCard, SectionHeader } from "@/components/marketing";
 
 const recentHighlights = [
   // {
@@ -209,21 +210,22 @@ export default async function Home() {
         {/* Upcoming Event */}
         <section className="border-t border-border bg-muted/40 px-4 py-20 sm:py-24">
           <div className="mx-auto max-w-6xl text-center">
-            <h2 className="font-display mb-2 text-2xl tracking-tight sm:text-3xl">
-              Upcoming Program
-            </h2>
-            <p className="mb-8 text-muted-foreground">
-              Registrations are now open for our summer course.
-            </p>
+            <SectionHeader
+              title="Upcoming Program"
+              description="Registrations are now open for our summer course."
+              className="mb-8"
+              titleClassName="text-2xl sm:text-3xl"
+              descriptionClassName="mt-2"
+            />
             <div className="upcoming-marquee mask-[linear-gradient(to_right,transparent,black_8%,black_92%,transparent)] overflow-hidden text-left">
               <div className="upcoming-marquee-track flex w-max gap-6">
                 {[...upcomingPrograms, ...upcomingPrograms].map((program, index) => (
-                  <Card
+                  <FeatureCard
                     key={`${program.title}-${index}`}
                     aria-hidden={index >= upcomingPrograms.length}
-                    className="gradient-border w-[min(86vw,38rem)] shrink-0 border-0 bg-card p-[2px]"
+                    className="w-[min(86vw,38rem)] shrink-0"
                   >
-                    <div className="rounded-[inherit] bg-card p-0">
+                    <div className="p-0">
                       <CardHeader className="p-6 sm:p-8">
                         <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
                           <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
@@ -293,7 +295,7 @@ export default async function Home() {
                         </div>
                       </CardHeader>
                     </div>
-                  </Card>
+                  </FeatureCard>
                 ))}
               </div>
             </div>
@@ -303,12 +305,13 @@ export default async function Home() {
         {/* Recent Highlights */}
         <section className="border-t border-border px-4 py-20 sm:py-24">
           <div className="mx-auto max-w-6xl text-center">
-            <h2 className="font-display mb-2 text-2xl tracking-tight sm:text-3xl">
-              Recent Highlights
-            </h2>
-            <p className="mx-auto mb-8 max-w-2xl text-muted-foreground">
-              Recent conversations and collaboration checkpoints with partner organizations.
-            </p>
+            <SectionHeader
+              title="Recent Highlights"
+              description="Recent conversations and collaboration checkpoints with partner organizations."
+              className="mb-8"
+              titleClassName="text-2xl sm:text-3xl"
+              descriptionClassName="mx-auto max-w-2xl mt-2"
+            />
             <Carousel
               className="mx-auto w-full max-w-5xl"
               opts={{ loop: true, align: "center" }}
@@ -367,14 +370,15 @@ export default async function Home() {
         {/* Featured Certification */}
         <section className="border-t border-border bg-muted/40 px-4 py-20 sm:py-24">
           <div className="mx-auto max-w-3xl text-center">
-            <h2 className="font-display mb-2 text-2xl tracking-tight sm:text-3xl">
-              Flagship Programme
-            </h2>
-            <p className="mb-8 text-muted-foreground">
-              The certification that sets us apart.
-            </p>
-            <Card className="gradient-border border-0 bg-card p-[2px] text-left">
-              <div className="rounded-[inherit] bg-card p-0">
+            <SectionHeader
+              title="Flagship Programme"
+              description="The certification that sets us apart."
+              className="mb-8"
+              titleClassName="text-2xl sm:text-3xl"
+              descriptionClassName="mt-2"
+            />
+            <FeatureCard className="text-left">
+              <div className="p-0">
                 <CardHeader className="p-6 sm:p-8">
                   <div className="flex items-center gap-4">
                     <div className="flex size-12 items-center justify-center rounded-xl bg-gold text-gold-foreground shadow-md shadow-gold/20">
@@ -397,7 +401,7 @@ export default async function Home() {
                   </CardDescription>
                 </CardHeader>
               </div>
-            </Card>
+            </FeatureCard>
             <Link href="/certifications" className="mt-8 inline-block">
               <Button variant="outline" className="gap-2">
                 View All Certifications

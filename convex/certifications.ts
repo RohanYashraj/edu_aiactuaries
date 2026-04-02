@@ -5,6 +5,7 @@ export const list = query({
   handler: async (ctx) => {
     return await ctx.db
       .query("certifications")
+      .withIndex("by_order")
       .order("asc")
       .collect();
   },
