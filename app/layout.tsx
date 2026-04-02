@@ -8,6 +8,11 @@ import "./globals.css";
 import ConvexClientProvider from "@/components/ConvexClientProvider";
 import { ClerkProvider } from "@clerk/nextjs";
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://sssia.org";
+
+const siteName = "Sri Sathya Sai Institute of Actuaries";
+
 const dmSerifDisplay = DM_Serif_Display({
   weight: "400",
   variable: "--font-dm-serif-display",
@@ -27,11 +32,34 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Sri Sathya Sai Center of Excellence — Actuarial Data Science & AI",
+  title: "Sri Sathya Sai Institute of Actuaries - Powered by aiactuaries.org",
   description:
     "Pioneering the future of Actuarial Science through AI and Data Science. Professional certifications, workshops, and career opportunities.",
+  metadataBase: new URL(siteUrl),
   icons: {
     icon: "/icon.png",
+  },
+  openGraph: {
+    type: "website",
+    siteName,
+    title: "Sri Sathya Sai Institute of Actuaries - Powered by aiactuaries.org",
+    description:
+      "Pioneering the future of Actuarial Science through AI and Data Science. Professional certifications, workshops, and career opportunities.",
+    images: [
+      {
+        url: "/sssia.png",
+        width: 1200,
+        height: 630,
+        alt: siteName,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Sri Sathya Sai Institute of Actuaries - Powered by aiactuaries.org",
+    description:
+      "Pioneering the future of Actuarial Science through AI and Data Science. Professional certifications, workshops, and career opportunities.",
+    images: ["/sssia.png"],
   },
 };
 

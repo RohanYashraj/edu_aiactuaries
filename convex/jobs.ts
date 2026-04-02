@@ -190,7 +190,7 @@ export const upsertAiAipInternship = mutation({
       user?._id ??
       (await ctx.db.insert("users", {
         clerkId: "system:ai-actuaries",
-        email: "internships@aiactuaries.org",
+        email: "support@sssia.org",
         name: "AI Actuaries",
         role: "employer",
       }));
