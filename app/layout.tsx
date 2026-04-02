@@ -7,6 +7,7 @@ import {
 import "./globals.css";
 import ConvexClientProvider from "@/components/ConvexClientProvider";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Analytics } from "@vercel/analytics/next"
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://sssia.org";
@@ -74,6 +75,7 @@ export default function RootLayout({
         <ClerkProvider dynamic>
           <ConvexClientProvider>{children}</ConvexClientProvider>
         </ClerkProvider>
+        <Analytics />
       </body>
     </html>
   );
