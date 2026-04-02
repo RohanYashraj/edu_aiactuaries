@@ -1,4 +1,4 @@
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { currentUser } from "@clerk/nextjs/server";
 import {
   Card,
   CardContent,
@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
 export const metadata = {
-  title: "Account — SSS CoE Actuarial DS & AI",
+  title: "Account — Sri Sathya Sai Institute of Actuaries",
 };
 
 export default async function AccountPage() {

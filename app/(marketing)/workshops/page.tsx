@@ -2,7 +2,7 @@ import { WorkshopsList } from "./_components/workshops-list";
 import { SectionHeader } from "@/components/marketing";
 
 export const metadata = {
-  title: "Workshops — SSS CoE Actuarial DS & AI",
+  title: "Workshops — Sri Sathya Sai Institute of Actuaries",
   description:
     "Hands-on workshops in actuarial data science, AI, and risk analytics.",
 };

@@ -2,7 +2,7 @@ import { CertificationsList } from "./_components/certifications-list";
 import { SectionHeader } from "@/components/marketing";
 
 export const metadata = {
-  title: "Certifications — SSS CoE Actuarial DS & AI",
+  title: "Certifications — Sri Sathya Sai Institute of Actuaries",
   description:
     "Explore our professional certifications in Actuarial Data Science and AI, featuring the flagship AI Actuaries Certification.",
 };

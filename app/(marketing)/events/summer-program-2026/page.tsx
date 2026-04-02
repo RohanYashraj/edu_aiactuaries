@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { DetailHero } from "@/components/marketing";
 
 export const metadata = {
-  title: "Summer Course in Actuarial Data Science 2026 — Events — SSS CoE",
+  title: "Summer Course in Actuarial Data Science 2026 — Events — Sri Sathya Sai Institute of Actuaries",
   description:
     "Join the third edition of the Summer Course in Actuarial Data Science, organized by the Sri Sathya Sai Institute of Actuaries.",
 };

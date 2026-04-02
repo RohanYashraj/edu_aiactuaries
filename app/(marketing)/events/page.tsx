@@ -2,7 +2,7 @@ import { EventsList } from "./_components/events-list";
 import { SectionHeader } from "@/components/marketing";
 
 export const metadata = {
-  title: "Events — SSS CoE Actuarial DS & AI",
+  title: "Events — Sri Sathya Sai Institute of Actuaries",
   description:
     "Upcoming programs, intensives, and events from the Sri Sathya Sai Institute of Actuaries.",
 };

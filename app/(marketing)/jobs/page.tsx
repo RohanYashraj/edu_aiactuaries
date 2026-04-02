@@ -2,7 +2,7 @@ import { JobsList } from "./_components/jobs-list";
 import { SectionHeader } from "@/components/marketing";
 
 export const metadata = {
-  title: "Jobs — SSS CoE Actuarial DS & AI",
+  title: "Jobs — Sri Sathya Sai Institute of Actuaries",
   description:
     "Explore job opportunities in actuarial data science and AI posted by leading employers.",
 };
