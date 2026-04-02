@@ -5,6 +5,19 @@ export const metadata = {
   title: "Events — Sri Sathya Sai Institute of Actuaries",
   description:
     "Upcoming programs, intensives, and events from the Sri Sathya Sai Institute of Actuaries.",
+  openGraph: {
+    images: [
+      {
+        url: "/sssia.png",
+        width: 1200,
+        height: 630,
+        alt: "Sri Sathya Sai Institute of Actuaries",
+      },
+    ],
+  },
+  twitter: {
+    images: ["/sssia.png"],
+  },
 };
 
 export default function EventsPage() {

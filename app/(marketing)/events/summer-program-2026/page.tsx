@@ -16,6 +16,19 @@ export const metadata = {
   title: "Summer Course in Actuarial Data Science 2026 — Events — Sri Sathya Sai Institute of Actuaries",
   description:
     "Join the third edition of the Summer Course in Actuarial Data Science, organized by the Sri Sathya Sai Institute of Actuaries.",
+  openGraph: {
+    images: [
+      {
+        url: "/sssia.png",
+        width: 1200,
+        height: 630,
+        alt: "Sri Sathya Sai Institute of Actuaries",
+      },
+    ],
+  },
+  twitter: {
+    images: ["/sssia.png"],
+  },
 };
 
 export default function SummerProgram2026Page() {

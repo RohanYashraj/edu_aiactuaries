@@ -5,6 +5,19 @@ export const metadata = {
   title: "Certifications — Sri Sathya Sai Institute of Actuaries",
   description:
     "Explore our professional certifications in Actuarial Data Science and AI, featuring the flagship AI Actuaries Certification.",
+  openGraph: {
+    images: [
+      {
+        url: "/sssia.png",
+        width: 1200,
+        height: 630,
+        alt: "Sri Sathya Sai Institute of Actuaries",
+      },
+    ],
+  },
+  twitter: {
+    images: ["/sssia.png"],
+  },
 };
 
 export default function CertificationsPage() {

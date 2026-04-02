@@ -12,6 +12,19 @@ import { Separator } from "@/components/ui/separator";
 
 export const metadata = {
   title: "Account — Sri Sathya Sai Institute of Actuaries",
+  openGraph: {
+    images: [
+      {
+        url: "/sssia.png",
+        width: 1200,
+        height: 630,
+        alt: "Sri Sathya Sai Institute of Actuaries",
+      },
+    ],
+  },
+  twitter: {
+    images: ["/sssia.png"],
+  },
 };
 
 export default async function AccountPage() {

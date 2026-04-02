@@ -5,6 +5,19 @@ export const metadata = {
   title: "Workshops — Sri Sathya Sai Institute of Actuaries",
   description:
     "Hands-on workshops in actuarial data science, AI, and risk analytics.",
+  openGraph: {
+    images: [
+      {
+        url: "/sssia.png",
+        width: 1200,
+        height: 630,
+        alt: "Sri Sathya Sai Institute of Actuaries",
+      },
+    ],
+  },
+  twitter: {
+    images: ["/sssia.png"],
+  },
 };
 
 export default function WorkshopsPage() {

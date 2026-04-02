@@ -5,6 +5,19 @@ export const metadata = {
   title: "Jobs — Sri Sathya Sai Institute of Actuaries",
   description:
     "Explore job opportunities in actuarial data science and AI posted by leading employers.",
+  openGraph: {
+    images: [
+      {
+        url: "/sssia.png",
+        width: 1200,
+        height: 630,
+        alt: "Sri Sathya Sai Institute of Actuaries",
+      },
+    ],
+  },
+  twitter: {
+    images: ["/sssia.png"],
+  },
 };
 
 export default function JobsPage() {
