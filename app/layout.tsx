@@ -12,6 +12,8 @@ const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://sssia.org";
 
 const siteName = "Sri Sathya Sai Institute of Actuaries";
+const siteBrandTitle =
+  "Sri Sathya Sai Institute of Actuaries - Powered by aiactuaries.org";
 
 const dmSerifDisplay = DM_Serif_Display({
   weight: "400",
@@ -32,7 +34,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Sri Sathya Sai Institute of Actuaries - Powered by aiactuaries.org",
+  title: siteBrandTitle,
   description:
     "Pioneering the future of Actuarial Science through AI and Data Science. Professional certifications, workshops, and career opportunities.",
   metadataBase: new URL(siteUrl),
@@ -42,9 +44,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName,
-    title: "Sri Sathya Sai Institute of Actuaries - Powered by aiactuaries.org",
-    description:
-      "Pioneering the future of Actuarial Science through AI and Data Science. Professional certifications, workshops, and career opportunities.",
+    title: { default: siteBrandTitle, template: "%s" },
     images: [
       {
         url: "/sssia.png",
@@ -56,9 +56,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sri Sathya Sai Institute of Actuaries - Powered by aiactuaries.org",
-    description:
-      "Pioneering the future of Actuarial Science through AI and Data Science. Professional certifications, workshops, and career opportunities.",
+    title: { default: siteBrandTitle, template: "%s" },
     images: ["/sssia.png"],
   },
 };

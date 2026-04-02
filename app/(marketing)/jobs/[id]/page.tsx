@@ -24,7 +24,7 @@ export async function generateMetadata({
   if (id === internshipJobId) {
     const ogImageUrl = `${siteUrl}/sssia.png`;
     return {
-      title: `${internshipTitle} — ${siteName}`,
+      title: `${internshipTitle} — Powered by aiactuaries.org`,
       description: internshipDescription,
       alternates: { canonical: pageUrl },
       openGraph: {
@@ -52,7 +52,7 @@ export async function generateMetadata({
   }
 
   return {
-    title: `Job Details — ${siteName}`,
+    title: `Job Details — Powered by aiactuaries.org`,
     description:
       "Explore job opportunities in actuarial data science and AI posted by leading employers.",
     alternates: { canonical: pageUrl },
