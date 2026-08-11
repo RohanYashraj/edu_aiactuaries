@@ -27,7 +27,7 @@ export default async function AdminUsersPage() {
           Users
         </h1>
         <p className="mt-1 text-muted-foreground">
-          Members, employers, content managers and administrators.
+          Members, content managers and administrators.
         </p>
       </header>
       <UsersTable />

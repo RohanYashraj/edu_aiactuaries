@@ -48,7 +48,6 @@ export async function POST(req: NextRequest) {
           eventType === "user.created"
             ? ((public_metadata?.role as
                 | "member"
-                | "employer"
                 | "content_manager"
                 | "admin"
                 | undefined) ?? "member")

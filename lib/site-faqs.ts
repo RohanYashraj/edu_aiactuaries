@@ -20,7 +20,7 @@ export const SITE_FAQS = [
   {
     question: "Who can become a member?",
     answer:
-      "Membership is open and free to anyone interested in actuarial science and AI — school and college students, recent graduates, working professionals, and academics. Sign up, complete a short profile, and you get access to programs, workshops, events, and the jobs board.",
+      "Membership is open and free to anyone interested in actuarial science and AI — school and college students, recent graduates, working professionals, and academics. Sign up, complete a short profile, and you get access to programs, workshops, and events.",
   },
   {
     question: "Do I need an actuarial background to join a program?",

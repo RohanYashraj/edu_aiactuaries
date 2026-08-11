@@ -28,11 +28,10 @@ import { mirrorRole } from "@/lib/clerk-metadata";
 
 type Role = Doc<"users">["role"];
 
-const ROLES: Role[] = ["member", "employer", "content_manager", "admin"];
+const ROLES: Role[] = ["member", "content_manager", "admin"];
 
 const ROLE_LABELS: Record<Role, string> = {
   member: "Member",
-  employer: "Employer",
   content_manager: "Content manager",
   admin: "Administrator",
 };

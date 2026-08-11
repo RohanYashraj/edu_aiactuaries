@@ -5,7 +5,7 @@ import { buildMetadata } from "@/lib/seo";
 export const metadata = buildMetadata({
   title: "Become a Member",
   description:
-    "Join the Sri Sathya Sai Institute of Actuaries. Membership is free and gives you access to certifications, workshops, events, and the jobs board.",
+    "Join the Sri Sathya Sai Institute of Actuaries. Membership is free and gives you access to certifications, workshops, and events.",
   path: "/sign-up",
   noindex: true,
 });
@@ -19,7 +19,7 @@ export default function SignUpPage() {
         </h1>
         <p className="mt-3 leading-relaxed text-muted-foreground">
           Membership is free. Create an account to access certifications,
-          workshops, events, and the jobs board.
+          workshops and events.
         </p>
       </div>
       <SignUp />

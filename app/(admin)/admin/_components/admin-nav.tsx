@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Briefcase,
   Image as ImageIcon,
   LayoutDashboard,
   Newspaper,
@@ -16,7 +15,6 @@ const LINKS = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard, adminOnly: false },
   { href: "/admin/content", label: "Content", icon: Newspaper, adminOnly: false },
   { href: "/admin/media", label: "Media", icon: ImageIcon, adminOnly: false },
-  { href: "/admin/jobs", label: "Jobs", icon: Briefcase, adminOnly: false },
   { href: "/admin/users", label: "Users", icon: Users, adminOnly: true },
 ] as const;
 

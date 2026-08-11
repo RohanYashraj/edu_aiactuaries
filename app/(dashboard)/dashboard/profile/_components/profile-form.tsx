@@ -131,8 +131,6 @@ export function ProfileForm() {
         experienceLevel: experienceLevel || undefined,
         country: text("country"),
         linkedinUrl: text("linkedinUrl"),
-        companyName: text("companyName"),
-        companyWebsite: text("companyWebsite"),
       });
       setSaved(true);
     } catch (err) {
@@ -141,8 +139,6 @@ export function ProfileForm() {
       setIsPending(false);
     }
   }
-
-  const isEmployer = user.role === "employer";
 
   return (
     <Card>
@@ -251,27 +247,6 @@ export function ProfileForm() {
               />
             </div>
 
-            {isEmployer ? (
-              <div className="grid gap-5 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="companyName">Company</Label>
-                  <Input
-                    id="companyName"
-                    name="companyName"
-                    defaultValue={user.companyName ?? ""}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="companyWebsite">Company website</Label>
-                  <Input
-                    id="companyWebsite"
-                    name="companyWebsite"
-                    type="url"
-                    defaultValue={user.companyWebsite ?? ""}
-                  />
-                </div>
-              </div>
-            ) : null}
           </fieldset>
 
           <fieldset className="space-y-3" disabled={isPending}>

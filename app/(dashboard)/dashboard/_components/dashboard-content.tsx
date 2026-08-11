@@ -2,13 +2,7 @@
 
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import {
-  BookOpen,
-  Briefcase,
-  GraduationCap,
-  Loader2,
-  User,
-} from "lucide-react";
+import { BookOpen, GraduationCap, Loader2, User } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -24,7 +18,6 @@ import Link from "next/link";
 
 export function DashboardContent() {
   const currentUser = useQuery(api.users.getCurrentUser);
-  const myJobs = useQuery(api.jobs.listByEmployer);
 
   if (currentUser === undefined) {
     return (
@@ -34,11 +27,17 @@ export function DashboardContent() {
     );
   }
 
-  const isEmployer = currentUser?.role === "employer";
-  const publishedJobCount =
-    myJobs?.filter((j) => j.status === "published").length ?? 0;
-  const draftJobCount =
-    myJobs?.filter((j) => j.status === "draft").length ?? 0;
+  // Brief window right after sign-up, before the Clerk webhook (or the
+  // client-side sync fallback) has created the Convex row.
+  if (currentUser === null) {
+    return (
+      <div className="py-16 text-center">
+        <p className="text-muted-foreground">
+          Setting up your account. Reload in a few seconds.
+        </p>
+      </div>
+    );
+  }
 
   const initials = currentUser?.name
     ? currentUser.name
@@ -130,97 +129,11 @@ export function DashboardContent() {
             </Link>
           </CardContent>
         </Card>
-
-        <Card
-          className="animate-fade-in-up"
-          style={{ animationDelay: "200ms" }}
-        >
-          <CardHeader className="flex flex-row items-center gap-3 space-y-0">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-gold/10">
-              <Briefcase className="size-5 text-gold" />
-            </div>
-            <div>
-              <CardTitle className="text-base">Job Posts</CardTitle>
-              <CardDescription>Employer tools</CardDescription>
-            </div>
-          </CardHeader>
-          <CardContent>
-            {isEmployer ? (
-              <>
-                <div className="mb-3 flex flex-wrap gap-2 text-sm">
-                  <span className="text-muted-foreground">
-                    {publishedJobCount} published
-                  </span>
-                  <span className="text-muted-foreground">&middot;</span>
-                  <span className="text-muted-foreground">
-                    {draftJobCount} draft
-                  </span>
-                </div>
-                <Link href="/dashboard/jobs/new">
-                  <Button variant="outline" size="sm">
-                    Post a Job
-                  </Button>
-                </Link>
-              </>
-            ) : (
-              <>
-                <p className="mb-3 text-sm text-muted-foreground">
-                  Upgrade to an employer account to post jobs.
-                </p>
-                <Link href="/jobs">
-                  <Button variant="outline" size="sm">
-                    Browse Jobs
-                  </Button>
-                </Link>
-              </>
-            )}
-          </CardContent>
-        </Card>
       </div>
 
-      {/* Employer's recent jobs */}
-      {isEmployer && myJobs && myJobs.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Your Recent Job Posts</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {myJobs.slice(0, 5).map((job) => (
-                <div
-                  key={job._id}
-                  className="flex items-center justify-between rounded-lg border border-border px-4 py-3 transition-colors hover:bg-muted/50"
-                >
-                  <div>
-                    <p className="text-sm font-medium">{job.title}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {job.company} &middot; {job.location}
-                    </p>
-                  </div>
-                  <Badge
-                    variant={
-                      job.status === "published"
-                        ? "default"
-                        : job.status === "draft"
-                          ? "secondary"
-                          : "outline"
-                    }
-                    className="capitalize"
-                  >
-                    {job.status}
-                  </Badge>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Account info */}
-      {currentUser && (
-        <Card>
-          <CardHeader className="flex flex-row items-center gap-3 space-y-0">
-            <User className="size-5 text-muted-foreground" />
+      <Card>
+        <CardHeader className="flex flex-row items-center gap-3 space-y-0">
+          <User className="size-5 text-muted-foreground" />
             <CardTitle className="text-base">Account Details</CardTitle>
           </CardHeader>
           <CardContent>
@@ -250,7 +163,6 @@ export function DashboardContent() {
             </div>
           </CardContent>
         </Card>
-      )}
     </div>
   );
 }

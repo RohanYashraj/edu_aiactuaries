@@ -17,7 +17,10 @@ const nextConfig: NextConfig = {
       // Authenticated pages moved under /dashboard so the route group and the
       // URL agree, and so the auth matcher covers them structurally.
       { source: "/account", destination: "/dashboard/account", permanent: true },
-      { source: "/jobs/post", destination: "/dashboard/jobs/new", permanent: true },
+      // The jobs board is retired; /jobs URLs are already indexed, so send
+      // them home rather than serving 404s.
+      { source: "/jobs", destination: "/", permanent: true },
+      { source: "/jobs/:path*", destination: "/", permanent: true },
       // The waitlist is replaced by open sign-up.
       { source: "/waitlist", destination: "/sign-up", permanent: true },
     ];

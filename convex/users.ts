@@ -169,8 +169,6 @@ const profileFields = {
   experienceLevel: v.optional(experienceLevelValidator),
   country: v.optional(v.string()),
   linkedinUrl: v.optional(v.string()),
-  companyName: v.optional(v.string()),
-  companyWebsite: v.optional(v.string()),
 };
 
 /** Completes the post-signup profile step and unlocks the dashboard. */
@@ -270,7 +268,6 @@ export const adminStats = query({
       onboarded: users.filter((u) => u.onboardingCompletedAt !== undefined).length,
       byRole: {
         member: users.filter((u) => u.role === "member").length,
-        employer: users.filter((u) => u.role === "employer").length,
         content_manager: users.filter((u) => u.role === "content_manager").length,
         admin: users.filter((u) => u.role === "admin").length,
       },

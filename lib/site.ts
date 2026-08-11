@@ -17,7 +17,7 @@ export const siteBrandTitle = `${siteName} - Powered by aiactuaries.org`;
 export const siteTagline = "for Actuarial Data Science & AI";
 
 export const siteDescription =
-  "Pioneering the future of Actuarial Science through AI and Data Science. Professional certifications, workshops, events, and career opportunities.";
+  "Pioneering the future of Actuarial Science through AI and Data Science. Professional certifications, workshops, and events for members across India.";
 
 /** Default social card. Replaced per-page by generated OG images where available. */
 export const defaultOgImage = "/sssia.png";

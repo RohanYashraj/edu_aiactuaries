@@ -8,7 +8,6 @@ import { v } from "convex/values";
 
 export const roleValidator = v.union(
   v.literal("member"),
-  v.literal("employer"),
   v.literal("content_manager"),
   v.literal("admin"),
 );
@@ -347,10 +346,6 @@ export default defineSchema({
     country: v.optional(v.string()),
     linkedinUrl: v.optional(v.string()),
 
-    /* --- employer-only --- */
-    companyName: v.optional(v.string()),
-    companyWebsite: v.optional(v.string()),
-
     /* --- audit --- */
     roleUpdatedAt: v.optional(v.number()),
     roleUpdatedBy: v.optional(v.id("users")),
@@ -448,58 +443,4 @@ export default defineSchema({
     .index("by_order", ["order"])
     .index("by_status_and_order", ["status", "order"]),
 
-  jobs: defineTable({
-    title: v.string(),
-    description: v.string(),
-    employerId: v.id("users"),
-    company: v.string(),
-    location: v.string(),
-    slug: v.optional(v.string()),
-    type: v.union(
-      v.literal("full-time"),
-      v.literal("part-time"),
-      v.literal("contract"),
-      v.literal("internship"),
-    ),
-    periodStart: v.optional(v.string()),
-    periodEnd: v.optional(v.string()),
-    applicationDeadline: v.optional(v.string()),
-    selectionCriteria: v.optional(v.string()),
-    applicationUrl: v.optional(v.string()),
-    commitmentHoursPerDay: v.optional(v.string()),
-    eligibilityCriteria: v.optional(v.array(v.string())),
-    weeklySchedule: v.optional(
-      v.array(
-        v.object({
-          week: v.number(),
-          title: v.string(),
-          focus: v.string(),
-          topics: v.array(v.string()),
-          tools: v.array(v.string()),
-          outcomes: v.array(v.string()),
-        }),
-      ),
-    ),
-    status: v.union(
-      v.literal("draft"),
-      v.literal("published"),
-      v.literal("closed"),
-    ),
-
-    /* --- parity with `content` so both share one SEO code path --- */
-    summary: v.optional(v.string()),
-    faqs: v.optional(v.array(faqValidator)),
-    seo: v.optional(seoValidator),
-    salaryLabel: v.optional(v.string()),
-    remote: v.optional(v.boolean()),
-    featured: v.optional(v.boolean()),
-    publishedAt: v.optional(v.number()),
-    /** JobPosting.validThrough — Google warns without it. */
-    validThrough: v.optional(v.number()),
-    updatedAt: v.optional(v.number()),
-  })
-    .index("by_employerId", ["employerId"])
-    .index("by_status", ["status"])
-    .index("by_status_publishedAt", ["status", "publishedAt"])
-    .index("by_slug", ["slug"]),
 });

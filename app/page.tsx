@@ -20,14 +20,11 @@ import { contentHref } from "@/lib/content";
 export const revalidate = 300; // 5 minutes
 
 export default async function Home() {
-  const [{ userId }, featured, certifications, featuredJobs] = await Promise.all(
-    [
-      auth(),
-      fetchQuery(api.content.listFeatured, {}),
-      fetchQuery(api.content.listByType, { type: "certification", limit: 4 }),
-      fetchQuery(api.jobs.listFeatured, { limit: 1 }),
-    ],
-  );
+  const [{ userId }, featured, certifications] = await Promise.all([
+    auth(),
+    fetchQuery(api.content.listFeatured, {}),
+    fetchQuery(api.content.listByType, { type: "certification", limit: 4 }),
+  ]);
 
   // Programs and events are the things a reader can still act on; news is
   // evidence that the Institute is active. They earn different treatments.
@@ -38,7 +35,6 @@ export default async function Home() {
 
   const nextProgramme = upcoming[0];
   const flagship = certifications.find((c) => c.featured) ?? certifications[0];
-  const featuredJob = featuredJobs[0];
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -124,69 +120,33 @@ export default async function Home() {
         <EventsShowcase upcoming={upcoming} recent={recent} />
 
         {/* ---------------------------------------------------------------- */}
-        {/* Flagship certification + open internship, side by side.           */}
+        {/* Flagship certification.                                          */}
         {/* ---------------------------------------------------------------- */}
-        {flagship || featuredJob ? (
+        {flagship ? (
           <section className="border-t border-border px-4 py-20 sm:px-6 sm:py-24">
-            <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-2">
-              {flagship ? (
-                <article className="flex flex-col">
-                  <p className="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground">
-                    Flagship programme
-                  </p>
-                  <h2 className="mt-4 font-display text-2xl leading-snug tracking-tight sm:text-3xl">
-                    <Link
-                      href={contentHref("certification", flagship.slug)}
-                      className="transition-colors hover:text-gold"
-                    >
-                      {flagship.title}
-                    </Link>
-                  </h2>
-                  <p className="mt-3 leading-relaxed text-muted-foreground">
-                    {flagship.summary}
-                  </p>
-                  <div className="mt-5">
-                    <Button asChild variant="outline" className="gap-2">
-                      <Link href={contentHref("certification", flagship.slug)}>
-                        Learn more
-                        <ArrowRight className="size-4" />
-                      </Link>
-                    </Button>
-                  </div>
-                </article>
-              ) : null}
-
-              {featuredJob ? (
-                <article className="flex flex-col md:border-l md:border-border md:pl-10">
-                  <p className="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground">
-                    Open opportunity
-                  </p>
-                  <h2 className="mt-4 font-display text-2xl leading-snug tracking-tight sm:text-3xl">
-                    <Link
-                      href={`/jobs/${featuredJob.slug}`}
-                      className="transition-colors hover:text-gold"
-                    >
-                      {featuredJob.title}
-                    </Link>
-                  </h2>
-                  <p className="mt-3 leading-relaxed text-muted-foreground">
-                    {featuredJob.summary ?? featuredJob.description}
-                  </p>
-                  {featuredJob.applicationDeadline ? (
-                    <p className="mt-3 font-mono text-xs text-muted-foreground">
-                      Applications close {featuredJob.applicationDeadline}
-                    </p>
-                  ) : null}
-                  <div className="mt-5">
-                    <Button asChild variant="outline" className="gap-2">
-                      <Link href={`/jobs/${featuredJob.slug}`}>
-                        View internship
-                        <ArrowRight className="size-4" />
-                      </Link>
-                    </Button>
-                  </div>
-                </article>
-              ) : null}
+            <div className="mx-auto max-w-3xl">
+              <p className="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground">
+                Flagship programme
+              </p>
+              <h2 className="mt-4 font-display text-2xl leading-snug tracking-tight sm:text-3xl">
+                <Link
+                  href={contentHref("certification", flagship.slug)}
+                  className="transition-colors hover:text-gold"
+                >
+                  {flagship.title}
+                </Link>
+              </h2>
+              <p className="mt-3 max-w-2xl leading-relaxed text-muted-foreground">
+                {flagship.summary}
+              </p>
+              <div className="mt-6">
+                <Button asChild variant="outline" className="gap-2">
+                  <Link href={contentHref("certification", flagship.slug)}>
+                    Learn more
+                    <ArrowRight className="size-4" />
+                  </Link>
+                </Button>
+              </div>
             </div>
           </section>
         ) : null}
@@ -207,8 +167,8 @@ export default async function Home() {
                 Membership is free
               </h2>
               <p className="mt-4 leading-relaxed text-muted-foreground">
-                Sign up to access certifications, workshops, events, and the
-                jobs board. It takes about a minute.
+                Sign up to access certifications, workshops and events. It takes
+                about a minute.
               </p>
               <Button
                 asChild
