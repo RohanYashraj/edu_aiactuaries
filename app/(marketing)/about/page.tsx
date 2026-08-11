@@ -89,8 +89,8 @@ export default function AboutPage() {
                 height={44}
                 className={
                   body.invert
-                    ? "h-8 w-auto object-contain opacity-70 dark:invert"
-                    : "h-8 w-auto object-contain opacity-70"
+                    ? "h-10 w-28 object-contain opacity-70 dark:invert"
+                    : "h-10 w-28 object-contain opacity-70"
                 }
               />
             </li>

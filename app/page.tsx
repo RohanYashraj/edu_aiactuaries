@@ -1,14 +1,15 @@
 import { auth } from "@clerk/nextjs/server";
 import { SignInButton } from "@clerk/nextjs";
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 import { api } from "@/convex/_generated/api";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { EventsShowcase } from "@/components/marketing/events-showcase";
-import { ProgrammeLedger } from "@/components/marketing/programme-ledger";
+import { AchievementsBand } from "@/components/marketing/achievements-band";
 import { FaqSection } from "@/components/content/faq-section";
 import { JsonLd } from "@/components/seo/json-ld";
 import { faqSchema } from "@/lib/jsonld";
@@ -20,10 +21,11 @@ import { contentHref } from "@/lib/content";
 export const revalidate = 300; // 5 minutes
 
 export default async function Home() {
-  const [{ userId }, featured, certifications] = await Promise.all([
+  const [{ userId }, featured, certifications, settings] = await Promise.all([
     auth(),
     fetchQuery(api.content.listFeatured, {}),
     fetchQuery(api.content.listByType, { type: "certification", limit: 4 }),
+    fetchQuery(api.settings.get, {}),
   ]);
 
   // Programs and events are the things a reader can still act on; news is
@@ -33,7 +35,6 @@ export default async function Home() {
   );
   const recent = featured.filter((item) => item.type === "news").slice(0, 5);
 
-  const nextProgramme = upcoming[0];
   const flagship = certifications.find((c) => c.featured) ?? certifications[0];
 
   return (
@@ -43,78 +44,80 @@ export default async function Home() {
 
       <main className="flex-1">
         {/* ---------------------------------------------------------------- */}
-        {/* Hero — asymmetric: the argument on the left, the evidence right.  */}
+        {/* Hero                                                              */}
         {/* ---------------------------------------------------------------- */}
-        <section className="hero-glow relative overflow-hidden border-b border-border px-4 py-20 sm:px-6 sm:py-28">
-          <div className="animate-fade-in-up mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-12 lg:gap-16">
-            <div className="lg:col-span-7">
+        <section className="hero-glow relative flex flex-col items-center justify-center overflow-hidden px-4 py-24 text-center sm:py-32">
+          <div className="animate-fade-in-up mx-auto max-w-3xl">
+            <Badge
+              variant="outline"
+              className="border-gold/30 bg-gold-light/50 px-4 py-1.5 text-xs tracking-wider"
+              asChild
+            >
               <a
                 href="https://aiactuaries.org"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group inline-flex items-center gap-1.5 font-mono text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-gold"
               >
                 Powered by aiactuaries.org
-                <ArrowUpRight className="size-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </a>
+            </Badge>
 
-              <h1 className="mt-5 font-display text-4xl leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
-                Sri Sathya Sai
-                <span className="mt-1 block">Institute of Actuaries</span>
-              </h1>
+            <h1 className="mt-6 font-display text-4xl leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+              Sri Sathya Sai
+              <span className="mt-1 block">Institute of Actuaries</span>
+            </h1>
 
-              <p className="mt-4 font-display text-xl text-gold sm:text-2xl">
-                for Actuarial Data Science &amp; AI
-              </p>
+            <p className="mt-4 text-lg text-gold sm:text-xl">
+              for Actuarial Data Science &amp; AI
+            </p>
 
-              <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
-                We teach actuarial science alongside the data science and AI the
-                profession now runs on — to students across India, and largely
-                free of charge.
-              </p>
+            <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
+              We teach actuarial science alongside the data science and AI the
+              profession now runs on — to students across India, and largely
+              free of charge.
+            </p>
 
-              <div className="mt-10 flex flex-wrap items-center gap-4">
-                {userId ? (
-                  <>
-                    <Button asChild size="lg" className="gap-2">
-                      <Link href="/programs">
-                        Explore programs
-                        <ArrowRight className="size-4" />
-                      </Link>
+            <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+              {userId ? (
+                <>
+                  <Button asChild size="lg" className="gap-2">
+                    <Link href="/programs">
+                      Explore programs
+                      <ArrowRight className="size-4" />
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline" size="lg">
+                    <Link href="/dashboard">Dashboard</Link>
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    asChild
+                    size="lg"
+                    className="gap-2 shadow-md shadow-primary/20"
+                  >
+                    <Link href="/sign-up">
+                      Become a member
+                      <ArrowRight className="size-4" />
+                    </Link>
+                  </Button>
+                  <SignInButton mode="modal">
+                    <Button variant="outline" size="lg">
+                      Already have an account? Sign in
                     </Button>
-                    <Button asChild variant="outline" size="lg">
-                      <Link href="/dashboard">Dashboard</Link>
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Button
-                      asChild
-                      size="lg"
-                      className="gap-2 shadow-md shadow-primary/20"
-                    >
-                      <Link href="/sign-up">
-                        Become a member
-                        <ArrowRight className="size-4" />
-                      </Link>
-                    </Button>
-                    <SignInButton mode="modal">
-                      <Button variant="ghost" size="lg">
-                        Sign in
-                      </Button>
-                    </SignInButton>
-                  </>
-                )}
-              </div>
+                  </SignInButton>
+                </>
+              )}
             </div>
-
-            {nextProgramme ? (
-              <div className="lg:col-span-5">
-                <ProgrammeLedger programme={nextProgramme} />
-              </div>
-            ) : null}
           </div>
         </section>
+
+        {/* ---------------------------------------------------------------- */}
+        <AchievementsBand
+          achievements={settings.achievements}
+          intro={settings.achievementsIntro}
+        />
 
         {/* ---------------------------------------------------------------- */}
         <EventsShowcase upcoming={upcoming} recent={recent} />

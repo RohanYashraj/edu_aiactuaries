@@ -6,6 +6,7 @@ import {
   Image as ImageIcon,
   LayoutDashboard,
   Newspaper,
+  Settings,
   Users,
 } from "lucide-react";
 
@@ -15,6 +16,7 @@ const LINKS = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard, adminOnly: false },
   { href: "/admin/content", label: "Content", icon: Newspaper, adminOnly: false },
   { href: "/admin/media", label: "Media", icon: ImageIcon, adminOnly: false },
+  { href: "/admin/settings", label: "Settings", icon: Settings, adminOnly: false },
   { href: "/admin/users", label: "Users", icon: Users, adminOnly: true },
 ] as const;
 

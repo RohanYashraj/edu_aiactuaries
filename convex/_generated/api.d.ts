@@ -16,6 +16,7 @@ import type * as lib_slug from "../lib/slug.js";
 import type * as media from "../media.js";
 import type * as migrations from "../migrations.js";
 import type * as seedData from "../seedData.js";
+import type * as settings from "../settings.js";
 import type * as users from "../users.js";
 import type * as workshops from "../workshops.js";
 
@@ -34,6 +35,7 @@ declare const fullApi: ApiFromModules<{
   media: typeof media;
   migrations: typeof migrations;
   seedData: typeof seedData;
+  settings: typeof settings;
   users: typeof users;
   workshops: typeof workshops;
 }>;

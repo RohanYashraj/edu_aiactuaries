@@ -383,6 +383,29 @@ export default defineSchema({
       filterFields: ["type", "status"],
     }),
 
+  /**
+   * Single-row settings table. Exists so the homepage achievement figures can
+   * be corrected by an editor instead of a deploy — and so no unverified
+   * number ever has to be hardcoded to ship the design.
+   */
+  siteSettings: defineTable({
+    /** Always "singleton"; the table holds exactly one row. */
+    key: v.string(),
+    achievements: v.optional(
+      v.array(
+        v.object({
+          value: v.string(),
+          label: v.string(),
+          /** Hidden until an editor fills the value in. */
+          hidden: v.optional(v.boolean()),
+        }),
+      ),
+    ),
+    achievementsIntro: v.optional(v.string()),
+    updatedAt: v.number(),
+    updatedBy: v.optional(v.id("users")),
+  }).index("by_key", ["key"]),
+
   /** Undo for a CMS operated by non-engineers. Capped per document on write. */
   contentRevisions: defineTable({
     contentId: v.id("content"),
