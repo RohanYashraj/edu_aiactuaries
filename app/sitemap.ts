@@ -12,9 +12,11 @@ const staticRoutes: {
   priority: number;
 }[] = [
   { path: "/", changeFrequency: "weekly", priority: 1 },
-  { path: "/certifications", changeFrequency: "weekly", priority: 0.9 },
+  { path: "/programs", changeFrequency: "weekly", priority: 0.9 },
   { path: "/events", changeFrequency: "weekly", priority: 0.9 },
-  { path: "/workshops", changeFrequency: "weekly", priority: 0.8 },
+  { path: "/news", changeFrequency: "weekly", priority: 0.7 },
+  { path: "/about", changeFrequency: "monthly", priority: 0.7 },
+  { path: "/faq", changeFrequency: "monthly", priority: 0.6 },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

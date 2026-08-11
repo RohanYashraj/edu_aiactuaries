@@ -77,8 +77,8 @@ export default async function Home() {
                 {userId ? (
                   <>
                     <Button asChild size="lg" className="gap-2">
-                      <Link href="/certifications">
-                        Explore certifications
+                      <Link href="/programs">
+                        Explore programs
                         <ArrowRight className="size-4" />
                       </Link>
                     </Button>

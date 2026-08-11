@@ -47,16 +47,24 @@ const dateFormatter = new Intl.DateTimeFormat("en-GB", {
   timeZone: "UTC",
 });
 
+/** Bare ISO dates carried over from the legacy tables, e.g. "2026-04-20". */
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+
 /**
  * Prefers the editor's display string, because ranges like
  * "27 April – 16 May 2026" don't round-trip through a single timestamp.
+ *
+ * A label that is just an ISO date is ignored: those came from the legacy
+ * `workshops.date` column, and showing "2026-04-20" beside "15 April 2026"
+ * on the same page looks like a bug.
  */
 export function formatContentDate(doc: {
   dateLabel?: string;
   startDate?: number;
   endDate?: number;
 }): string | null {
-  if (doc.dateLabel) return doc.dateLabel;
+  if (doc.dateLabel && !ISO_DATE.test(doc.dateLabel)) return doc.dateLabel;
+  if (doc.dateLabel && doc.startDate === undefined) return doc.dateLabel;
   if (doc.startDate === undefined) return null;
 
   const start = dateFormatter.format(new Date(doc.startDate));

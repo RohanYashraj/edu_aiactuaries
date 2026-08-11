@@ -97,7 +97,7 @@ export function DashboardContent() {
             <p className="mb-3 text-sm text-muted-foreground">
               Enrollment tracking coming soon.
             </p>
-            <Link href="/certifications">
+            <Link href="/programs#certifications-heading">
               <Button variant="outline" size="sm">
                 Browse Certifications
               </Button>
@@ -122,7 +122,7 @@ export function DashboardContent() {
             <p className="mb-3 text-sm text-muted-foreground">
               Workshop registration coming soon.
             </p>
-            <Link href="/workshops">
+            <Link href="/programs#workshops-heading">
               <Button variant="outline" size="sm">
                 View Workshops
               </Button>

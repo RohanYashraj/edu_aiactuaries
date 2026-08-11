@@ -17,15 +17,10 @@ import {
 import { Separator } from "@/components/ui/separator";
 
 const navLinks = [
-  {
-    href: "https://aiactuaries.org/our-board",
-    label: "Our Board",
-    external: true,
-  },
-  { href: "/certifications", label: "Certifications", external: false },
-  { href: "/workshops", label: "Workshops", external: false },
+  { href: "/programs", label: "Programs", external: false },
   { href: "/events", label: "Events", external: false },
   { href: "/news", label: "News", external: false },
+  { href: "/about", label: "About", external: false },
 ] as const;
 
 export function Header() {
