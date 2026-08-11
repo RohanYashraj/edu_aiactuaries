@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 import { paginationOptsValidator } from "convex/server";
 import { mutation, query } from "./_generated/server";
-import { requireUser } from "./lib/auth";
+import { requireRole, requireUser } from "./lib/auth";
 import { slugify } from "./lib/slug";
 
 /** Roles allowed to post and manage job listings. */
@@ -228,5 +228,14 @@ export const updateStatus = mutation({
           : job.publishedAt,
       updatedAt: Date.now(),
     });
+  },
+});
+
+/** Every listing regardless of status — the admin moderation view. */
+export const adminList = query({
+  args: {},
+  handler: async (ctx) => {
+    await requireRole(ctx, ["admin", "content_manager"]);
+    return await ctx.db.query("jobs").order("desc").take(200);
   },
 });
