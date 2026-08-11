@@ -1,447 +1,225 @@
 import { auth } from "@clerk/nextjs/server";
 import { SignInButton } from "@clerk/nextjs";
 import Link from "next/link";
-import Image from "next/image";
-import { ArrowRight, Award, ArrowRightToLine, Calendar } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 
+import { api } from "@/convex/_generated/api";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import { FeatureCard, SectionHeader } from "@/components/marketing";
+import { EventsShowcase } from "@/components/marketing/events-showcase";
+import { ProgrammeLedger } from "@/components/marketing/programme-ledger";
+import { FaqSection } from "@/components/content/faq-section";
+import { JsonLd } from "@/components/seo/json-ld";
+import { faqSchema } from "@/lib/jsonld";
+import { SITE_FAQS } from "@/lib/site-faqs";
+import { fetchQuery } from "@/lib/convex-server";
+import { contentHref } from "@/lib/content";
 
-const recentHighlights = [
-  // {
-  //   title: "Leadership Meeting and Partner Lunch",
-  //   content:
-  //     "Society of Actuaries leadership meeting followed by a partner lunch at Hotel Sheraton, Bangalore.",
-  //   date: "Bangalore",
-  //   organization: {
-  //     logoSrc: "/soa.png",
-  //     logoAlt: "Society of Actuaries",
-  //     name: "Society of Actuaries",
-  //     logoText: "SOA",
-  //   },
-  // },
-  // {
-  //   title: "Global Conference of Actuaries",
-  //   content:
-  //     "Participation in the Global Conference of Actuaries by the Institute of Actuaries of India at Jio World Convention Centre, Mumbai.",
-  //   date: "Mumbai",
-  //   organization: {
-  //     logoSrc: "/iai.png",
-  //     logoAlt: "Institute of Actuaries of India",
-  //     name: "IAI",
-  //     logoText: "IAI",
-  //   },
-  // },
-  // {
-  //   title: "International Leadership Meeting and Partner Dinner",
-  //   content:
-  //     "Casualty Actuarial Society international leadership meeting with an evening partner dinner in Mumbai.",
-  //   date: "Mumbai",
-  //   organization: {
-  //     logoSrc: "/cas.png",
-  //     logoAlt: "Casualty Actuarial Society",
-  //     name: "CAS",
-  //     logoText: "CAS",
-  //   },
-  // },
-  // {
-  //   title: "Industry-Academia Meet",
-  //   content:
-  //     "Institute and Faculty of Actuaries industry-academia engagement hosted at Christ University, Bangalore.",
-  //   date: "Bangalore",
-  //   organization: {
-  //     name: "IFoA",
-  //     logoSrc: "/ifoa.svg",
-  //     logoAlt: "IFoA",
-  //     logoClassName: "dark:invert",
-  //   },
-  // },
-  // {
-  //   title: "ACTEX Learning Meeting",
-  //   content:
-  //     "Meeting with ACTEX Learning to discuss actuarial education pathways and collaborative learning opportunities in Bangalore.",
-  //   date: "Bangalore",
-  //   organization: {
-  //     logoSrc: "/actex.png",
-  //     logoAlt: "ACTEX Learning",
-  //     name: "ACTEX Learning",
-  //     logoText: "AX",
-  //   },
-  // },
-  {
-    title: "Webinar on AI Applications in Actuarial Science",
-    content:
-      "Delivered a webinar focused on practical AI applications in actuarial science for participants online and in Puttaparthi.",
-    date: "Online and Puttaparthi",
-    organization: {
-      logoSrc: "/aiactuaries.png",
-      logoAlt: "AIActuaries",
-      name: "AIActuaries",
-      logoText: "AIActuaries",
-    },
-  },
-] as const;
-
-function isExternalHref(href: string) {
-  return href.startsWith("http://") || href.startsWith("https://");
-}
-
-const upcomingPrograms = [
-  {
-    badge: "Registrations Open",
-    title: "Summer Course in Actuarial Data Science - 2026",
-    description:
-      "Join the third edition of our 3-week program to build a strong foundation in actuarial data science. Delivered by experienced faculty and industry practitioners. Offered free of charge.",
-    primaryLabel: "Register Now",
-    primaryHref: "https://lnkd.in/gsewFfW7",
-    secondaryLabel: "View Details",
-    secondaryHref: "/events/summer-program-2026",
-    footerText: null,
-    showKnowledgePartner: true,
-  },
-  {
-    badge: "Internship Applications Open",
-    title: "AI Actuarial Internship Program (AI-AIP)",
-    description:
-      "8-week full-time internship from May 2, 2026 to June 27, 2026 focused on actuarial AI applications across pricing, reserving, claims analytics, and fraud detection.",
-    primaryLabel: "View Internship",
-    primaryHref: "/jobs/jn714k9hspp01s5vh153z52ra5840te4",
-    secondaryLabel: "Apply Now",
-    secondaryHref: "https://forms.gle/W45WuyDViwxauJb26",
-    footerText: "Last Date for Application: 24 April 2026",
-    showKnowledgePartner: false,
-  },
-] as const;
+// Next requires a literal here; it can't statically read an imported constant.
+export const revalidate = 300; // 5 minutes
 
 export default async function Home() {
-  const { userId } = await auth();
+  const [{ userId }, featured, certifications, featuredJobs] = await Promise.all(
+    [
+      auth(),
+      fetchQuery(api.content.listFeatured, {}),
+      fetchQuery(api.content.listByType, { type: "certification", limit: 4 }),
+      fetchQuery(api.jobs.listFeatured, { limit: 1 }),
+    ],
+  );
+
+  // Programs and events are the things a reader can still act on; news is
+  // evidence that the Institute is active. They earn different treatments.
+  const upcoming = featured.filter(
+    (item) => item.type === "program" || item.type === "event",
+  );
+  const recent = featured.filter((item) => item.type === "news").slice(0, 5);
+
+  const nextProgramme = upcoming[0];
+  const flagship = certifications.find((c) => c.featured) ?? certifications[0];
+  const featuredJob = featuredJobs[0];
 
   return (
     <div className="flex min-h-screen flex-col">
+      <JsonLd nodes={[faqSchema([...SITE_FAQS])]} />
       <Header />
 
       <main className="flex-1">
-        {/* Hero */}
-        <section className="hero-glow relative flex flex-col items-center justify-center overflow-hidden px-4 py-28 text-center sm:py-36">
-          <div className="animate-fade-in-up mx-auto max-w-3xl">
-            <Link
-              href="https://aiactuaries.org"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block"
-            >
-              <Badge
-                variant="outline"
-                className="mb-6 border-gold/30 bg-gold-light/50 px-4 py-1.5 text-xs font-medium tracking-wider hover:border-gold/50 hover:bg-gold-light/70 transition-colors"
+        {/* ---------------------------------------------------------------- */}
+        {/* Hero — asymmetric: the argument on the left, the evidence right.  */}
+        {/* ---------------------------------------------------------------- */}
+        <section className="hero-glow relative overflow-hidden border-b border-border px-4 py-20 sm:px-6 sm:py-28">
+          <div className="animate-fade-in-up mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-12 lg:gap-16">
+            <div className="lg:col-span-7">
+              <a
+                href="https://aiactuaries.org"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-1.5 font-mono text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-gold"
               >
                 Powered by aiactuaries.org
-              </Badge>
-            </Link>
-            <h1 className="font-display text-4xl leading-tight tracking-tight sm:text-5xl lg:text-6xl">
-              Sri Sathya Sai
-              <span className="mt-1 block">Institute of Actuaries</span>
-            </h1>
-            <p className="mt-4 text-lg text-gold sm:text-xl">
-              for Actuarial Data Science & AI
-            </p>
-            <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-muted-foreground">
-              Pioneering the future of Actuarial Science through AI and Data
-              Science. Building the next generation of actuarial professionals
-              equipped for a data-driven world.
-            </p>
+                <ArrowUpRight className="size-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </a>
 
-            {userId ? (
-              <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-                <Link href="/certifications">
-                  <Button
-                    size="lg"
-                    className="gap-2 shadow-md shadow-primary/20"
-                  >
-                    Explore Certifications
-                    <ArrowRight className="size-4" />
-                  </Button>
-                </Link>
-                <Link href="/dashboard">
-                  <Button variant="outline" size="lg">
-                    Dashboard
-                  </Button>
-                </Link>
-              </div>
-            ) : (
-              <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-                <Link href="/sign-up">
-                  <Button
-                    size="lg"
-                    className="gap-2 shadow-md shadow-primary/20"
-                  >
-                    Become a Member
-                    <ArrowRight className="size-4" />
-                  </Button>
-                </Link>
-                <SignInButton mode="modal">
-                  <Button variant="outline" size="lg">
-                    Already have an account? Sign In
-                  </Button>
-                </SignInButton>
-              </div>
-            )}
-          </div>
-        </section>
+              <h1 className="mt-5 font-display text-4xl leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
+                Sri Sathya Sai
+                <span className="mt-1 block">Institute of Actuaries</span>
+              </h1>
 
-        {/* Upcoming Event */}
-        <section className="border-t border-border bg-muted/40 px-4 py-20 sm:py-24">
-          <div className="mx-auto max-w-6xl text-center">
-            <SectionHeader
-              title="Upcoming Program"
-              description="Registrations are now open for our summer course."
-              className="mb-8"
-              titleClassName="text-2xl sm:text-3xl"
-              descriptionClassName="mt-2"
-            />
-            <div className="upcoming-marquee mask-[linear-gradient(to_right,transparent,black_8%,black_92%,transparent)] overflow-hidden text-left">
-              <div className="upcoming-marquee-track flex w-max gap-6">
-                {[...upcomingPrograms, ...upcomingPrograms].map((program, index) => (
-                  <FeatureCard
-                    key={`${program.title}-${index}`}
-                    aria-hidden={index >= upcomingPrograms.length}
-                    className="w-[min(86vw,38rem)] shrink-0"
-                  >
-                    <div className="p-0">
-                      <CardHeader className="p-6 sm:p-8">
-                        <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
-                          <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-                            <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-gold text-gold-foreground shadow-md shadow-gold/20">
-                              <Calendar className="size-6" />
-                            </div>
-                            <div>
-                              <Badge className="mb-2 bg-gold/15 text-gold hover:bg-gold/20">
-                                {program.badge}
-                              </Badge>
-                              <CardTitle className="font-display text-xl sm:text-2xl">
-                                {program.title}
-                              </CardTitle>
-                            </div>
-                          </div>
-                          {program.showKnowledgePartner && (
-                            <div className="flex shrink-0 flex-col items-start gap-1.5 sm:items-end">
-                              <span className="font-semibold uppercase tracking-wider text-muted-foreground">
-                                Knowledge Partner
-                              </span>
-                              <div className="flex h-16 w-40 items-center justify-start bg-transparent p-0 sm:justify-end">
-                                <Image
-                                  src="/ifoa.svg"
-                                  alt="Knowledge Partner Logo"
-                                  width={150}
-                                  height={50}
-                                  className="h-full w-auto object-contain dark:invert"
-                                />
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                        <CardDescription className="mt-4 text-base leading-relaxed">
-                          {program.description}
-                        </CardDescription>
-                        {program.footerText && (
-                          <p className="mt-3 text-sm text-muted-foreground">
-                            <span className="font-medium text-foreground">
-                              {program.footerText}
-                            </span>
-                          </p>
-                        )}
-                        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                          <Link
-                            href={program.primaryHref}
-                            target={
-                              isExternalHref(program.primaryHref)
-                                ? "_blank"
-                                : undefined
-                            }
-                            rel={
-                              isExternalHref(program.primaryHref)
-                                ? "noopener noreferrer"
-                                : undefined
-                            }
-                          >
-                            <Button className="w-full gap-2 sm:w-auto">
-                              {program.primaryLabel}
-                              <ArrowRightToLine className="size-4" />
-                            </Button>
-                          </Link>
-                          <Link
-                            href={program.secondaryHref}
-                            target={
-                              isExternalHref(program.secondaryHref)
-                                ? "_blank"
-                                : undefined
-                            }
-                            rel={
-                              isExternalHref(program.secondaryHref)
-                                ? "noopener noreferrer"
-                                : undefined
-                            }
-                          >
-                            <Button
-                              variant="outline"
-                              className="w-full gap-2 sm:w-auto"
-                            >
-                              {program.secondaryLabel}
-                              <ArrowRight className="size-4" />
-                            </Button>
-                          </Link>
-                        </div>
-                      </CardHeader>
-                    </div>
-                  </FeatureCard>
-                ))}
+              <p className="mt-4 font-display text-xl text-gold sm:text-2xl">
+                for Actuarial Data Science &amp; AI
+              </p>
+
+              <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
+                We teach actuarial science alongside the data science and AI the
+                profession now runs on — to students across India, and largely
+                free of charge.
+              </p>
+
+              <div className="mt-10 flex flex-wrap items-center gap-4">
+                {userId ? (
+                  <>
+                    <Button asChild size="lg" className="gap-2">
+                      <Link href="/certifications">
+                        Explore certifications
+                        <ArrowRight className="size-4" />
+                      </Link>
+                    </Button>
+                    <Button asChild variant="outline" size="lg">
+                      <Link href="/dashboard">Dashboard</Link>
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      asChild
+                      size="lg"
+                      className="gap-2 shadow-md shadow-primary/20"
+                    >
+                      <Link href="/sign-up">
+                        Become a member
+                        <ArrowRight className="size-4" />
+                      </Link>
+                    </Button>
+                    <SignInButton mode="modal">
+                      <Button variant="ghost" size="lg">
+                        Sign in
+                      </Button>
+                    </SignInButton>
+                  </>
+                )}
               </div>
             </div>
+
+            {nextProgramme ? (
+              <div className="lg:col-span-5">
+                <ProgrammeLedger programme={nextProgramme} />
+              </div>
+            ) : null}
           </div>
         </section>
 
-        {/* Recent Highlights */}
-        <section className="border-t border-border px-4 py-20 sm:py-24">
-          <div className="mx-auto max-w-6xl text-center">
-            <SectionHeader
-              title="Recent Highlights"
-              description="Recent conversations and collaboration checkpoints with partner organizations."
-              className="mb-8"
-              titleClassName="text-2xl sm:text-3xl"
-              descriptionClassName="mx-auto max-w-2xl mt-2"
-            />
-            <Carousel
-              className="mx-auto w-full max-w-5xl"
-              opts={{ loop: true, align: "center" }}
-            >
-              <div className="mb-3 flex items-center justify-center gap-1 md:hidden">
-                <CarouselPrevious className="static translate-y-0" />
-                <CarouselNext className="static translate-y-0" />
-              </div>
-              <div className="hidden justify-center gap-2 md:mb-4 md:flex">
-                <CarouselPrevious className="static translate-y-0" />
-                <CarouselNext className="static translate-y-0" />
-              </div>
-              <CarouselContent>
-                {recentHighlights.map((highlight, i) => (
-                  <CarouselItem
-                    key={`${highlight.title}-${highlight.date}`}
-                    className="basis-full md:basis-1/2 lg:basis-1/3"
-                  >
-                    <Card
-                      className="animate-fade-in-up h-full border-border/70 bg-background"
-                      style={{ animationDelay: `${i * 80}ms` }}
+        {/* ---------------------------------------------------------------- */}
+        <EventsShowcase upcoming={upcoming} recent={recent} />
+
+        {/* ---------------------------------------------------------------- */}
+        {/* Flagship certification + open internship, side by side.           */}
+        {/* ---------------------------------------------------------------- */}
+        {flagship || featuredJob ? (
+          <section className="border-t border-border px-4 py-20 sm:px-6 sm:py-24">
+            <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-2">
+              {flagship ? (
+                <article className="flex flex-col">
+                  <p className="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground">
+                    Flagship programme
+                  </p>
+                  <h2 className="mt-4 font-display text-2xl leading-snug tracking-tight sm:text-3xl">
+                    <Link
+                      href={contentHref("certification", flagship.slug)}
+                      className="transition-colors hover:text-gold"
                     >
-                      <CardHeader className="flex h-full flex-col items-center space-y-3 text-center">
-                        <CardTitle className="text-sm font-semibold sm:text-base">
-                          {highlight.title}
-                        </CardTitle>
-                        <CardDescription className="text-xs leading-relaxed sm:text-sm">
-                          {highlight.content}
-                        </CardDescription>
-                        <div className="mt-auto flex flex-col items-center gap-3 pt-2">
-                          <div className="space-y-0.5 text-center">
-                            <p className="text-xs text-muted-foreground">{highlight.date}</p>
-                            <p className="text-xs font-medium text-muted-foreground">
-                              with {highlight.organization.name}
-                            </p>
-                          </div>
-                          <div className="flex justify-center">
-                            <Image
-                              src={highlight.organization.logoSrc}
-                              alt={highlight.organization.logoAlt}
-                              width={250}
-                              height={50}
-                              className="max-h-[60px] w-auto"
-                            />
-                          </div>
-                        </div>
-                      </CardHeader>
-                    </Card>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-            </Carousel>
-          </div>
-        </section>
-
-        {/* Featured Certification */}
-        <section className="border-t border-border bg-muted/40 px-4 py-20 sm:py-24">
-          <div className="mx-auto max-w-3xl text-center">
-            <SectionHeader
-              title="Flagship Programme"
-              description="The certification that sets us apart."
-              className="mb-8"
-              titleClassName="text-2xl sm:text-3xl"
-              descriptionClassName="mt-2"
-            />
-            <FeatureCard className="text-left">
-              <div className="p-0">
-                <CardHeader className="p-6 sm:p-8">
-                  <div className="flex items-center gap-4">
-                    <div className="flex size-12 items-center justify-center rounded-xl bg-gold text-gold-foreground shadow-md shadow-gold/20">
-                      <Award className="size-6" />
-                    </div>
-                    <div>
-                      <Badge className="mb-1 bg-gold/15 text-gold hover:bg-gold/20">
-                        Flagship
-                      </Badge>
-                      <CardTitle className="font-display text-xl sm:text-2xl">
-                        AI Actuaries Certification
-                      </CardTitle>
-                    </div>
+                      {flagship.title}
+                    </Link>
+                  </h2>
+                  <p className="mt-3 leading-relaxed text-muted-foreground">
+                    {flagship.summary}
+                  </p>
+                  <div className="mt-5">
+                    <Button asChild variant="outline" className="gap-2">
+                      <Link href={contentHref("certification", flagship.slug)}>
+                        Learn more
+                        <ArrowRight className="size-4" />
+                      </Link>
+                    </Button>
                   </div>
-                  <CardDescription className="mt-4 text-base leading-relaxed">
-                    Our premier certification blending actuarial science with
-                    cutting-edge AI and machine learning. Designed for
-                    professionals ready to lead the transformation of the
-                    insurance and risk industry.
-                  </CardDescription>
-                </CardHeader>
-              </div>
-            </FeatureCard>
-            <Link href="/certifications" className="mt-8 inline-block">
-              <Button variant="outline" className="gap-2">
-                View All Certifications
-                <ArrowRight className="size-4" />
-              </Button>
-            </Link>
+                </article>
+              ) : null}
+
+              {featuredJob ? (
+                <article className="flex flex-col md:border-l md:border-border md:pl-10">
+                  <p className="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground">
+                    Open opportunity
+                  </p>
+                  <h2 className="mt-4 font-display text-2xl leading-snug tracking-tight sm:text-3xl">
+                    <Link
+                      href={`/jobs/${featuredJob.slug}`}
+                      className="transition-colors hover:text-gold"
+                    >
+                      {featuredJob.title}
+                    </Link>
+                  </h2>
+                  <p className="mt-3 leading-relaxed text-muted-foreground">
+                    {featuredJob.summary ?? featuredJob.description}
+                  </p>
+                  {featuredJob.applicationDeadline ? (
+                    <p className="mt-3 font-mono text-xs text-muted-foreground">
+                      Applications close {featuredJob.applicationDeadline}
+                    </p>
+                  ) : null}
+                  <div className="mt-5">
+                    <Button asChild variant="outline" className="gap-2">
+                      <Link href={`/jobs/${featuredJob.slug}`}>
+                        View internship
+                        <ArrowRight className="size-4" />
+                      </Link>
+                    </Button>
+                  </div>
+                </article>
+              ) : null}
+            </div>
+          </section>
+        ) : null}
+
+        {/* ---------------------------------------------------------------- */}
+        <section className="border-t border-border bg-muted/40 px-4 py-20 sm:px-6 sm:py-24">
+          <div className="mx-auto max-w-3xl">
+            <FaqSection faqs={[...SITE_FAQS]} title="Questions, answered" />
           </div>
         </section>
 
-        {/* CTA */}
+        {/* ---------------------------------------------------------------- */}
         {!userId && (
-          <section className="relative overflow-hidden border-t border-border px-4 py-20 text-center sm:py-24">
+          <section className="relative overflow-hidden border-t border-border px-4 py-20 sm:px-6 sm:py-24">
             <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-gold/5" />
-            <div className="relative mx-auto max-w-xl">
+            <div className="relative mx-auto max-w-2xl text-center">
               <h2 className="font-display text-2xl tracking-tight sm:text-3xl">
-                Ready to Get Started?
+                Membership is free
               </h2>
               <p className="mt-4 leading-relaxed text-muted-foreground">
-                Membership is free. Sign up to access world-class Actuarial Data
-                Science &amp; AI education, events, and opportunities.
+                Sign up to access certifications, workshops, events, and the
+                jobs board. It takes about a minute.
               </p>
-              <Link href="/sign-up" className="mt-8 inline-block">
-                <Button size="lg" className="gap-2 shadow-md shadow-primary/20">
-                  Become a Member
+              <Button
+                asChild
+                size="lg"
+                className="mt-8 gap-2 shadow-md shadow-primary/20"
+              >
+                <Link href="/sign-up">
+                  Become a member
                   <ArrowRight className="size-4" />
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </div>
           </section>
         )}

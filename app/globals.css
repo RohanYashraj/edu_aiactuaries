@@ -190,35 +190,8 @@
   }
 }
 
-@keyframes upcoming-scroll {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(calc(-50% - 0.75rem));
-  }
-}
-
 .animate-fade-in-up {
   animation: fade-in-up 0.6s ease-out both;
-}
-
-.upcoming-marquee-track {
-  animation: upcoming-scroll 32s linear infinite;
-}
-
-.upcoming-marquee:hover .upcoming-marquee-track {
-  animation-play-state: paused;
-}
-
-.upcoming-marquee:focus-within .upcoming-marquee-track {
-  animation-play-state: paused;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .upcoming-marquee-track {
-    animation: none;
-  }
 }
 
 /* ------------------------------------------------------------------ */
@@ -286,4 +259,26 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Reduced motion                                                     */
+/*                                                                     */
+/*  Placed last on purpose: these selectors have the same specificity  */
+/*  as the rules they override, so source order is what makes them win.*/
+/* ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in-up {
+    animation: none;
+  }
+
+  .gradient-border::before {
+    animation: none;
+  }
+
+  [data-slot="card"],
+  [data-slot="card"]:hover {
+    transition: none;
+    transform: none;
+  }
 }
