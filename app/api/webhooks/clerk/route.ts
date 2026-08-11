@@ -24,7 +24,6 @@ export async function POST(req: NextRequest) {
 
       const email = email_addresses?.[0]?.email_address ?? "";
       const name = [first_name, last_name].filter(Boolean).join(" ") || "User";
-      const role = (public_metadata?.role as "member" | "employer") || "member";
 
       await convex.mutation(api.users.upsertFromClerk, {
         clerkId: id,
@@ -32,7 +31,18 @@ export async function POST(req: NextRequest) {
         username: username ?? undefined,
         name,
         imageUrl: image_url ?? undefined,
-        role,
+        // Only used when the user is first created. Convex owns the role from
+        // then on — the mutation ignores this field on update so a profile
+        // edit can't demote an admin.
+        role:
+          eventType === "user.created"
+            ? ((public_metadata?.role as
+                | "member"
+                | "employer"
+                | "content_manager"
+                | "admin"
+                | undefined) ?? "member")
+            : undefined,
       });
     }
 

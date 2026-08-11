@@ -1,18 +1,71 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
+/* -------------------------------------------------------------------------- */
+/*  Shared validators — exported so function args and the admin zod schemas    */
+/*  stay in lockstep with the table definitions.                              */
+/* -------------------------------------------------------------------------- */
+
+export const roleValidator = v.union(
+  v.literal("member"),
+  v.literal("employer"),
+  v.literal("content_manager"),
+  v.literal("admin"),
+);
+
+export const actuarialBodyValidator = v.union(
+  v.literal("IAI"),
+  v.literal("IFoA"),
+  v.literal("SOA"),
+  v.literal("CAS"),
+  v.literal("other"),
+  v.literal("none"),
+);
+
+export const experienceLevelValidator = v.union(
+  v.literal("student"),
+  v.literal("graduate"),
+  v.literal("working_professional"),
+  v.literal("academic"),
+  v.literal("other"),
+);
+
 export default defineSchema({
   users: defineTable({
+    /* --- identity --- */
     clerkId: v.string(),
     email: v.string(),
     username: v.optional(v.string()),
     name: v.string(),
     imageUrl: v.optional(v.string()),
-    role: v.union(v.literal("member"), v.literal("employer")),
+    role: roleValidator,
     approvedAt: v.optional(v.number()),
+
+    /* --- membership profile (all optional: pre-existing rows have none) --- */
+    onboardingCompletedAt: v.optional(v.number()),
+    headline: v.optional(v.string()),
+    institution: v.optional(v.string()),
+    actuarialBody: v.optional(actuarialBodyValidator),
+    actuarialBodyOther: v.optional(v.string()),
+    examsCleared: v.optional(v.array(v.string())),
+    examsClearedCount: v.optional(v.number()),
+    interests: v.optional(v.array(v.string())),
+    experienceLevel: v.optional(experienceLevelValidator),
+    country: v.optional(v.string()),
+    linkedinUrl: v.optional(v.string()),
+
+    /* --- employer-only --- */
+    companyName: v.optional(v.string()),
+    companyWebsite: v.optional(v.string()),
+
+    /* --- audit --- */
+    roleUpdatedAt: v.optional(v.number()),
+    roleUpdatedBy: v.optional(v.id("users")),
+    lastSeenAt: v.optional(v.number()),
   })
     .index("by_clerkId", ["clerkId"])
-    .index("by_role", ["role"]),
+    .index("by_role", ["role"])
+    .index("by_email", ["email"]),
 
   certifications: defineTable({
     title: v.string(),

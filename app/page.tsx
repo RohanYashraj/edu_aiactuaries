@@ -2,7 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { SignInButton } from "@clerk/nextjs";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Award, ArrowRightToLine, Keyboard, Calendar } from "lucide-react";
+import { ArrowRight, Award, ArrowRightToLine, Calendar } from "lucide-react";
 
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -185,18 +185,13 @@ export default async function Home() {
               </div>
             ) : (
               <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-                <Link
-                  href="https://forms.gle/u6sKYR3WVXpgGDGS7"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <Link href="/sign-up">
                   <Button
                     size="lg"
                     className="gap-2 shadow-md shadow-primary/20"
                   >
                     Become a Member
-                    <ArrowRightToLine className="size-4" />
-                    <Keyboard className="size-4" />
+                    <ArrowRight className="size-4" />
                   </Button>
                 </Link>
                 <SignInButton mode="modal">
@@ -438,17 +433,13 @@ export default async function Home() {
                 Ready to Get Started?
               </h2>
               <p className="mt-4 leading-relaxed text-muted-foreground">
-                Apply for membership to be among the first to access world-class
-                Actuarial Data Science & AI education.
+                Membership is free. Sign up to access world-class Actuarial Data
+                Science &amp; AI education, events, and opportunities.
               </p>
-              <Link href="https://forms.gle/u6sKYR3WVXpgGDGS7"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-8 inline-block">
+              <Link href="/sign-up" className="mt-8 inline-block">
                 <Button size="lg" className="gap-2 shadow-md shadow-primary/20">
                   Become a Member
-                  <ArrowRightToLine className="size-4" />
-                  <Keyboard className="size-4" />
+                  <ArrowRight className="size-4" />
                 </Button>
               </Link>
             </div>

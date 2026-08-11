@@ -31,6 +31,10 @@ const navLinks = [
 export function Header() {
   const pathname = usePathname();
 
+  /** External links are absolute URLs and can never match a pathname. */
+  const isActive = (href: string, external: boolean) =>
+    !external && (pathname === href || pathname.startsWith(`${href}/`));
+
   return (
     <header className="sticky top-0 z-50 border-b border-primary-foreground/10 bg-primary text-primary-foreground">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
@@ -48,7 +52,7 @@ export function Header() {
           {/* Desktop navigation */}
           <nav className="hidden items-center gap-1 md:flex">
             {navLinks.map(({ href, label, external }) => {
-              const isActive = pathname.startsWith(href);
+              const active = isActive(href, external);
 
               return (
                 <Link
@@ -61,7 +65,7 @@ export function Header() {
                     variant="ghost"
                     size="sm"
                     className={
-                      isActive
+                      active
                         ? "bg-primary-foreground/15 font-semibold text-primary-foreground hover:bg-primary-foreground/20 hover:text-primary-foreground"
                         : "text-primary-foreground/80 hover:bg-primary-foreground/10 hover:text-primary-foreground"
                     }
@@ -93,12 +97,21 @@ export function Header() {
           <SignedOut>
             <SignInButton mode="modal">
               <Button
+                variant="ghost"
                 size="sm"
-                className="bg-gold text-gold-foreground shadow-sm hover:bg-gold/90"
+                className="hidden text-primary-foreground/80 hover:bg-primary-foreground/10 hover:text-primary-foreground sm:inline-flex"
               >
                 Sign In
               </Button>
             </SignInButton>
+            <Link href="/sign-up">
+              <Button
+                size="sm"
+                className="bg-gold text-gold-foreground shadow-sm hover:bg-gold/90"
+              >
+                Become a Member
+              </Button>
+            </Link>
           </SignedOut>
 
           {/* Mobile hamburger */}
@@ -120,7 +133,7 @@ export function Header() {
               <Separator />
               <nav className="flex flex-col gap-1 px-4">
                 {navLinks.map(({ href, label, external }) => {
-                  const isActive = pathname.startsWith(href);
+                  const active = isActive(href, external);
 
                   return (
                     <SheetClose asChild key={href}>
@@ -130,7 +143,7 @@ export function Header() {
                         rel={external ? "noopener noreferrer" : undefined}
                       >
                         <Button
-                          variant={isActive ? "secondary" : "ghost"}
+                          variant={active ? "secondary" : "ghost"}
                           className="w-full justify-start"
                         >
                           {label}
@@ -154,12 +167,16 @@ export function Header() {
                 </SignedIn>
                 <SignedOut>
                   <SheetClose asChild>
-                    <Link href="/waitlist">
-                      <Button
-                        variant="outline"
-                        className="w-full justify-start gap-2 "
-                      >
-                        Apply
+                    <Link href="/sign-up">
+                      <Button className="w-full justify-start bg-gold text-gold-foreground hover:bg-gold/90">
+                        Become a Member
+                      </Button>
+                    </Link>
+                  </SheetClose>
+                  <SheetClose asChild>
+                    <Link href="/sign-in">
+                      <Button variant="outline" className="w-full justify-start">
+                        Sign In
                       </Button>
                     </Link>
                   </SheetClose>

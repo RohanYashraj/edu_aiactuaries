@@ -10,6 +10,8 @@
 
 import type * as certifications from "../certifications.js";
 import type * as jobs from "../jobs.js";
+import type * as lib_auth from "../lib/auth.js";
+import type * as migrations from "../migrations.js";
 import type * as users from "../users.js";
 import type * as workshops from "../workshops.js";
 
@@ -22,6 +24,8 @@ import type {
 declare const fullApi: ApiFromModules<{
   certifications: typeof certifications;
   jobs: typeof jobs;
+  "lib/auth": typeof lib_auth;
+  migrations: typeof migrations;
   users: typeof users;
   workshops: typeof workshops;
 }>;

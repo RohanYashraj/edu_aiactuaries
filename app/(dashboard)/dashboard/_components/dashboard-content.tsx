@@ -156,7 +156,7 @@ export function DashboardContent() {
                     {draftJobCount} draft
                   </span>
                 </div>
-                <Link href="/jobs/post">
+                <Link href="/dashboard/jobs/new">
                   <Button variant="outline" size="sm">
                     Post a Job
                   </Button>

@@ -2,13 +2,16 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
+import { fetchQuery } from "convex/nextjs";
+
+import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
 const dashboardNav = [
   { href: "/dashboard", label: "Overview" },
-  { href: "/jobs/post", label: "Post a Job" },
-  { href: "/account", label: "Account" },
+  { href: "/dashboard/profile", label: "Profile" },
+  { href: "/dashboard/account", label: "Account" },
 ] as const;
 
 export default async function DashboardLayout({
@@ -16,11 +19,29 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { userId } = await auth();
+  const { userId, getToken } = await auth();
 
   if (!userId) {
     redirect("/sign-in");
   }
+
+  // Authoritative onboarding gate. The middleware can't do this — a brand-new
+  // user has no publicMetadata to read.
+  const user = await fetchQuery(
+    api.users.getCurrentUser,
+    {},
+    { token: (await getToken({ template: "convex" })) ?? undefined },
+  );
+
+  // `user` is null only in the brief window before the Clerk webhook (or the
+  // client-side syncCurrentUser fallback) creates the Convex row. Don't bounce
+  // them to onboarding for that; the page itself handles the empty case.
+  if (user && !user.onboardingCompletedAt) {
+    redirect("/onboarding");
+  }
+
+  const isContentManager =
+    user?.role === "admin" || user?.role === "content_manager";
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -69,6 +90,16 @@ export default async function DashboardLayout({
                 Back to Site
               </Button>
             </Link>
+            {isContentManager ? (
+              <Link href="/admin">
+                <Button
+                  size="sm"
+                  className="bg-gold text-gold-foreground shadow-sm hover:bg-gold/90"
+                >
+                  Admin
+                </Button>
+              </Link>
+            ) : null}
             <UserButton
               afterSignOutUrl="/"
               appearance={{
