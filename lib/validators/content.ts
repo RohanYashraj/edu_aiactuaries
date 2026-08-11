@@ -213,6 +213,7 @@ export const contentFormSchema = z
     endDate: optionalString,
     dateLabel: optionalString,
     location: optionalString,
+    scheduledFor: optionalString,
 
     order: z.coerce.number().int().min(0),
     featured: z.boolean(),
@@ -246,7 +247,13 @@ export const contentFormSchema = z
     (data) =>
       !data.startDate || !data.endDate || data.endDate >= data.startDate,
     { message: "End date must be on or after the start date", path: ["endDate"] },
-  );
+  )
+  // Scheduled publishing is driven by a cron reading this field; without it the
+  // document would sit in "scheduled" forever.
+  .refine((data) => data.status !== "scheduled" || Boolean(data.scheduledFor), {
+    message: "Pick a date and time to publish, or choose a different status",
+    path: ["scheduledFor"],
+  });
 
 export type ContentFormValues = z.infer<typeof contentFormSchema>;
 

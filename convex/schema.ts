@@ -468,36 +468,5 @@ export default defineSchema({
     .index("by_storageId", ["storageId"])
     .index("by_createdAt", ["createdAt"]),
 
-  // Legacy. Superseded by `content`; kept defined until the rows are migrated
-  // and cleared, because Convex refuses to drop a non-empty table.
-  certifications: defineTable({
-    title: v.string(),
-    slug: v.string(),
-    description: v.string(),
-    highlight: v.boolean(),
-    order: v.number(),
-    imageUrl: v.optional(v.string()),
-  })
-    .index("by_slug", ["slug"])
-    .index("by_order", ["order"]),
-
-  workshops: defineTable({
-    title: v.string(),
-    slug: v.string(),
-    description: v.string(),
-    date: v.optional(v.string()),
-    location: v.optional(v.string()),
-    status: v.union(
-      v.literal("upcoming"),
-      v.literal("ongoing"),
-      v.literal("completed"),
-    ),
-    order: v.number(),
-    imageUrl: v.optional(v.string()),
-  })
-    .index("by_slug", ["slug"])
-    .index("by_status", ["status"])
-    .index("by_order", ["order"])
-    .index("by_status_and_order", ["status", "order"]),
 
 });

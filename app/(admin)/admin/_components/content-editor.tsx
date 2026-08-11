@@ -58,6 +58,15 @@ const toDateInput = (ms?: number) =>
 const fromDateInput = (value?: string) =>
   value ? Date.parse(`${value}T00:00:00.000Z`) : undefined;
 
+/** Scheduling needs a time too, so it uses datetime-local (browser timezone). */
+const toDateTimeInput = (ms?: number) => {
+  if (ms === undefined) return "";
+  const d = new Date(ms - new Date(ms).getTimezoneOffset() * 60_000);
+  return d.toISOString().slice(0, 16);
+};
+const fromDateTimeInput = (value?: string) =>
+  value ? new Date(value).getTime() : undefined;
+
 function initialValues(doc?: Doc<"content">): ContentFormValues {
   if (!doc) {
     return {
@@ -87,6 +96,7 @@ function initialValues(doc?: Doc<"content">): ContentFormValues {
     endDate: toDateInput(doc.endDate),
     dateLabel: doc.dateLabel,
     location: doc.location,
+    scheduledFor: toDateTimeInput(doc.scheduledFor),
     order: doc.order,
     featured: doc.featured,
     featureRank: doc.featureRank,
@@ -176,6 +186,7 @@ export function ContentEditor({
       endDate: fromDateInput(data.endDate),
       dateLabel: data.dateLabel,
       location: data.location,
+      scheduledFor: fromDateTimeInput(data.scheduledFor),
       order: data.order,
       featured: data.featured,
       featureRank: data.featured ? (data.featureRank ?? 0) : undefined,
@@ -225,6 +236,7 @@ export function ContentEditor({
         "dateLabel",
         "location",
         "featureRank",
+        "scheduledFor",
         "seo",
       ] as const) {
         if (cleared(field)) unset.push(field);
@@ -483,6 +495,24 @@ export function ContentEditor({
               />
             </div>
           </div>
+
+          {values.status === "scheduled" ? (
+            <div className="space-y-2 rounded-lg border border-gold/30 bg-gold/5 p-4">
+              <Label htmlFor="scheduledFor">Publish at</Label>
+              <Input
+                id="scheduledFor"
+                type="datetime-local"
+                className="max-w-xs"
+                value={values.scheduledFor ?? ""}
+                onChange={(e) => set("scheduledFor", e.target.value)}
+              />
+              <p className="text-xs text-muted-foreground">
+                Goes live automatically within 15 minutes of this time. Uses
+                your local timezone.
+              </p>
+              {error("scheduledFor")}
+            </div>
+          ) : null}
 
           <div className="space-y-2">
             <Label htmlFor="dateLabel">Date label</Label>

@@ -2,7 +2,6 @@ import { v } from "convex/values";
 import { internalMutation } from "./_generated/server";
 import { roleValidator } from "./schema";
 import { seedContentDocs } from "./seedData";
-import { slugify } from "./lib/slug";
 
 /**
  * One-off maintenance mutations. All `internalMutation`, so none of them are
@@ -103,86 +102,6 @@ export const seedContent = internalMutation({
   },
 });
 
-/**
- * Copies rows from the legacy `certifications` and `workshops` tables into
- * `content`. Run before the UI switches over. Rows already migrated (matched by
- * slug) are left alone so this is safe to re-run.
- */
-export const migrateLegacyTables = internalMutation({
-  args: {},
-  handler: async (ctx) => {
-    const now = Date.now();
-    let certifications = 0;
-    let workshops = 0;
-
-    for (const row of await ctx.db.query("certifications").collect()) {
-      const slug = row.slug || slugify(row.title);
-      const existing = await ctx.db
-        .query("content")
-        .withIndex("by_slug", (q) => q.eq("slug", slug))
-        .unique();
-      if (existing) continue;
-
-      await ctx.db.insert("content", {
-        type: "certification",
-        slug,
-        status: "published",
-        title: row.title,
-        summary: row.description,
-        body: row.description,
-        coverImagePath: row.imageUrl,
-        order: row.order,
-        featured: row.highlight,
-        featureRank: row.highlight ? 0 : undefined,
-        publishedAt: row._creationTime,
-        updatedAt: now,
-        details: { kind: "certification", enrollmentStatus: "open" },
-      });
-      certifications += 1;
-    }
-
-    for (const row of await ctx.db.query("workshops").collect()) {
-      const slug = row.slug || slugify(row.title);
-      const existing = await ctx.db
-        .query("content")
-        .withIndex("by_slug", (q) => q.eq("slug", slug))
-        .unique();
-      if (existing) continue;
-
-      // Legacy `date` was a free-text string; keep it as the display label and
-      // only set startDate when it actually parses.
-      const parsed = row.date ? Date.parse(row.date) : NaN;
-      const location = row.location ?? "";
-      const mode = /hybrid/i.test(location)
-        ? ("hybrid" as const)
-        : /online/i.test(location)
-          ? ("online" as const)
-          : ("in_person" as const);
-
-      await ctx.db.insert("content", {
-        type: "workshop",
-        slug,
-        status: "published",
-        title: row.title,
-        summary: row.description,
-        body: row.description,
-        coverImagePath: row.imageUrl,
-        startDate: Number.isNaN(parsed) ? undefined : parsed,
-        dateLabel: row.date,
-        location: row.location,
-        order: row.order,
-        featured: false,
-        publishedAt: row._creationTime,
-        updatedAt: now,
-        details: { kind: "workshop", lifecycle: row.status, mode },
-      });
-      workshops += 1;
-    }
-
-    return { certifications, workshops };
-  },
-});
-
 /* -------------------------------------------------------------------------- */
 /*  Retiring the jobs feature                                                 */
 /*                                                                            */
@@ -203,4 +122,15 @@ export const migrateLegacyTables = internalMutation({
 /*       role is "employer" to "member". Convex validates every existing row   */
 /*       against the new schema on deploy, and "employer" is no longer a valid */
 /*       role.                                                                 */
+/* -------------------------------------------------------------------------- */
+
+/* -------------------------------------------------------------------------- */
+/*  Retiring the legacy content tables                                        */
+/*                                                                            */
+/*  `certifications` and `workshops` have been migrated into `content` and     */
+/*  dropped from the schema, so clearLegacyTables no longer compiles and has   */
+/*  been removed. On a deployment that still has them, run                     */
+/*  migrateLegacyTables, then clear both tables from the Convex dashboard      */
+/*  (Data -> table -> Clear table) before pushing this schema — Convex refuses */
+/*  to drop a non-empty table.                                                 */
 /* -------------------------------------------------------------------------- */

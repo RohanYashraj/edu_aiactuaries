@@ -8,18 +8,18 @@
  * @module
  */
 
-import type * as certifications from "../certifications.js";
 import type * as content from "../content.js";
 import type * as contentAdmin from "../contentAdmin.js";
+import type * as crons from "../crons.js";
 import type * as lib_auth from "../lib/auth.js";
 import type * as lib_slug from "../lib/slug.js";
 import type * as media from "../media.js";
 import type * as migrations from "../migrations.js";
 import type * as registrations from "../registrations.js";
+import type * as scheduled from "../scheduled.js";
 import type * as seedData from "../seedData.js";
 import type * as settings from "../settings.js";
 import type * as users from "../users.js";
-import type * as workshops from "../workshops.js";
 
 import type {
   ApiFromModules,
@@ -28,18 +28,18 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
-  certifications: typeof certifications;
   content: typeof content;
   contentAdmin: typeof contentAdmin;
+  crons: typeof crons;
   "lib/auth": typeof lib_auth;
   "lib/slug": typeof lib_slug;
   media: typeof media;
   migrations: typeof migrations;
   registrations: typeof registrations;
+  scheduled: typeof scheduled;
   seedData: typeof seedData;
   settings: typeof settings;
   users: typeof users;
-  workshops: typeof workshops;
 }>;
 
 /**
