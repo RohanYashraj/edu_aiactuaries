@@ -71,3 +71,137 @@ export function jsonLdDocument(nodes: (JsonLdNode | null | undefined)[]) {
   const graph = nodes.filter((node): node is JsonLdNode => Boolean(node));
   return { "@context": "https://schema.org", "@graph": graph };
 }
+
+/* -------------------------------------------------------------------------- */
+/*  Content entities                                                          */
+/* -------------------------------------------------------------------------- */
+
+type ContentLike = {
+  type: "event" | "workshop" | "certification" | "program" | "news";
+  slug: string;
+  title: string;
+  summary: string;
+  startDate?: number;
+  endDate?: number;
+  location?: string;
+  publishedAt?: number;
+  updatedAt?: number;
+  coverImageUrl?: string | null;
+  details: { kind: string; mode?: string; venue?: string } & Record<string, unknown>;
+};
+
+const iso = (ms?: number) =>
+  ms === undefined ? undefined : new Date(ms).toISOString();
+
+/**
+ * Maps a content document onto the schema.org type search engines actually
+ * reward: Course for certifications, Event for events/programs/workshops,
+ * Article for news.
+ */
+export function contentSchema(doc: ContentLike, url: string): JsonLdNode {
+  const image = doc.coverImageUrl ? [doc.coverImageUrl] : [absoluteUrl(defaultOgImage)];
+
+  if (doc.type === "certification") {
+    return {
+      "@type": "Course",
+      "@id": `${url}#course`,
+      name: doc.title,
+      description: doc.summary,
+      url,
+      image,
+      provider: { "@id": ORGANIZATION_ID },
+      // Google requires at least one instance to show course rich results.
+      hasCourseInstance: {
+        "@type": "CourseInstance",
+        courseMode: doc.details.mode === "in_person" ? "onsite" : "online",
+        courseWorkload: (doc.details.durationLabel as string) ?? undefined,
+      },
+    };
+  }
+
+  if (doc.type === "news") {
+    return {
+      "@type": "Article",
+      "@id": `${url}#article`,
+      headline: doc.title,
+      description: doc.summary,
+      url,
+      image,
+      datePublished: iso(doc.publishedAt),
+      dateModified: iso(doc.updatedAt ?? doc.publishedAt),
+      publisher: { "@id": ORGANIZATION_ID },
+      author: { "@id": ORGANIZATION_ID },
+    };
+  }
+
+  const isOnline = doc.details.mode === "online";
+  return {
+    "@type": doc.type === "workshop" ? "EducationEvent" : "Event",
+    "@id": `${url}#event`,
+    name: doc.title,
+    description: doc.summary,
+    url,
+    image,
+    startDate: iso(doc.startDate),
+    endDate: iso(doc.endDate ?? doc.startDate),
+    eventAttendanceMode: isOnline
+      ? "https://schema.org/OnlineEventAttendanceMode"
+      : doc.details.mode === "hybrid"
+        ? "https://schema.org/MixedEventAttendanceMode"
+        : "https://schema.org/OfflineEventAttendanceMode",
+    location: isOnline
+      ? { "@type": "VirtualLocation", url }
+      : {
+          "@type": "Place",
+          name: doc.details.venue ?? doc.location ?? siteName,
+          address: doc.location ?? "",
+        },
+    organizer: { "@id": ORGANIZATION_ID },
+  };
+}
+
+type JobLike = {
+  title: string;
+  summary?: string;
+  description: string;
+  company: string;
+  location: string;
+  type: string;
+  remote?: boolean;
+  salaryLabel?: string;
+  publishedAt?: number;
+  validThrough?: number;
+  _creationTime: number;
+};
+
+const EMPLOYMENT_TYPES: Record<string, string> = {
+  "full-time": "FULL_TIME",
+  "part-time": "PART_TIME",
+  contract: "CONTRACTOR",
+  internship: "INTERN",
+};
+
+export function jobPostingSchema(job: JobLike, url: string): JsonLdNode {
+  return {
+    "@type": "JobPosting",
+    "@id": `${url}#jobposting`,
+    title: job.title,
+    description: job.summary ?? job.description,
+    url,
+    datePosted: iso(job.publishedAt ?? job._creationTime),
+    // Google warns when validThrough is missing and eventually drops the listing.
+    validThrough: iso(job.validThrough),
+    employmentType: EMPLOYMENT_TYPES[job.type] ?? "OTHER",
+    hiringOrganization: {
+      "@type": "Organization",
+      name: job.company,
+    },
+    jobLocation: {
+      "@type": "Place",
+      address: { "@type": "PostalAddress", addressLocality: job.location },
+    },
+    ...(job.remote
+      ? { jobLocationType: "TELECOMMUTE", applicantLocationRequirements: { "@type": "Country", name: "India" } }
+      : {}),
+  };
+}

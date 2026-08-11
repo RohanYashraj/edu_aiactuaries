@@ -77,6 +77,8 @@ export const ctaValidator = v.object({
 export const partnerValidator = v.object({
   name: v.string(),
   role: v.optional(v.string()),
+  /** Editor-written sentence about the partnership; falls back to a generic one. */
+  note: v.optional(v.string()),
   logoStorageId: v.optional(v.id("_storage")),
   /** Legacy asset under /public, e.g. "/ifoa.svg". */
   logoPath: v.optional(v.string()),

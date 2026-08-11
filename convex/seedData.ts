@@ -38,6 +38,7 @@ export type SeedContent = {
   partners?: {
     name: string;
     role?: string;
+    note?: string;
     logoPath?: string;
     logoAlt?: string;
     href?: string;
@@ -94,6 +95,7 @@ We look forward to welcoming motivated students who are keen to explore and buil
     {
       name: "Institute and Faculty of Actuaries (IFoA), UK",
       role: "Knowledge Partner",
+      note: "We are honored to have the Institute and Faculty of Actuaries (IFoA), UK as our Knowledge Partner this year, supporting and promoting the program among students aspiring to enter the actuarial profession.",
       logoPath: "/ifoa.svg",
       logoAlt: "IFoA logo",
       invertInDark: true,

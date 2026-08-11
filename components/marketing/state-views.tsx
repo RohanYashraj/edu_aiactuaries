@@ -12,16 +12,16 @@ export function LoadingState() {
 
 export function EmptyState({
   icon,
-  title,
+  title = "Nothing here yet",
   description,
 }: {
-  icon: ReactNode;
-  title: string;
+  icon?: ReactNode;
+  title?: string;
   description: string;
 }) {
   return (
     <div className="rounded-xl border border-dashed border-border py-16 text-center">
-      <div className="mx-auto mb-3">{icon}</div>
+      {icon ? <div className="mx-auto mb-3">{icon}</div> : null}
       <p className="font-display text-lg">{title}</p>
       <p className="mt-1 text-sm text-muted-foreground">{description}</p>
     </div>

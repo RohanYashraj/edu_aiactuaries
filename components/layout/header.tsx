@@ -26,6 +26,7 @@ const navLinks = [
   { href: "/workshops", label: "Workshops", external: false },
   { href: "/events", label: "Events", external: false },
   { href: "/jobs", label: "Jobs", external: false },
+  { href: "/news", label: "News", external: false },
 ] as const;
 
 export function Header() {

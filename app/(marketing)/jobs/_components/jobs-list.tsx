@@ -1,14 +1,10 @@
-"use client";
-
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
+import Link from "next/link";
 import { Briefcase, MapPin } from "lucide-react";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import {
   EmptyState,
-  LoadingState,
   MarketingListCard,
   MetaIconRow,
 } from "@/components/marketing";
@@ -20,13 +16,19 @@ const typeColors: Record<string, "default" | "secondary" | "outline"> = {
   internship: "secondary",
 };
 
-export function JobsList() {
-  const jobs = useQuery(api.jobs.listPublishedSummary);
+export type JobSummary = {
+  _id: string;
+  title: string;
+  summary?: string;
+  description: string;
+  company: string;
+  location: string;
+  type: string;
+  slug?: string;
+};
 
-  if (jobs === undefined) {
-    return <LoadingState />;
-  }
-
+/** Presentational; the route fetches on the server so crawlers see the list. */
+export function JobsList({ jobs }: { jobs: JobSummary[] }) {
   if (jobs.length === 0) {
     return (
       <EmptyState
@@ -39,44 +41,44 @@ export function JobsList() {
 
   return (
     <div className="grid gap-6">
-      {jobs.map((job, i) => (
-        <MarketingListCard
-          key={job._id}
-          title={job.title}
-          description={job.description}
-          descriptionClassName="line-clamp-2"
-          badge={
-            <Badge
-              variant={typeColors[job.type] ?? "outline"}
-              className="shrink-0 capitalize"
-            >
-              {job.type.replace("-", " ")}
-            </Badge>
-          }
-          footer={
-            <>
-              <MetaIconRow
-                items={[
-                  {
-                    icon: <Briefcase className="size-4" />,
-                    label: job.company,
-                  },
-                  {
-                    icon: <MapPin className="size-4" />,
-                    label: job.location,
-                  },
-                ]}
-              />
-              <Link href={`/jobs/${job._id}`}>
-                <Button variant="outline" size="sm" className="mt-5">
-                  View Details
-                </Button>
-              </Link>
-            </>
-          }
-          delayMs={i * 100}
-        />
-      ))}
+      {jobs.map((job, i) => {
+        // Fall back to the id only for legacy rows that predate slugs; the
+        // detail route redirects those to the canonical URL.
+        const href = `/jobs/${job.slug ?? job._id}`;
+
+        return (
+          <MarketingListCard
+            key={job._id}
+            title={job.title}
+            description={job.summary ?? job.description}
+            descriptionClassName="line-clamp-2"
+            badge={
+              <Badge
+                variant={typeColors[job.type] ?? "outline"}
+                className="shrink-0 capitalize"
+              >
+                {job.type.replace("-", " ")}
+              </Badge>
+            }
+            footer={
+              <>
+                <MetaIconRow
+                  items={[
+                    { icon: <Briefcase className="size-4" />, label: job.company },
+                    { icon: <MapPin className="size-4" />, label: job.location },
+                  ]}
+                />
+                <Link href={href}>
+                  <Button variant="outline" size="sm" className="mt-5">
+                    View Details
+                  </Button>
+                </Link>
+              </>
+            }
+            delayMs={i * 100}
+          />
+        );
+      })}
     </div>
   );
 }

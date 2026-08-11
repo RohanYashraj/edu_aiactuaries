@@ -1,8 +1,3 @@
-"use client";
-
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import type { Id } from "@/convex/_generated/dataModel";
 import {
   ArrowLeft,
   ArrowRight,
@@ -13,39 +8,21 @@ import {
   MapPin,
   Users,
 } from "lucide-react";
+import Link from "next/link";
+
+import type { Doc } from "@/convex/_generated/dataModel";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import Link from "next/link";
-import { DetailHero, LoadingState, MetaIconRow } from "@/components/marketing";
+import { DetailHero, MetaIconRow } from "@/components/marketing";
+import { FaqSection } from "@/components/content/faq-section";
 
-export function JobDetail({ jobId }: { jobId: string }) {
-  const job = useQuery(api.jobs.getById, {
-    id: jobId as Id<"jobs">,
-  });
-
-  if (job === undefined) {
-    return <LoadingState />;
-  }
-
-  if (job === null) {
-    return (
-      <div className="space-y-4 text-center">
-        <p className="text-lg font-medium">Job not found</p>
-        <p className="text-sm text-muted-foreground">
-          This listing may have been removed or the link is incorrect.
-        </p>
-        <Link href="/jobs">
-          <Button variant="outline" className="gap-1.5">
-            <ArrowLeft className="size-4" />
-            Back to Jobs
-          </Button>
-        </Link>
-      </div>
-    );
-  }
-
+/**
+ * Presentational only — the job document is fetched on the server by the route
+ * so the listing (and its JobPosting structured data) is in the initial HTML.
+ */
+export function JobDetail({ job }: { job: Doc<"jobs"> }) {
   const hasInternshipMetadata =
     job.type === "internship" &&
     job.periodStart &&
@@ -182,6 +159,10 @@ export function JobDetail({ jobId }: { jobId: string }) {
             </a>
           </Button>
         </div>
+
+        {job.faqs?.length ? (
+          <FaqSection faqs={job.faqs} className="mt-16" />
+        ) : null}
       </article>
     );
   }
