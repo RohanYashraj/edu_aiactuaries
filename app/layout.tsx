@@ -12,7 +12,6 @@ import { Toaster } from "@/components/ui/sonner";
 import { JsonLd } from "@/components/seo/json-ld";
 import { organizationSchema, webSiteSchema } from "@/lib/jsonld";
 import {
-  defaultOgImage,
   siteBrandTitle,
   siteDescription,
   siteName,
@@ -53,20 +52,13 @@ export const metadata: Metadata = {
     title: { default: siteBrandTitle, template: `%s — ${siteName}` },
     description: siteDescription,
     url: siteUrl,
-    images: [
-      {
-        url: defaultOgImage,
-        width: 1200,
-        height: 630,
-        alt: siteName,
-      },
-    ],
+    // No `images` here: app/opengraph-image.tsx generates the card, and an
+    // explicit value would override it.
   },
   twitter: {
     card: "summary_large_image",
     title: { default: siteBrandTitle, template: `%s — ${siteName}` },
     description: siteDescription,
-    images: [defaultOgImage],
   },
 };
 

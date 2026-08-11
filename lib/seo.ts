@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 
 import {
   absoluteUrl,
-  defaultOgImage,
   siteDescription,
   siteName,
   siteBrandTitle,
@@ -14,7 +13,11 @@ export type BuildMetadataInput = {
   description?: string;
   /** Site-relative path, e.g. "/events/summer-program-2026". Used for the canonical. */
   path?: string;
-  /** Absolute or site-relative image URL. Defaults to the site social card. */
+  /**
+   * Explicit social image. Leave unset on routes that have an
+   * opengraph-image file — setting `images` here would override the generated
+   * card, which is what shipped the site-wide logo on every page.
+   */
   image?: string;
   imageAlt?: string;
   /** Override the canonical entirely (syndicated content). */
@@ -34,7 +37,7 @@ export function buildMetadata({
   title,
   description = siteDescription,
   path,
-  image = defaultOgImage,
+  image,
   imageAlt,
   canonical,
   noindex = false,
@@ -44,8 +47,20 @@ export function buildMetadata({
   modifiedTime,
 }: BuildMetadataInput = {}): Metadata {
   const url = canonical ?? (path ? absoluteUrl(path) : undefined);
-  const imageUrl = absoluteUrl(image);
   const resolvedTitle = title ?? siteBrandTitle;
+
+  // Omitted entirely when no image is given, so Next's file-based
+  // opengraph-image convention supplies the generated card.
+  const images = image
+    ? [
+        {
+          url: absoluteUrl(image),
+          width: 1200,
+          height: 630,
+          alt: imageAlt ?? resolvedTitle,
+        },
+      ]
+    : undefined;
 
   return {
     title,
@@ -61,20 +76,13 @@ export function buildMetadata({
       ...(url ? { url } : {}),
       ...(publishedTime ? { publishedTime } : {}),
       ...(modifiedTime ? { modifiedTime } : {}),
-      images: [
-        {
-          url: imageUrl,
-          width: 1200,
-          height: 630,
-          alt: imageAlt ?? resolvedTitle,
-        },
-      ],
+      ...(images ? { images } : {}),
     },
     twitter: {
       card: "summary_large_image",
       title: resolvedTitle,
       description,
-      images: [imageUrl],
+      ...(images ? { images: images.map((i) => i.url) } : {}),
     },
   };
 }

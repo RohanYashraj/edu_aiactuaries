@@ -1,11 +1,13 @@
 import type { MetadataRoute } from "next";
 
+import { api } from "@/convex/_generated/api";
+import { fetchQuery } from "@/lib/convex-server";
 import { absoluteUrl } from "@/lib/site";
+import { contentHref } from "@/lib/content";
 
-/**
- * Static routes only for now. Later extended with published `content`
- * documents pulled from Convex.
- */
+/** Regenerated hourly; publishing also flushes it via revalidateContent. */
+export const revalidate = 3600;
+
 const staticRoutes: {
   path: string;
   changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"];
@@ -19,13 +21,33 @@ const staticRoutes: {
   { path: "/faq", changeFrequency: "monthly", priority: 0.6 },
 ];
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const lastModified = new Date();
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const now = new Date();
 
-  return staticRoutes.map(({ path, changeFrequency, priority }) => ({
-    url: absoluteUrl(path),
-    lastModified,
-    changeFrequency,
-    priority,
-  }));
+  const entries: MetadataRoute.Sitemap = staticRoutes.map(
+    ({ path, changeFrequency, priority }) => ({
+      url: absoluteUrl(path),
+      lastModified: now,
+      changeFrequency,
+      priority,
+    }),
+  );
+
+  // Every published document, so detail pages are discoverable without a
+  // crawler having to walk the index pages to find them.
+  const published = await fetchQuery(api.content.listForSitemap, {});
+
+  for (const doc of published) {
+    // An editor marking something noindex shouldn't then have it advertised.
+    if (doc.noindex) continue;
+
+    entries.push({
+      url: absoluteUrl(contentHref(doc.type, doc.slug)),
+      lastModified: new Date(doc.updatedAt ?? doc.publishedAt ?? Date.now()),
+      changeFrequency: doc.type === "news" ? "yearly" : "monthly",
+      priority: doc.type === "certification" ? 0.8 : 0.6,
+    });
+  }
+
+  return entries;
 }

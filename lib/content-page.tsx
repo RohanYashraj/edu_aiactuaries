@@ -5,17 +5,11 @@ import { auth } from "@clerk/nextjs/server";
 import { api } from "@/convex/_generated/api";
 import { ContentDetail } from "@/components/content/content-detail";
 import { JsonLd } from "@/components/seo/json-ld";
-import { breadcrumbSchema, contentSchema, faqSchema } from "@/lib/jsonld";
+import { contentSchema, faqSchema } from "@/lib/jsonld";
 import { buildMetadata } from "@/lib/seo";
 import { absoluteUrl } from "@/lib/site";
 import { fetchQuery } from "@/lib/convex-server";
-import {
-  CONTENT_ROUTES,
-  contentHref,
-  contentSectionLabel,
-  toIsoDate,
-  type ContentType,
-} from "@/lib/content";
+import { contentHref, toIsoDate, type ContentType } from "@/lib/content";
 
 /**
  * Shared implementation behind /events/[slug], /workshops/[slug],
@@ -74,19 +68,14 @@ export async function renderContentPage(
   if (!doc) notFound();
 
   const url = absoluteUrl(contentHref(doc.type, doc.slug));
-  const sectionLabel = contentSectionLabel(doc.type);
 
   return (
     <>
       <JsonLd
-        nodes={[
-          contentSchema(doc, url),
-          faqSchema(doc.faqs ?? []),
-          breadcrumbSchema([
-            { label: sectionLabel, href: CONTENT_ROUTES[doc.type] },
-            { label: doc.title, href: contentHref(doc.type, doc.slug) },
-          ]),
-        ]}
+        // BreadcrumbList is emitted by the Breadcrumbs component inside
+        // ContentDetail, from the same array it renders — emitting it here too
+        // would duplicate the node.
+        nodes={[contentSchema(doc, url), faqSchema(doc.faqs ?? [])]}
       />
       <ContentDetail doc={doc} signedIn={Boolean(userId)} />
     </>
