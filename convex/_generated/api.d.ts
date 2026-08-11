@@ -9,9 +9,14 @@
  */
 
 import type * as certifications from "../certifications.js";
+import type * as content from "../content.js";
+import type * as contentAdmin from "../contentAdmin.js";
 import type * as jobs from "../jobs.js";
 import type * as lib_auth from "../lib/auth.js";
+import type * as lib_slug from "../lib/slug.js";
+import type * as media from "../media.js";
 import type * as migrations from "../migrations.js";
+import type * as seedData from "../seedData.js";
 import type * as users from "../users.js";
 import type * as workshops from "../workshops.js";
 
@@ -23,9 +28,14 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   certifications: typeof certifications;
+  content: typeof content;
+  contentAdmin: typeof contentAdmin;
   jobs: typeof jobs;
   "lib/auth": typeof lib_auth;
+  "lib/slug": typeof lib_slug;
+  media: typeof media;
   migrations: typeof migrations;
+  seedData: typeof seedData;
   users: typeof users;
   workshops: typeof workshops;
 }>;

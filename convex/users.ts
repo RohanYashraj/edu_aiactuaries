@@ -10,8 +10,26 @@ import { getCurrentUser as resolveCurrentUser, requireAdmin, requireUser } from 
 /** How long between `lastSeenAt` writes. Keeps syncCurrentUser from writing on every page load. */
 const SEEN_DEBOUNCE_MS = 60_000;
 
+/**
+ * The Clerk webhook route calls Convex over HTTP with no user identity, so
+ * these two mutations cannot use `requireUser`. Without a shared secret they
+ * are unauthenticated writes to the users table — `deleteByClerkId` in
+ * particular would let anyone who guesses a Clerk id delete that account's
+ * record. Fails closed if the secret is unset on either side.
+ */
+function assertWebhookSecret(provided: string | undefined) {
+  const expected = process.env.CONVEX_WEBHOOK_SECRET;
+  if (!expected) {
+    throw new Error(
+      "CONVEX_WEBHOOK_SECRET is not set on the Convex deployment; refusing the write",
+    );
+  }
+  if (provided !== expected) throw new Error("Invalid webhook secret");
+}
+
 export const upsertFromClerk = mutation({
   args: {
+    secret: v.string(),
     clerkId: v.string(),
     email: v.string(),
     username: v.optional(v.string()),
@@ -21,6 +39,8 @@ export const upsertFromClerk = mutation({
     role: v.optional(roleValidator),
   },
   handler: async (ctx, args) => {
+    assertWebhookSecret(args.secret);
+
     const existing = await ctx.db
       .query("users")
       .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId))
@@ -53,8 +73,10 @@ export const upsertFromClerk = mutation({
 });
 
 export const deleteByClerkId = mutation({
-  args: { clerkId: v.string() },
+  args: { secret: v.string(), clerkId: v.string() },
   handler: async (ctx, args) => {
+    assertWebhookSecret(args.secret);
+
     const user = await ctx.db
       .query("users")
       .withIndex("by_clerkId", (q) => q.eq("clerkId", args.clerkId))

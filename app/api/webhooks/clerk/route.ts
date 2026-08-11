@@ -9,6 +9,15 @@ export async function POST(req: NextRequest) {
   try {
     const evt = await verifyWebhook(req);
 
+    // Convex has no user identity for these calls, so the mutations
+    // authenticate on a shared secret instead. Must match the value set on the
+    // Convex deployment (`npx convex env set CONVEX_WEBHOOK_SECRET ...`).
+    const secret = process.env.CONVEX_WEBHOOK_SECRET;
+    if (!secret) {
+      console.error("CONVEX_WEBHOOK_SECRET is not set");
+      return new Response("Server misconfigured", { status: 500 });
+    }
+
     const eventType = evt.type;
 
     if (eventType === "user.created" || eventType === "user.updated") {
@@ -26,6 +35,7 @@ export async function POST(req: NextRequest) {
       const name = [first_name, last_name].filter(Boolean).join(" ") || "User";
 
       await convex.mutation(api.users.upsertFromClerk, {
+        secret,
         clerkId: id,
         email,
         username: username ?? undefined,
@@ -49,7 +59,7 @@ export async function POST(req: NextRequest) {
     if (eventType === "user.deleted") {
       const { id } = evt.data;
       if (id) {
-        await convex.mutation(api.users.deleteByClerkId, { clerkId: id });
+        await convex.mutation(api.users.deleteByClerkId, { secret, clerkId: id });
       }
     }
 
