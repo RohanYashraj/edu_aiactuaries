@@ -13,6 +13,7 @@ import {
   PartnerCallout,
   type Partner,
 } from "@/components/content/partner-callout";
+import { RegisterActions } from "@/components/content/register-actions";
 import {
   CONTENT_ROUTES,
   contentSectionLabel,
@@ -66,7 +67,13 @@ function IconList({
  * which is what keeps a new event looking like every other event without
  * anyone hand-building a page.
  */
-export function ContentDetail({ doc }: { doc: ContentDetailDoc }) {
+export function ContentDetail({
+  doc,
+  signedIn,
+}: {
+  doc: ContentDetailDoc;
+  signedIn: boolean;
+}) {
   const sectionLabel = contentSectionLabel(doc.type);
   const sectionHref = CONTENT_ROUTES[doc.type];
   const date = formatContentDate(doc);
@@ -80,6 +87,13 @@ export function ContentDetail({ doc }: { doc: ContentDetailDoc }) {
     doc.location?.toLowerCase().includes(rawModeLabel.toLowerCase())
       ? null
       : rawModeLabel;
+
+  // Events, programmes and workshops can be registered for in-app;
+  // certifications and news keep plain call-to-action links.
+  const isRegistrable =
+    doc.type === "event" || doc.type === "program" || doc.type === "workshop";
+  const registrationUrl =
+    "registrationUrl" in details ? details.registrationUrl : undefined;
 
   const knowledgePartner = doc.partners?.find((p) => p.role);
   const primaryCta = doc.ctas?.find((cta) => cta.variant !== "secondary");
@@ -278,7 +292,16 @@ export function ContentDetail({ doc }: { doc: ContentDetailDoc }) {
         <FaqSection faqs={doc.faqs} className="mt-16" />
       ) : null}
 
-      {primaryCta || secondaryCtas.length > 0 ? (
+      {isRegistrable ? (
+        <div className="mt-12 border-t border-border pt-8">
+          <RegisterActions
+            contentId={doc._id}
+            externalUrl={registrationUrl}
+            externalLabel={primaryCta?.label ?? "Register externally"}
+            signedIn={signedIn}
+          />
+        </div>
+      ) : primaryCta || secondaryCtas.length > 0 ? (
         <div className="mt-12 flex flex-wrap items-center gap-3 border-t border-border pt-8">
           {primaryCta ? (
             <Button

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { auth } from "@clerk/nextjs/server";
 
 import { api } from "@/convex/_generated/api";
 import { ContentDetail } from "@/components/content/content-detail";
@@ -66,7 +67,10 @@ export async function renderContentPage(
   allowed: readonly ContentType[],
 ) {
   const { slug } = await params;
-  const doc = await loadDoc(slug, allowed);
+  const [doc, { userId }] = await Promise.all([
+    loadDoc(slug, allowed),
+    auth(),
+  ]);
   if (!doc) notFound();
 
   const url = absoluteUrl(contentHref(doc.type, doc.slug));
@@ -84,7 +88,7 @@ export async function renderContentPage(
           ]),
         ]}
       />
-      <ContentDetail doc={doc} />
+      <ContentDetail doc={doc} signedIn={Boolean(userId)} />
     </>
   );
 }

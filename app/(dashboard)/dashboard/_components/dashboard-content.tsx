@@ -1,23 +1,30 @@
 "use client";
 
+import Link from "next/link";
 import { useQuery } from "convex/react";
+import { Bookmark, CalendarCheck, Loader2, User } from "lucide-react";
+
 import { api } from "@/convex/_generated/api";
-import { BookOpen, GraduationCap, Loader2, User } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
-import Link from "next/link";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { contentHref, formatContentDate } from "@/lib/content";
+
+/** Fields onboarding collects; how many are filled drives the nudge below. */
+const PROFILE_FIELDS = [
+  "headline",
+  "institution",
+  "actuarialBody",
+  "experienceLevel",
+  "country",
+  "interests",
+] as const;
 
 export function DashboardContent() {
   const currentUser = useQuery(api.users.getCurrentUser);
+  const registrations = useQuery(api.registrations.listMine);
+  const saved = useQuery(api.registrations.listSaved);
 
   if (currentUser === undefined) {
     return (
@@ -39,130 +46,187 @@ export function DashboardContent() {
     );
   }
 
-  const initials = currentUser?.name
-    ? currentUser.name
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .toUpperCase()
-        .slice(0, 2)
-    : "U";
+  const initials =
+    currentUser.name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2) || "U";
+
+  const filled = PROFILE_FIELDS.filter((field) => {
+    const value = currentUser[field];
+    return Array.isArray(value) ? value.length > 0 : Boolean(value);
+  }).length;
+  const profileComplete = Math.round((filled / PROFILE_FIELDS.length) * 100);
+
+  // Past registrations stay in the record but don't need dashboard space.
+  // `isPast` is computed server-side; see registrations.listMine.
+  const upcoming = (registrations ?? []).filter((row) => !row.isPast);
 
   return (
     <div className="space-y-8">
-      {/* Welcome */}
-      <div className="animate-fade-in-up flex items-center gap-4">
-        {currentUser && (
-          <Avatar className="size-14 border-2 border-gold/20 shadow-md shadow-gold/10">
-            <AvatarImage src={currentUser.imageUrl} alt={currentUser.name} />
-            <AvatarFallback className="bg-primary text-lg text-primary-foreground">
-              {initials}
-            </AvatarFallback>
-          </Avatar>
-        )}
+      <header className="flex flex-wrap items-center gap-4">
+        <Avatar className="size-14">
+          {currentUser.imageUrl ? (
+            <AvatarImage src={currentUser.imageUrl} alt="" />
+          ) : null}
+          <AvatarFallback>{initials}</AvatarFallback>
+        </Avatar>
         <div>
           <h1 className="font-display text-2xl tracking-tight sm:text-3xl">
-            Welcome back{currentUser ? `, ${currentUser.name}` : ""}!
+            Welcome back, {currentUser.name.split(" ")[0]}
           </h1>
-          <div className="mt-1.5 flex items-center gap-2">
-            <Badge
-              className="bg-gold/15 capitalize text-gold hover:bg-gold/20"
-            >
-              {currentUser?.role ?? "member"}
-            </Badge>
-            {currentUser?.email && (
-              <span className="text-sm text-muted-foreground">
-                {currentUser.email}
-              </span>
-            )}
-          </div>
+          <p className="mt-0.5 text-sm text-muted-foreground">
+            {currentUser.email}
+          </p>
         </div>
-      </div>
+        {currentUser.role !== "member" ? (
+          <Badge className="bg-gold/15 capitalize text-gold hover:bg-gold/20">
+            {currentUser.role.replace("_", " ")}
+          </Badge>
+        ) : null}
+      </header>
 
-      <Separator />
-
-      {/* Quick stats cards */}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        <Card className="animate-fade-in-up" style={{ animationDelay: "0ms" }}>
-          <CardHeader className="flex flex-row items-center gap-3 space-y-0">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10">
-              <GraduationCap className="size-5 text-primary" />
-            </div>
+      {profileComplete < 100 ? (
+        <Card>
+          <CardContent className="flex flex-wrap items-center justify-between gap-4 py-5">
             <div>
-              <CardTitle className="text-base">Certifications</CardTitle>
-              <CardDescription>Your enrolled programmes</CardDescription>
+              <p className="font-medium">
+                Your profile is {profileComplete}% complete
+              </p>
+              <p className="mt-0.5 text-sm text-muted-foreground">
+                A fuller profile helps us point the right programs your way.
+              </p>
             </div>
-          </CardHeader>
-          <CardContent>
-            <p className="mb-3 text-sm text-muted-foreground">
-              Enrollment tracking coming soon.
-            </p>
-            <Link href="/programs#certifications-heading">
-              <Button variant="outline" size="sm">
-                Browse Certifications
-              </Button>
-            </Link>
+            <Button asChild variant="outline" size="sm">
+              <Link href="/dashboard/profile">Complete profile</Link>
+            </Button>
           </CardContent>
         </Card>
+      ) : null}
 
-        <Card
-          className="animate-fade-in-up"
-          style={{ animationDelay: "100ms" }}
-        >
-          <CardHeader className="flex flex-row items-center gap-3 space-y-0">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10">
-              <BookOpen className="size-5 text-primary" />
-            </div>
-            <div>
-              <CardTitle className="text-base">Workshops</CardTitle>
-              <CardDescription>Upcoming sessions</CardDescription>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <p className="mb-3 text-sm text-muted-foreground">
-              Workshop registration coming soon.
-            </p>
-            <Link href="/programs#workshops-heading">
-              <Button variant="outline" size="sm">
-                View Workshops
+      <section>
+        <div className="mb-4 flex items-center justify-between gap-4">
+          <h2 className="flex items-center gap-2 font-display text-xl tracking-tight">
+            <CalendarCheck className="size-5 text-gold" aria-hidden="true" />
+            Your registrations
+          </h2>
+          <Button asChild variant="ghost" size="sm">
+            <Link href="/events">Browse events</Link>
+          </Button>
+        </div>
+
+        {registrations === undefined ? (
+          <Card>
+            <CardContent className="flex justify-center py-10">
+              <Loader2 className="size-5 animate-spin text-muted-foreground" />
+            </CardContent>
+          </Card>
+        ) : upcoming.length === 0 ? (
+          <Card>
+            <CardContent className="py-10 text-center">
+              <p className="text-muted-foreground">
+                You haven&apos;t registered for anything yet.
+              </p>
+              <Button asChild variant="outline" size="sm" className="mt-4">
+                <Link href="/events">See what&apos;s coming up</Link>
               </Button>
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
+            </CardContent>
+          </Card>
+        ) : (
+          <ul className="divide-y divide-border rounded-xl border border-border">
+            {upcoming.map((row) => (
+              <li
+                key={row._id}
+                className="flex flex-wrap items-center justify-between gap-3 px-5 py-4"
+              >
+                <div className="min-w-0">
+                  <Link
+                    href={contentHref(row.content!.type, row.content!.slug)}
+                    className="font-medium hover:text-gold"
+                  >
+                    {row.content!.title}
+                  </Link>
+                  <p className="mt-0.5 font-mono text-xs text-muted-foreground">
+                    {formatContentDate(row.content!) ?? "Date to be confirmed"}
+                    {row.content!.location ? ` · ${row.content!.location}` : ""}
+                  </p>
+                </div>
+                <Badge variant="secondary" className="capitalize">
+                  {row.status}
+                </Badge>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section>
+        <h2 className="mb-4 flex items-center gap-2 font-display text-xl tracking-tight">
+          <Bookmark className="size-5 text-muted-foreground" aria-hidden="true" />
+          Saved
+        </h2>
+
+        {saved === undefined ? (
+          <Card>
+            <CardContent className="flex justify-center py-10">
+              <Loader2 className="size-5 animate-spin text-muted-foreground" />
+            </CardContent>
+          </Card>
+        ) : saved.length === 0 ? (
+          <Card>
+            <CardContent className="py-10 text-center text-muted-foreground">
+              Nothing saved yet. Use Save on any program to keep it here.
+            </CardContent>
+          </Card>
+        ) : (
+          <ul className="grid gap-4 sm:grid-cols-2">
+            {saved.map((row) => (
+              <li key={row._id}>
+                <Card className="h-full">
+                  <CardContent className="py-5">
+                    <Link
+                      href={contentHref(row.content!.type, row.content!.slug)}
+                      className="font-medium hover:text-gold"
+                    >
+                      {row.content!.title}
+                    </Link>
+                    <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
+                      {row.content!.summary}
+                    </p>
+                  </CardContent>
+                </Card>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
 
       <Card>
         <CardHeader className="flex flex-row items-center gap-3 space-y-0">
           <User className="size-5 text-muted-foreground" />
-            <CardTitle className="text-base">Account Details</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-3 text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Name</span>
-                <span className="font-medium">{currentUser.name}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Email</span>
-                <span className="font-medium">{currentUser.email}</span>
-              </div>
-              {currentUser.username && (
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Username</span>
-                  <span className="font-medium">@{currentUser.username}</span>
-                </div>
-              )}
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Role</span>
-                <Badge
-                  className="bg-gold/15 capitalize text-gold hover:bg-gold/20"
-                >
-                  {currentUser.role}
-                </Badge>
-              </div>
+          <CardTitle className="text-base">Account</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <dl className="grid gap-3 text-sm">
+            <div className="flex justify-between gap-4">
+              <dt className="text-muted-foreground">Name</dt>
+              <dd className="font-medium">{currentUser.name}</dd>
             </div>
-          </CardContent>
-        </Card>
+            <div className="flex justify-between gap-4">
+              <dt className="text-muted-foreground">Email</dt>
+              <dd className="font-medium">{currentUser.email}</dd>
+            </div>
+            {currentUser.institution ? (
+              <div className="flex justify-between gap-4">
+                <dt className="text-muted-foreground">Institution</dt>
+                <dd className="font-medium">{currentUser.institution}</dd>
+              </div>
+            ) : null}
+          </dl>
+        </CardContent>
+      </Card>
     </div>
   );
 }

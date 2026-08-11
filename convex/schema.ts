@@ -384,6 +384,40 @@ export default defineSchema({
     }),
 
   /**
+   * Members registering for an event or programme.
+   *
+   * Registrations previously went to a Google Form, so the Institute had no
+   * record of who signed up and no way to reach them. Keeping them here is the
+   * reason the member dashboard has anything real to show.
+   */
+  registrations: defineTable({
+    contentId: v.id("content"),
+    userId: v.id("users"),
+    status: v.union(
+      v.literal("registered"),
+      v.literal("waitlisted"),
+      v.literal("cancelled"),
+    ),
+    /** Free-form answers to any questions the programme asks. */
+    answers: v.optional(v.record(v.string(), v.string())),
+    createdAt: v.number(),
+  })
+    // Enforces one registration per member per item at the query level; the
+    // mutation checks this index before inserting.
+    .index("by_user_content", ["userId", "contentId"])
+    .index("by_user_createdAt", ["userId", "createdAt"])
+    .index("by_content_createdAt", ["contentId", "createdAt"]),
+
+  /** Bookmarks. Same one-per-pair shape as registrations. */
+  savedItems: defineTable({
+    userId: v.id("users"),
+    contentId: v.id("content"),
+    createdAt: v.number(),
+  })
+    .index("by_user_content", ["userId", "contentId"])
+    .index("by_user_createdAt", ["userId", "createdAt"]),
+
+  /**
    * Single-row settings table. Exists so the homepage achievement figures can
    * be corrected by an editor instead of a deploy — and so no unverified
    * number ever has to be hardcoded to ship the design.

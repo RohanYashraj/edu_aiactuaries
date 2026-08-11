@@ -38,6 +38,7 @@ import {
 } from "@/lib/validators/content";
 import { DetailsFields } from "./details-fields";
 import { CoverImageField } from "./cover-image-field";
+import { ContentRegistrations } from "./content-registrations";
 
 type ContentType = ContentFormValues["type"];
 type ContentStatus = ContentFormValues["status"];
@@ -264,6 +265,13 @@ export function ContentEditor({
     else router.refresh();
   }
 
+  // Registrations only exist once the item is saved and can be signed up for.
+  const registrable =
+    Boolean(doc) &&
+    (values.type === "event" ||
+      values.type === "program" ||
+      values.type === "workshop");
+
   const error = (key: string) =>
     errors[key] ? (
       <p className="text-xs text-destructive">{errors[key]}</p>
@@ -317,6 +325,9 @@ export function ContentEditor({
           </TabsTrigger>
           <TabsTrigger value="blocks">Blocks</TabsTrigger>
           <TabsTrigger value="seo">SEO</TabsTrigger>
+          {registrable ? (
+            <TabsTrigger value="registrations">Registrations</TabsTrigger>
+          ) : null}
         </TabsList>
 
         {/* ---------------------------------------------------------------- */}
@@ -771,6 +782,11 @@ export function ContentEditor({
             </div>
           </div>
         </TabsContent>
+        {registrable ? (
+          <TabsContent value="registrations">
+            <ContentRegistrations contentId={doc!._id} />
+          </TabsContent>
+        ) : null}
       </Tabs>
     </form>
   );
