@@ -1,24 +1,13 @@
 import { WorkshopsList } from "./_components/workshops-list";
 import { SectionHeader } from "@/components/marketing";
+import { buildMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "Workshops — Sri Sathya Sai Institute of Actuaries",
+export const metadata = buildMetadata({
+  title: "Workshops",
   description:
     "Hands-on workshops in actuarial data science, AI, and risk analytics.",
-  openGraph: {
-    images: [
-      {
-        url: "/sssia.png",
-        width: 1200,
-        height: 630,
-        alt: "Sri Sathya Sai Institute of Actuaries",
-      },
-    ],
-  },
-  twitter: {
-    images: ["/sssia.png"],
-  },
-};
+  path: "/workshops",
+});
 
 export default function WorkshopsPage() {
   return (

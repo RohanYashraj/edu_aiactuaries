@@ -1,24 +1,13 @@
 import { CertificationsList } from "./_components/certifications-list";
 import { SectionHeader } from "@/components/marketing";
+import { buildMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "Certifications — Sri Sathya Sai Institute of Actuaries",
+export const metadata = buildMetadata({
+  title: "Certifications",
   description:
     "Explore our professional certifications in Actuarial Data Science and AI, featuring the flagship AI Actuaries Certification.",
-  openGraph: {
-    images: [
-      {
-        url: "/sssia.png",
-        width: 1200,
-        height: 630,
-        alt: "Sri Sathya Sai Institute of Actuaries",
-      },
-    ],
-  },
-  twitter: {
-    images: ["/sssia.png"],
-  },
-};
+  path: "/certifications",
+});
 
 export default function CertificationsPage() {
   return (

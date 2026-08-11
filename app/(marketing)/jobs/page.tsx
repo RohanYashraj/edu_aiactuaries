@@ -1,24 +1,13 @@
 import { JobsList } from "./_components/jobs-list";
 import { SectionHeader } from "@/components/marketing";
+import { buildMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "Jobs — Sri Sathya Sai Institute of Actuaries",
+export const metadata = buildMetadata({
+  title: "Jobs",
   description:
     "Explore job opportunities in actuarial data science and AI posted by leading employers.",
-  openGraph: {
-    images: [
-      {
-        url: "/sssia.png",
-        width: 1200,
-        height: 630,
-        alt: "Sri Sathya Sai Institute of Actuaries",
-      },
-    ],
-  },
-  twitter: {
-    images: ["/sssia.png"],
-  },
-};
+  path: "/jobs",
+});
 
 export default function JobsPage() {
   return (

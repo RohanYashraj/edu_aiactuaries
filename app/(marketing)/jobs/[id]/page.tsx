@@ -2,10 +2,7 @@ import { JobDetail } from "./_components/job-detail";
 
 import type { Metadata } from "next";
 
-const siteName = "Sri Sathya Sai Institute of Actuaries";
-
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://sssia.org";
+import { buildMetadata } from "@/lib/seo";
 
 const internshipJobId = "jn714k9hspp01s5vh153z52ra5840te4";
 
@@ -16,55 +13,27 @@ const internshipDescription =
 export async function generateMetadata({
   params,
 }: {
-  params: { id: string };
+  // Next 16 passes params as a Promise. Typing it as a plain object made
+  // `params.id` undefined at runtime, so every job page emitted
+  // canonical=/jobs/undefined.
+  params: Promise<{ id: string }>;
 }): Promise<Metadata> {
-  const id = params.id;
-  const pageUrl = `${siteUrl}/jobs/${id}`;
+  const { id } = await params;
 
   if (id === internshipJobId) {
-    const ogImageUrl = `${siteUrl}/sssia.png`;
-    return {
-      title: `${internshipTitle} — Powered by aiactuaries.org`,
+    return buildMetadata({
+      title: internshipTitle,
       description: internshipDescription,
-      alternates: { canonical: pageUrl },
-      openGraph: {
-        type: "website",
-        siteName,
-        title: internshipTitle,
-        description: internshipDescription,
-        url: pageUrl,
-        images: [
-          {
-            url: ogImageUrl,
-            width: 1200,
-            height: 630,
-            alt: internshipTitle,
-          },
-        ],
-      },
-      twitter: {
-        card: "summary_large_image",
-        title: internshipTitle,
-        description: internshipDescription,
-        images: [ogImageUrl],
-      },
-    };
+      path: `/jobs/${id}`,
+    });
   }
 
-  return {
-    title: `Job Details — Powered by aiactuaries.org`,
+  return buildMetadata({
+    title: "Job Details",
     description:
       "Explore job opportunities in actuarial data science and AI posted by leading employers.",
-    alternates: { canonical: pageUrl },
-    openGraph: {
-      type: "website",
-      siteName,
-      title: "Job Details",
-      description:
-        "Explore job opportunities in actuarial data science and AI posted by leading employers.",
-      url: pageUrl,
-    },
-  };
+    path: `/jobs/${id}`,
+  });
 }
 
 export default async function JobDetailPage({

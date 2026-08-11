@@ -1,24 +1,13 @@
 import { EventsList } from "./_components/events-list";
 import { SectionHeader } from "@/components/marketing";
+import { buildMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "Events — Sri Sathya Sai Institute of Actuaries",
+export const metadata = buildMetadata({
+  title: "Events",
   description:
     "Upcoming programs, intensives, and events from the Sri Sathya Sai Institute of Actuaries.",
-  openGraph: {
-    images: [
-      {
-        url: "/sssia.png",
-        width: 1200,
-        height: 630,
-        alt: "Sri Sathya Sai Institute of Actuaries",
-      },
-    ],
-  },
-  twitter: {
-    images: ["/sssia.png"],
-  },
-};
+  path: "/events",
+});
 
 export default function EventsPage() {
   return (

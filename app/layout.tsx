@@ -8,13 +8,15 @@ import "./globals.css";
 import ConvexClientProvider from "@/components/ConvexClientProvider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Analytics } from "@vercel/analytics/next"
-
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://sssia.org";
-
-const siteName = "Sri Sathya Sai Institute of Actuaries";
-const siteBrandTitle =
-  "Sri Sathya Sai Institute of Actuaries - Powered by aiactuaries.org";
+import { JsonLd } from "@/components/seo/json-ld";
+import { organizationSchema, webSiteSchema } from "@/lib/jsonld";
+import {
+  defaultOgImage,
+  siteBrandTitle,
+  siteDescription,
+  siteName,
+  siteUrl,
+} from "@/lib/site";
 
 const dmSerifDisplay = DM_Serif_Display({
   weight: "400",
@@ -35,20 +37,24 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: siteBrandTitle,
-  description:
-    "Pioneering the future of Actuarial Science through AI and Data Science. Professional certifications, workshops, and career opportunities.",
+  // Pages set a bare title (e.g. "Events"); the template appends the brand so
+  // no page has to repeat it — this is what caused the duplicated titles.
+  title: { default: siteBrandTitle, template: `%s — ${siteName}` },
+  description: siteDescription,
   metadataBase: new URL(siteUrl),
+  alternates: { canonical: "/" },
   icons: {
     icon: "/icon.png",
   },
   openGraph: {
     type: "website",
     siteName,
-    title: { default: siteBrandTitle, template: "%s" },
+    title: { default: siteBrandTitle, template: `%s — ${siteName}` },
+    description: siteDescription,
+    url: siteUrl,
     images: [
       {
-        url: "/sssia.png",
+        url: defaultOgImage,
         width: 1200,
         height: 630,
         alt: siteName,
@@ -57,8 +63,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: { default: siteBrandTitle, template: "%s" },
-    images: ["/sssia.png"],
+    title: { default: siteBrandTitle, template: `%s — ${siteName}` },
+    description: siteDescription,
+    images: [defaultOgImage],
   },
 };
 
@@ -69,6 +76,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <JsonLd nodes={[organizationSchema(), webSiteSchema()]} />
+      </head>
       <body
         className={`${dmSerifDisplay.variable} ${plusJakarta.variable} ${geistMono.variable} antialiased`}
       >
