@@ -20,14 +20,38 @@ export default async function AdminLayout({
   const { userId, getToken } = await auth();
   if (!userId) redirect("/sign-in");
 
-  const user = await fetchQuery(
-    api.users.getCurrentUser,
-    {},
-    { token: (await getToken({ template: "convex" })) ?? undefined },
-  );
+  const token = await getToken({ template: "convex" });
+  const user = token
+    ? await fetchQuery(api.users.getCurrentUser, {}, { token })
+    : null;
 
-  const isAdmin = user?.role === "admin";
-  if (!isAdmin && user?.role !== "content_manager") redirect("/dashboard");
+  // Distinguish "not allowed" from "couldn't ask". A null token (missing Clerk
+  // JWT template) or a user row that hasn't synced yet both used to look
+  // identical to a denial, so a real admin was bounced to /dashboard with no
+  // explanation — which reads as "the CMS is broken".
+  if (!token || !user) {
+    return (
+      <div className="mx-auto flex min-h-screen max-w-lg flex-col items-center justify-center px-4 text-center">
+        <h1 className="font-display text-2xl tracking-tight">
+          Can&apos;t verify your account
+        </h1>
+        <p className="mt-3 leading-relaxed text-muted-foreground">
+          {token
+            ? "Your account hasn't finished syncing yet. Reload in a few seconds."
+            : "Authentication isn't configured correctly — the Clerk JWT template named “convex” is missing."}
+        </p>
+        <Link
+          href="/dashboard"
+          className="mt-6 text-sm underline underline-offset-4 hover:text-foreground"
+        >
+          Back to dashboard
+        </Link>
+      </div>
+    );
+  }
+
+  const isAdmin = user.role === "admin";
+  if (!isAdmin && user.role !== "content_manager") redirect("/dashboard");
 
   return (
     <div className="flex min-h-screen flex-col">

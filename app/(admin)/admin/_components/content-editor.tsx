@@ -144,6 +144,21 @@ export function ContentEditor({
     const data = parsed.data;
     setIsSaving(true);
 
+    const seo =
+      data.metaTitle ||
+      data.metaDescription ||
+      data.canonicalUrl ||
+      data.keywords?.length ||
+      data.noindex
+        ? {
+            metaTitle: data.metaTitle,
+            metaDescription: data.metaDescription,
+            canonicalUrl: data.canonicalUrl,
+            keywords: data.keywords ?? [],
+            noindex: data.noindex,
+          }
+        : undefined;
+
     const payload = {
       type: data.type,
       slug: data.slug,
@@ -163,51 +178,90 @@ export function ContentEditor({
       order: data.order,
       featured: data.featured,
       featureRank: data.featured ? (data.featureRank ?? 0) : undefined,
-      tags: data.tags?.length ? data.tags : undefined,
-      facts: data.facts?.length ? data.facts : undefined,
-      ctas: data.ctas?.length ? data.ctas : undefined,
-      partners: data.partners?.length ? data.partners : undefined,
-      faqs: data.faqs?.length ? data.faqs : undefined,
-      details: data.details,
-      seo:
-        data.metaTitle ||
-        data.metaDescription ||
-        data.canonicalUrl ||
-        data.keywords?.length ||
-        data.noindex
-          ? {
-              metaTitle: data.metaTitle,
-              metaDescription: data.metaDescription,
-              canonicalUrl: data.canonicalUrl,
-              keywords: data.keywords?.length ? data.keywords : undefined,
-              noindex: data.noindex,
-            }
-          : undefined,
+      // Empty arrays are sent as [] rather than undefined: undefined is
+      // stripped from mutation args, so deleting the last FAQ or tag used to
+      // leave the old list in place.
+      tags: data.tags ?? [],
+      facts: data.facts ?? [],
+      ctas: data.ctas ?? [],
+      // Storage ids round-trip through the form as plain strings.
+      partners: (data.partners ?? []) as {
+        name: string;
+        role?: string;
+        note?: string;
+        logoStorageId?: Id<"_storage">;
+        logoPath?: string;
+        logoAlt?: string;
+        href?: string;
+        invertInDark?: boolean;
+      }[],
+      faqs: data.faqs ?? [],
+      // Merge over what's stored so a field this form doesn't model can never
+      // be dropped, even if the zod union drifts from the Convex one again.
+      // Cast: storage ids round-trip through the form as plain strings, but
+      // the values genuinely are storage ids at runtime.
+      details: (doc
+        ? { ...doc.details, ...data.details }
+        : data.details) as Doc<"content">["details"],
+      seo,
     };
 
-    try {
-      const id = doc
-        ? await update({ id: doc._id, patch: payload })
-        : await create(payload);
+    // Scalars the editor has emptied. These have to be named explicitly —
+    // sending undefined would just omit the key and keep the old value.
+    const unset: string[] = [];
+    if (doc) {
+      const cleared = <K extends keyof typeof payload>(key: K) =>
+        payload[key] === undefined;
+      for (const field of [
+        "subtitle",
+        "body",
+        "badge",
+        "coverImageId",
+        "coverImagePath",
+        "coverImageAlt",
+        "startDate",
+        "endDate",
+        "dateLabel",
+        "location",
+        "featureRank",
+        "seo",
+      ] as const) {
+        if (cleared(field)) unset.push(field);
+      }
+    }
 
-      // Flush the affected pages so the editor sees their change live.
+    let saved: Id<"content"> | undefined;
+    try {
+      saved = doc
+        ? await update({ id: doc._id, patch: payload, unset })
+        : await create(payload);
+      toast.success(doc ? "Saved" : "Created");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not save");
+      setIsSaving(false);
+      return;
+    }
+
+    // Deliberately after the success toast and outside the save try/catch: a
+    // revalidation failure used to surface as "could not save" on content that
+    // had in fact been created, so editors retried and produced duplicates.
+    try {
       await revalidateContent([
-        contentHref(data.type, data.slug ?? ""),
+        ...(doc ? [contentHref(doc.type, doc.slug)] : []),
+        ...(data.slug ? [contentHref(data.type, data.slug)] : []),
         "/events",
         "/workshops",
         "/certifications",
         "/news",
         "/",
       ]);
-
-      toast.success(doc ? "Saved" : "Created");
-      if (!doc) router.push(`/admin/content/${id}`);
-      else router.refresh();
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Could not save");
-    } finally {
-      setIsSaving(false);
+    } catch {
+      toast.info("Saved, but the public page may take a few minutes to update.");
     }
+
+    setIsSaving(false);
+    if (!doc) router.push(`/admin/content/${saved}`);
+    else router.refresh();
   }
 
   const error = (key: string) =>
@@ -323,8 +377,11 @@ export function ContentEditor({
                 type="number"
                 min={0}
                 value={values.order}
-                onChange={(e) => set("order", Number(e.target.value))}
+                onChange={(e) =>
+                  set("order", e.target.value === "" ? 0 : Number(e.target.value))
+                }
               />
+              {error("order")}
             </div>
           </div>
 
@@ -497,8 +554,14 @@ export function ContentEditor({
                   min={0}
                   className="w-20"
                   value={values.featureRank ?? 0}
-                  onChange={(e) => set("featureRank", Number(e.target.value))}
+                  onChange={(e) =>
+                    set(
+                      "featureRank",
+                      e.target.value === "" ? 0 : Number(e.target.value),
+                    )
+                  }
                 />
+                {error("featureRank")}
               </div>
             ) : null}
           </div>

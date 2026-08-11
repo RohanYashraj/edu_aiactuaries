@@ -196,11 +196,38 @@ export const create = mutation({
   },
 });
 
+/**
+ * Fields the editor is allowed to clear. Convex strips `undefined` out of
+ * mutation arguments before they reach the handler, so "set this back to
+ * empty" cannot be expressed by sending `undefined` — the key simply vanishes
+ * and `db.patch` leaves the old value in place. Clearing has to be an explicit
+ * instruction, which is what `unset` is.
+ */
+const UNSETTABLE_FIELDS = [
+  "subtitle",
+  "body",
+  "badge",
+  "coverImageId",
+  "coverImagePath",
+  "coverImageAlt",
+  "startDate",
+  "endDate",
+  "dateLabel",
+  "location",
+  "featureRank",
+  "scheduledFor",
+  "seo",
+] as const;
+
+type UnsettableField = (typeof UNSETTABLE_FIELDS)[number];
+
 export const update = mutation({
   args: {
     id: v.id("content"),
     changeNote: v.optional(v.string()),
     patch: v.object(contentPatchFields),
+    /** Names of fields to clear. See UNSETTABLE_FIELDS above. */
+    unset: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
     const actor = await requireContentManager(ctx);
@@ -208,6 +235,15 @@ export const update = mutation({
     if (!existing) throw new Error("Content not found");
 
     const patch = args.patch as Partial<Doc<"content">>;
+
+    // Reject unknown names rather than silently ignoring them, so a typo in
+    // the editor surfaces instead of quietly failing to clear a field.
+    for (const field of args.unset ?? []) {
+      if (!UNSETTABLE_FIELDS.includes(field as UnsettableField)) {
+        throw new Error(`Field "${field}" cannot be cleared`);
+      }
+      (patch as Record<string, undefined>)[field] = undefined;
+    }
 
     const nextType = patch.type ?? existing.type;
     const nextDetails = patch.details ?? existing.details;

@@ -11,9 +11,78 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { StringListField } from "@/components/admin/string-list-field";
-import type { ContentFormValues } from "@/lib/validators/content";
+import { RepeatableField } from "@/components/admin/repeatable-field";
+import type {
+  AgendaSlotValue,
+  ContentFormValues,
+  ModuleValue,
+  PersonValue,
+  WeekValue,
+} from "@/lib/validators/content";
 
 type Details = ContentFormValues["details"];
+
+/** Shared editor for speakers and instructors — same shape, different label. */
+function PeopleField({
+  label,
+  people,
+  onChange,
+}: {
+  label: string;
+  people: PersonValue[];
+  onChange: (next: PersonValue[]) => void;
+}) {
+  return (
+    <RepeatableField<PersonValue>
+      label={label}
+      value={people}
+      onChange={onChange}
+      makeEmpty={() => ({ name: "" })}
+      rowLabel={(person) => person.name || "Person"}
+      addLabel={`Add ${label.toLowerCase().replace(/s$/, "")}`}
+      renderRow={(person, update) => (
+        <div className="space-y-3">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Input
+              value={person.name}
+              onChange={(e) => update({ name: e.target.value })}
+              placeholder="Full name"
+            />
+            <Input
+              value={person.title ?? ""}
+              onChange={(e) => update({ title: e.target.value })}
+              placeholder="Role or title"
+            />
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Input
+              value={person.organization ?? ""}
+              onChange={(e) => update({ organization: e.target.value })}
+              placeholder="Organisation"
+            />
+            <Input
+              value={person.profileUrl ?? ""}
+              onChange={(e) => update({ profileUrl: e.target.value })}
+              placeholder="Profile link"
+            />
+          </div>
+          <Textarea
+            rows={2}
+            value={person.bio ?? ""}
+            onChange={(e) => update({ bio: e.target.value })}
+            placeholder="Short bio (optional)"
+          />
+        </div>
+      )}
+    />
+  );
+}
+
+/** epoch ms <-> yyyy-mm-dd, for the deadline inputs. */
+const toDateInput = (ms?: number) =>
+  ms === undefined ? "" : new Date(ms).toISOString().slice(0, 10);
+const fromDateInput = (value: string) =>
+  value ? Date.parse(`${value}T00:00:00.000Z`) : undefined;
 
 /**
  * The per-type half of the editor. One component with a switch rather than five
@@ -89,14 +158,84 @@ export function DetailsFields({
               />
             </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="registrationUrl">Registration link</Label>
-            <Input
-              id="registrationUrl"
-              value={details.registrationUrl ?? ""}
-              onChange={(e) => patch({ registrationUrl: e.target.value })}
-            />
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="space-y-2">
+              <Label htmlFor="registrationUrl">Registration link</Label>
+              <Input
+                id="registrationUrl"
+                value={details.registrationUrl ?? ""}
+                onChange={(e) => patch({ registrationUrl: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="registrationDeadline">Registration closes</Label>
+              <Input
+                id="registrationDeadline"
+                type="date"
+                value={toDateInput(details.registrationDeadline)}
+                onChange={(e) =>
+                  patch({ registrationDeadline: fromDateInput(e.target.value) })
+                }
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="capacity">Capacity</Label>
+              <Input
+                id="capacity"
+                type="number"
+                min={0}
+                value={details.capacity ?? ""}
+                onChange={(e) =>
+                  patch({
+                    capacity: e.target.value === "" ? undefined : Number(e.target.value),
+                  })
+                }
+              />
+            </div>
           </div>
+
+          <RepeatableField<AgendaSlotValue>
+            label="Agenda"
+            description="Sessions in order. The label is the time or day marker."
+            value={details.agenda ?? []}
+            onChange={(agenda) => patch({ agenda })}
+            makeEmpty={() => ({ label: "", title: "" })}
+            rowLabel={(slot) => slot.title || "Session"}
+            addLabel="Add session"
+            renderRow={(slot, update) => (
+              <div className="space-y-3">
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <Input
+                    value={slot.label}
+                    onChange={(e) => update({ label: e.target.value })}
+                    placeholder="10:00 AM / Day 1"
+                  />
+                  <Input
+                    value={slot.title}
+                    onChange={(e) => update({ title: e.target.value })}
+                    placeholder="Session title"
+                  />
+                  <Input
+                    value={slot.speaker ?? ""}
+                    onChange={(e) => update({ speaker: e.target.value })}
+                    placeholder="Speaker"
+                  />
+                </div>
+                <Textarea
+                  rows={2}
+                  value={slot.description ?? ""}
+                  onChange={(e) => update({ description: e.target.value })}
+                  placeholder="Description (optional)"
+                />
+              </div>
+            )}
+          />
+
+          <PeopleField
+            label="Speakers"
+            people={details.speakers ?? []}
+            onChange={(speakers) => patch({ speakers })}
+          />
         </div>
       );
 
@@ -151,6 +290,12 @@ export function DetailsFields({
               onChange={(e) => patch({ registrationUrl: e.target.value })}
             />
           </div>
+
+          <PeopleField
+            label="Instructors"
+            people={details.instructors ?? []}
+            onChange={(instructors) => patch({ instructors })}
+          />
         </div>
       );
 
@@ -248,6 +393,36 @@ export function DetailsFields({
               />
             </div>
           </div>
+
+          <RepeatableField<ModuleValue>
+            label="Modules"
+            value={details.modules ?? []}
+            onChange={(modules) => patch({ modules })}
+            makeEmpty={() => ({ title: "" })}
+            rowLabel={(module) => module.title || "Module"}
+            addLabel="Add module"
+            renderRow={(module, update) => (
+              <div className="space-y-3">
+                <Input
+                  value={module.title}
+                  onChange={(e) => update({ title: e.target.value })}
+                  placeholder="Module title"
+                />
+                <Textarea
+                  rows={2}
+                  value={module.description ?? ""}
+                  onChange={(e) => update({ description: e.target.value })}
+                  placeholder="What this module covers"
+                />
+                <StringListField
+                  label="Topics"
+                  value={module.topics ?? []}
+                  onChange={(topics) => update({ topics })}
+                  placeholder="Add a topic"
+                />
+              </div>
+            )}
+          />
         </div>
       );
 
@@ -302,14 +477,89 @@ export function DetailsFields({
             onChange={(v) => patch({ eligibility: v })}
             placeholder="Add a criterion"
           />
-          <div className="space-y-2">
-            <Label htmlFor="registrationUrl">Registration link</Label>
-            <Input
-              id="registrationUrl"
-              value={details.registrationUrl ?? ""}
-              onChange={(e) => patch({ registrationUrl: e.target.value })}
-            />
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="registrationUrl">Registration link</Label>
+              <Input
+                id="registrationUrl"
+                value={details.registrationUrl ?? ""}
+                onChange={(e) => patch({ registrationUrl: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="registrationDeadline">Registration closes</Label>
+              <Input
+                id="registrationDeadline"
+                type="date"
+                value={toDateInput(details.registrationDeadline)}
+                onChange={(e) =>
+                  patch({ registrationDeadline: fromDateInput(e.target.value) })
+                }
+              />
+            </div>
           </div>
+
+          <RepeatableField<WeekValue>
+            label="Week by week"
+            description="The week-by-week breakdown shown on the programme page."
+            value={details.weeklySchedule ?? []}
+            onChange={(weeklySchedule) => patch({ weeklySchedule })}
+            makeEmpty={() => ({
+              week: (details.weeklySchedule?.length ?? 0) + 1,
+              title: "",
+              focus: "",
+              topics: [],
+              tools: [],
+              outcomes: [],
+            })}
+            rowLabel={(week) => `Week ${week.week}${week.title ? ` — ${week.title}` : ""}`}
+            addLabel="Add week"
+            renderRow={(week, update) => (
+              <div className="space-y-3">
+                <div className="grid gap-3 sm:grid-cols-[6rem_1fr]">
+                  <Input
+                    type="number"
+                    min={1}
+                    value={week.week}
+                    onChange={(e) =>
+                      update({
+                        week: e.target.value === "" ? 1 : Number(e.target.value),
+                      })
+                    }
+                    placeholder="Week"
+                  />
+                  <Input
+                    value={week.title}
+                    onChange={(e) => update({ title: e.target.value })}
+                    placeholder="Week title"
+                  />
+                </div>
+                <Input
+                  value={week.focus}
+                  onChange={(e) => update({ focus: e.target.value })}
+                  placeholder="Focus for the week"
+                />
+                <StringListField
+                  label="Topics"
+                  value={week.topics}
+                  onChange={(topics) => update({ topics })}
+                  placeholder="Add a topic"
+                />
+                <StringListField
+                  label="Tools"
+                  value={week.tools}
+                  onChange={(tools) => update({ tools })}
+                  placeholder="Add a tool"
+                />
+                <StringListField
+                  label="Outcomes"
+                  value={week.outcomes}
+                  onChange={(outcomes) => update({ outcomes })}
+                  placeholder="Add an outcome"
+                />
+              </div>
+            )}
+          />
         </div>
       );
 

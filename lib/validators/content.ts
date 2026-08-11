@@ -67,6 +67,9 @@ export const partnerSchema = z.object({
   name: z.string().trim().min(1, "Name is required"),
   role: optionalString,
   note: optionalString,
+  // Uploaded logos live in Convex storage. Omitting this key silently dropped
+  // the logo off every partner that had one.
+  logoStorageId: optionalString,
   logoPath: optionalString,
   logoAlt: optionalString,
   href: optionalUrl,
@@ -78,14 +81,55 @@ export const faqSchema = z.object({
   answer: z.string().trim().min(1, "Answer is required"),
 });
 
+export const personSchema = z.object({
+  name: z.string().trim().min(1, "Name is required"),
+  title: optionalString,
+  organization: optionalString,
+  bio: optionalString,
+  photoStorageId: optionalString,
+  profileUrl: optionalUrl,
+});
+
+export const agendaSlotSchema = z.object({
+  label: z.string().trim().min(1, "Label is required"),
+  title: z.string().trim().min(1, "Title is required"),
+  description: optionalString,
+  speaker: optionalString,
+});
+
+export const moduleSchema = z.object({
+  title: z.string().trim().min(1, "Title is required"),
+  description: optionalString,
+  topics: z.array(z.string()).optional(),
+});
+
+export const weekSchema = z.object({
+  week: z.coerce.number().int().min(1),
+  title: z.string().trim().min(1, "Title is required"),
+  focus: z.string().trim().min(1, "Focus is required"),
+  topics: z.array(z.string()),
+  tools: z.array(z.string()),
+  outcomes: z.array(z.string()),
+});
+
+/**
+ * These must model EVERY field in the corresponding Convex validator in
+ * convex/schema.ts. Zod strips unknown keys, and contentAdmin.update replaces
+ * `details` wholesale — so any field missing here is silently deleted from the
+ * stored document the first time an editor presses Save.
+ */
 const eventDetails = z.object({
   kind: z.literal("event"),
   lifecycle: lifecycleEnum,
   mode: modeEnum,
   venue: optionalString,
   registrationUrl: optionalUrl,
+  registrationDeadline: z.number().optional(),
+  capacity: z.number().optional(),
   isFree: z.boolean().optional(),
   priceLabel: optionalString,
+  agenda: z.array(agendaSlotSchema).optional(),
+  speakers: z.array(personSchema).optional(),
 });
 
 const workshopDetails = z.object({
@@ -98,6 +142,7 @@ const workshopDetails = z.object({
   prerequisites: z.array(z.string()).optional(),
   learningOutcomes: z.array(z.string()).optional(),
   registrationUrl: optionalUrl,
+  instructors: z.array(personSchema).optional(),
 });
 
 const certificationDetails = z.object({
@@ -105,6 +150,7 @@ const certificationDetails = z.object({
   enrollmentStatus: z.enum(["open", "closed", "coming_soon"]),
   level: z.enum(["foundation", "professional", "advanced"]).optional(),
   durationLabel: optionalString,
+  modules: z.array(moduleSchema).optional(),
   learningOutcomes: z.array(z.string()).optional(),
   prerequisites: z.array(z.string()).optional(),
   assessment: optionalString,
@@ -124,6 +170,8 @@ const programDetails = z.object({
   coverage: z.array(z.string()).optional(),
   highlights: z.array(z.string()).optional(),
   registrationUrl: optionalUrl,
+  registrationDeadline: z.number().optional(),
+  weeklySchedule: z.array(weekSchema).optional(),
 });
 
 const newsDetails = z.object({
@@ -152,7 +200,7 @@ export const contentFormSchema = z
     summary: z
       .string()
       .trim()
-      .min(40, "Write at least a full sentence — this is the answer-first summary used for search results, cards and llms.txt")
+      .min(20, "Write at least a full sentence — this becomes the search-result description")
       .max(600, "Keep the summary under 600 characters"),
     body: optionalString,
     badge: optionalString,
@@ -225,3 +273,7 @@ export type FactValue = z.infer<typeof factSchema>;
 export type CtaValue = z.infer<typeof ctaSchema>;
 export type PartnerValue = z.infer<typeof partnerSchema>;
 export type FaqValue = z.infer<typeof faqSchema>;
+export type PersonValue = z.infer<typeof personSchema>;
+export type AgendaSlotValue = z.infer<typeof agendaSlotSchema>;
+export type ModuleValue = z.infer<typeof moduleSchema>;
+export type WeekValue = z.infer<typeof weekSchema>;
