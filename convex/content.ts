@@ -20,14 +20,26 @@ async function withImageUrls(ctx: QueryCtx, doc: ContentDoc) {
     ? await ctx.storage.getUrl(doc.coverImageId)
     : null;
 
+  // A partner linked to the shared library takes its name and logo from there,
+  // so replacing a logo once updates every page referencing it. Inline fields
+  // are the fallback for partners created before the library existed.
   const partners = doc.partners
     ? await Promise.all(
-        doc.partners.map(async (partner) => ({
-          ...partner,
-          logoUrl: partner.logoStorageId
-            ? await ctx.storage.getUrl(partner.logoStorageId)
-            : null,
-        })),
+        doc.partners.map(async (partner) => {
+          const org = partner.organizationId
+            ? await ctx.db.get(partner.organizationId)
+            : null;
+
+          const storageId = org?.logoStorageId ?? partner.logoStorageId;
+          return {
+            ...partner,
+            name: org?.name ?? partner.name,
+            logoPath: org?.logoPath ?? partner.logoPath,
+            logoAlt: org?.logoAlt ?? partner.logoAlt,
+            invertInDark: org?.invertInDark ?? partner.invertInDark,
+            logoUrl: storageId ? await ctx.storage.getUrl(storageId) : null,
+          };
+        }),
       )
     : undefined;
 

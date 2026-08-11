@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   Image as ImageIcon,
   LayoutDashboard,
+  Building2,
   Newspaper,
   Settings,
   Users,
@@ -16,6 +17,12 @@ const LINKS = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard, adminOnly: false },
   { href: "/admin/content", label: "Content", icon: Newspaper, adminOnly: false },
   { href: "/admin/media", label: "Media", icon: ImageIcon, adminOnly: false },
+  {
+    href: "/admin/organizations",
+    label: "Organisations",
+    icon: Building2,
+    adminOnly: false,
+  },
   { href: "/admin/settings", label: "Settings", icon: Settings, adminOnly: false },
   { href: "/admin/users", label: "Users", icon: Users, adminOnly: true },
 ] as const;

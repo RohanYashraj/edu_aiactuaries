@@ -2,7 +2,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 
+import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
+import { fetchQuery } from "@/lib/convex-server";
 import { JsonLd } from "@/components/seo/json-ld";
 import { breadcrumbSchema } from "@/lib/jsonld";
 import { buildMetadata } from "@/lib/seo";
@@ -14,16 +16,12 @@ export const metadata = buildMetadata({
   path: "/about",
 });
 
-/** Logos already in /public, used here as a recognition strip. */
-const BODIES = [
-  { name: "Institute and Faculty of Actuaries", src: "/ifoa.svg", invert: true },
-  { name: "Society of Actuaries", src: "/soa.png" },
-  { name: "Casualty Actuarial Society", src: "/cas.png" },
-  { name: "Institute of Actuaries of India", src: "/iai.png" },
-  { name: "ACTEX Learning", src: "/actex.png" },
-];
+// Next requires a literal here; it can't statically read an imported constant.
+export const revalidate = 300; // 5 minutes
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const organizations = await fetchQuery(api.organizations.listFeatured, {});
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 sm:py-20">
       <JsonLd nodes={[breadcrumbSchema([{ label: "About", href: "/about" }])]} />
@@ -80,21 +78,23 @@ export default function AboutPage() {
         </p>
 
         <ul className="mt-8 flex flex-wrap items-center gap-x-10 gap-y-6">
-          {BODIES.map((body) => (
-            <li key={body.name}>
-              <Image
-                src={body.src}
-                alt={body.name}
-                width={140}
-                height={44}
-                className={
-                  body.invert
-                    ? "h-10 w-28 object-contain opacity-70 dark:invert"
-                    : "h-10 w-28 object-contain opacity-70"
-                }
-              />
-            </li>
-          ))}
+          {organizations.map((org) =>
+            org.logoUrl ? (
+              <li key={org._id}>
+                <Image
+                  src={org.logoUrl}
+                  alt={org.logoAlt ?? org.name}
+                  width={140}
+                  height={44}
+                  className={
+                    org.invertInDark
+                      ? "h-10 w-28 object-contain opacity-70 dark:invert"
+                      : "h-10 w-28 object-contain opacity-70"
+                  }
+                />
+              </li>
+            ) : null,
+          )}
         </ul>
       </section>
 

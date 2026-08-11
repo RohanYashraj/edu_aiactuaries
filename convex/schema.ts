@@ -72,8 +72,15 @@ export const ctaValidator = v.object({
   variant: v.optional(v.union(v.literal("primary"), v.literal("secondary"))),
 });
 
-/** Partner / knowledge-partner organisation with its logo. */
+/**
+ * A partner on a content document.
+ *
+ * `organizationId` points at the shared library, which owns the logo — so
+ * replacing a logo once updates every page that references it. The inline
+ * name/logo fields remain for entries created before the library existed.
+ */
 export const partnerValidator = v.object({
+  organizationId: v.optional(v.id("organizations")),
   name: v.string(),
   role: v.optional(v.string()),
   /** Editor-written sentence about the partnership; falls back to a generic one. */
@@ -382,6 +389,33 @@ export default defineSchema({
       searchField: "title",
       filterFields: ["type", "status"],
     }),
+
+  /**
+   * Shared library of partner organisations and their logos.
+   *
+   * Logos used to be a hardcoded list of files in /public, so adding a partner
+   * meant a deploy. Editors can now upload one and reuse it anywhere.
+   */
+  organizations: defineTable({
+    name: v.string(),
+    slug: v.string(),
+    shortName: v.optional(v.string()),
+    logoStorageId: v.optional(v.id("_storage")),
+    /** Legacy asset under /public, for the logos that predate uploads. */
+    logoPath: v.optional(v.string()),
+    logoAlt: v.optional(v.string()),
+    website: v.optional(v.string()),
+    /** Some marks are dark-on-transparent and need inverting in dark mode. */
+    invertInDark: v.optional(v.boolean()),
+    /** Shown in the homepage and about-page recognition strips. */
+    featured: v.boolean(),
+    order: v.number(),
+    createdBy: v.optional(v.id("users")),
+    updatedAt: v.number(),
+  })
+    .index("by_slug", ["slug"])
+    .index("by_order", ["order"])
+    .index("by_featured_order", ["featured", "order"]),
 
   /**
    * Members registering for an event or programme.

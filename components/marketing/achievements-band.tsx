@@ -6,14 +6,13 @@ export type Achievement = {
   hidden?: boolean;
 };
 
-/** Bodies the Institute has engaged with. Logos already live in /public. */
-const BODIES = [
-  { name: "Institute and Faculty of Actuaries", src: "/ifoa.svg", invert: true },
-  { name: "Society of Actuaries", src: "/soa.png" },
-  { name: "Casualty Actuarial Society", src: "/cas.png" },
-  { name: "Institute of Actuaries of India", src: "/iai.png" },
-  { name: "ACTEX Learning", src: "/actex.png" },
-];
+export type StripOrganization = {
+  _id: string;
+  name: string;
+  logoUrl: string | null;
+  logoAlt?: string;
+  invertInDark?: boolean;
+};
 
 /**
  * Achievements, as figures over a recognition strip.
@@ -24,9 +23,11 @@ const BODIES = [
  */
 export function AchievementsBand({
   achievements,
+  organizations,
   intro,
 }: {
   achievements: Achievement[];
+  organizations: StripOrganization[];
   intro?: string;
 }) {
   const shown = achievements.filter((a) => !a.hidden && a.value.trim() !== "");
@@ -59,28 +60,34 @@ export function AchievementsBand({
           </dl>
         ) : null}
 
-        <div className={shown.length > 0 ? "mt-14 border-t border-border pt-10" : ""}>
-          <p className="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground">
-            {intro ?? "Engaged with"}
-          </p>
-          <ul className="mt-6 flex flex-wrap items-center gap-x-10 gap-y-6">
-            {BODIES.map((body) => (
-              <li key={body.name}>
-                <Image
-                  src={body.src}
-                  alt={body.name}
-                  width={140}
-                  height={44}
-                  className={
-                    body.invert
-                      ? "h-10 w-28 object-contain opacity-60 transition-opacity hover:opacity-100 dark:invert"
-                      : "h-10 w-28 object-contain opacity-60 transition-opacity hover:opacity-100"
-                  }
-                />
-              </li>
-            ))}
-          </ul>
-        </div>
+        {organizations.length > 0 ? (
+          <div
+            className={shown.length > 0 ? "mt-14 border-t border-border pt-10" : ""}
+          >
+            <p className="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground">
+              {intro ?? "Engaged with"}
+            </p>
+            <ul className="mt-6 flex flex-wrap items-center gap-x-10 gap-y-6">
+              {organizations.map((org) =>
+                org.logoUrl ? (
+                  <li key={org._id}>
+                    <Image
+                      src={org.logoUrl}
+                      alt={org.logoAlt ?? org.name}
+                      width={140}
+                      height={44}
+                      className={
+                        org.invertInDark
+                          ? "h-10 w-28 object-contain opacity-60 transition-opacity hover:opacity-100 dark:invert"
+                          : "h-10 w-28 object-contain opacity-60 transition-opacity hover:opacity-100"
+                      }
+                    />
+                  </li>
+                ) : null,
+              )}
+            </ul>
+          </div>
+        ) : null}
       </div>
     </section>
   );

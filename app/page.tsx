@@ -21,11 +21,13 @@ import { contentHref } from "@/lib/content";
 export const revalidate = 300; // 5 minutes
 
 export default async function Home() {
-  const [{ userId }, featured, certifications, settings] = await Promise.all([
+  const [{ userId }, featured, certifications, settings, organizations] =
+    await Promise.all([
     auth(),
     fetchQuery(api.content.listFeatured, {}),
     fetchQuery(api.content.listByType, { type: "certification", limit: 4 }),
     fetchQuery(api.settings.get, {}),
+    fetchQuery(api.organizations.listFeatured, {}),
   ]);
 
   // Programs and events are the things a reader can still act on; news is
@@ -116,6 +118,7 @@ export default async function Home() {
         {/* ---------------------------------------------------------------- */}
         <AchievementsBand
           achievements={settings.achievements}
+          organizations={organizations}
           intro={settings.achievementsIntro}
         />
 

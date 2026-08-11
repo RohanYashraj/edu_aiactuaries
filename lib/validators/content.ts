@@ -64,6 +64,8 @@ export const ctaSchema = z.object({
 });
 
 export const partnerSchema = z.object({
+  /** Points at the shared organisation library, which owns the logo. */
+  organizationId: optionalString,
   name: z.string().trim().min(1, "Name is required"),
   role: optionalString,
   note: optionalString,

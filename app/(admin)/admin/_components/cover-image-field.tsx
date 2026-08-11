@@ -11,8 +11,10 @@ import type { Id } from "@/convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { describeSaving, optimizeImage } from "@/lib/image-optimize";
 
-const MAX_BYTES = 8 * 1024 * 1024;
+/** Checked before optimisation; the stored file is far smaller. */
+const MAX_BYTES = 20 * 1024 * 1024;
 
 /**
  * Convex upload flow: ask for a short-lived upload URL, POST the file straight
@@ -51,17 +53,21 @@ export function CoverImageField({
       return;
     }
     if (file.size > MAX_BYTES) {
-      toast.error("Images must be under 8 MB");
+      toast.error("Images must be under 20 MB");
       return;
     }
 
     setIsUploading(true);
     try {
+      // Resized and re-encoded before upload, so the original never crosses
+      // the network and storage holds the small version.
+      const optimized = await optimizeImage(file, "cover");
+
       const uploadUrl = await generateUploadUrl();
       const response = await fetch(uploadUrl, {
         method: "POST",
-        headers: { "Content-Type": file.type },
-        body: file,
+        headers: { "Content-Type": optimized.file.type },
+        body: optimized.file,
       });
       if (!response.ok) throw new Error("Upload failed");
 
@@ -71,15 +77,17 @@ export function CoverImageField({
 
       await register({
         storageId: newId,
-        filename: file.name,
-        contentType: file.type,
-        size: file.size,
+        filename: optimized.file.name,
+        contentType: optimized.file.type,
+        size: optimized.bytes,
+        width: optimized.width,
+        height: optimized.height,
         alt,
       });
 
-      setPreviewUrl(URL.createObjectURL(file));
+      setPreviewUrl(URL.createObjectURL(optimized.file));
       onChange({ storageId: newId });
-      toast.success("Image uploaded");
+      toast.success(`Image uploaded · ${describeSaving(optimized)}`);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Could not upload");
     } finally {

@@ -15,6 +15,7 @@ import type * as lib_auth from "../lib/auth.js";
 import type * as lib_slug from "../lib/slug.js";
 import type * as media from "../media.js";
 import type * as migrations from "../migrations.js";
+import type * as organizations from "../organizations.js";
 import type * as registrations from "../registrations.js";
 import type * as scheduled from "../scheduled.js";
 import type * as seedData from "../seedData.js";
@@ -35,6 +36,7 @@ declare const fullApi: ApiFromModules<{
   "lib/slug": typeof lib_slug;
   media: typeof media;
   migrations: typeof migrations;
+  organizations: typeof organizations;
   registrations: typeof registrations;
   scheduled: typeof scheduled;
   seedData: typeof seedData;

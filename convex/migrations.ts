@@ -2,6 +2,7 @@ import { v } from "convex/values";
 import { internalMutation } from "./_generated/server";
 import { roleValidator } from "./schema";
 import { seedContentDocs } from "./seedData";
+import { slugify } from "./lib/slug";
 
 /**
  * One-off maintenance mutations. All `internalMutation`, so none of them are
@@ -134,3 +135,123 @@ export const seedContent = internalMutation({
 /*  (Data -> table -> Clear table) before pushing this schema — Convex refuses */
 /*  to drop a non-empty table.                                                 */
 /* -------------------------------------------------------------------------- */
+
+/* -------------------------------------------------------------------------- */
+/*  Organisations                                                             */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Seeds the partner library from the logos that used to be a hardcoded array
+ * in the homepage and about page.
+ *
+ * These keep `logoPath` pointing at /public rather than being uploaded, since
+ * the files are already there. An editor replacing one uploads a file and the
+ * storage id takes over.
+ */
+export const seedOrganizations = internalMutation({
+  args: {},
+  handler: async (ctx) => {
+    const seeds = [
+      {
+        name: "Institute and Faculty of Actuaries",
+        shortName: "IFoA",
+        logoPath: "/ifoa.svg",
+        website: "https://actuaries.org.uk",
+        invertInDark: true,
+      },
+      {
+        name: "Society of Actuaries",
+        shortName: "SOA",
+        logoPath: "/soa.png",
+        website: "https://soa.org",
+      },
+      {
+        name: "Casualty Actuarial Society",
+        shortName: "CAS",
+        logoPath: "/cas.png",
+        website: "https://casact.org",
+      },
+      {
+        name: "Institute of Actuaries of India",
+        shortName: "IAI",
+        logoPath: "/iai.png",
+        website: "https://actuariesindia.org",
+      },
+      {
+        name: "ACTEX Learning",
+        shortName: "ACTEX",
+        logoPath: "/actex.png",
+        website: "https://actexlearning.com",
+      },
+      {
+        name: "AI Actuaries",
+        shortName: "AI Actuaries",
+        logoPath: "/aiactuaries.png",
+        website: "https://aiactuaries.org",
+        featured: false,
+      },
+    ];
+
+    let inserted = 0;
+    for (const [index, seed] of seeds.entries()) {
+      const slug = slugify(seed.name);
+      const existing = await ctx.db
+        .query("organizations")
+        .withIndex("by_slug", (q) => q.eq("slug", slug))
+        .unique();
+      if (existing) continue;
+
+      await ctx.db.insert("organizations", {
+        name: seed.name,
+        slug,
+        shortName: seed.shortName,
+        logoPath: seed.logoPath,
+        logoAlt: `${seed.name} logo`,
+        website: seed.website,
+        invertInDark: seed.invertInDark,
+        featured: seed.featured ?? true,
+        order: index,
+        updatedAt: Date.now(),
+      });
+      inserted += 1;
+    }
+
+    return { inserted, skipped: seeds.length - inserted };
+  },
+});
+
+/** Links existing content partners to the library, matched on name. */
+export const linkPartnersToOrganizations = internalMutation({
+  args: {},
+  handler: async (ctx) => {
+    const orgs = await ctx.db.query("organizations").collect();
+    const byName = new Map(orgs.map((org) => [org.name.toLowerCase(), org._id]));
+    const byShort = new Map(
+      orgs.filter((o) => o.shortName).map((o) => [o.shortName!.toLowerCase(), o._id]),
+    );
+
+    let linked = 0;
+    for (const doc of await ctx.db.query("content").collect()) {
+      if (!doc.partners?.length) continue;
+
+      let changed = false;
+      const partners = doc.partners.map((partner) => {
+        if (partner.organizationId) return partner;
+        const key = partner.name.toLowerCase();
+        // Seeded partner names sometimes carry a suffix, e.g. "…(IFoA), UK".
+        const match =
+          byName.get(key) ??
+          byShort.get(key) ??
+          [...byName.entries()].find(([name]) => key.includes(name))?.[1];
+        if (!match) return partner;
+        changed = true;
+        linked += 1;
+        return { ...partner, organizationId: match };
+      });
+
+      if (changed) await ctx.db.patch(doc._id, { partners });
+    }
+
+    return { linked };
+  },
+});

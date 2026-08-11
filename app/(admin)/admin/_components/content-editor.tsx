@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { RepeatableField } from "@/components/admin/repeatable-field";
+import { OrganizationPicker } from "@/components/admin/organization-picker";
 import { StringListField } from "@/components/admin/string-list-field";
 import { Markdown } from "@/components/content/markdown";
 import { CONTENT_TYPE_LABELS, contentHref } from "@/lib/content";
@@ -198,6 +199,7 @@ export function ContentEditor({
       ctas: data.ctas ?? [],
       // Storage ids round-trip through the form as plain strings.
       partners: (data.partners ?? []) as {
+        organizationId?: Id<"organizations">;
         name: string;
         role?: string;
         note?: string;
@@ -694,6 +696,7 @@ export function ContentEditor({
 
           <RepeatableField<PartnerValue>
             label="Partners"
+            description="Pick from the shared organisation library, or add a new one. The logo lives with the organisation, so replacing it updates every page."
             value={values.partners ?? []}
             onChange={(v) => set("partners", v)}
             makeEmpty={() => ({ name: "" })}
@@ -701,12 +704,16 @@ export function ContentEditor({
             addLabel="Add partner"
             renderRow={(partner, update) => (
               <div className="space-y-3">
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <Input
-                    value={partner.name}
-                    onChange={(e) => update({ name: e.target.value })}
-                    placeholder="Organisation name"
-                  />
+                <OrganizationPicker
+                  value={partner.organizationId}
+                  onChange={(organizationId, name) =>
+                    // The name is denormalised so a row still reads sensibly
+                    // if the organisation is later removed.
+                    update({ organizationId, name: name || partner.name })
+                  }
+                />
+                <div className="space-y-2">
+                  <Label>Role on this page</Label>
                   <Input
                     value={partner.role ?? ""}
                     onChange={(e) => update({ role: e.target.value })}
@@ -719,18 +726,6 @@ export function ContentEditor({
                   onChange={(e) => update({ note: e.target.value })}
                   placeholder="Sentence describing the partnership (optional)"
                 />
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <Input
-                    value={partner.logoPath ?? ""}
-                    onChange={(e) => update({ logoPath: e.target.value })}
-                    placeholder="/ifoa.svg"
-                  />
-                  <Input
-                    value={partner.logoAlt ?? ""}
-                    onChange={(e) => update({ logoAlt: e.target.value })}
-                    placeholder="Logo alt text"
-                  />
-                </div>
               </div>
             )}
           />
