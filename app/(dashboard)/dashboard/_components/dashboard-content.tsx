@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { useQuery } from "convex/react";
-import { Bookmark, CalendarCheck, Loader2, User } from "lucide-react";
+import { Bookmark, CalendarCheck, Loader2 } from "lucide-react";
 
 import { api } from "@/convex/_generated/api";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { contentHref, formatContentDate } from "@/lib/content";
 
 /** Fields onboarding collects; how many are filled drives the nudge below. */
@@ -202,31 +202,6 @@ export function DashboardContent() {
           </ul>
         )}
       </section>
-
-      <Card>
-        <CardHeader className="flex flex-row items-center gap-3 space-y-0">
-          <User className="size-5 text-muted-foreground" />
-          <CardTitle className="text-base">Account</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <dl className="grid gap-3 text-sm">
-            <div className="flex justify-between gap-4">
-              <dt className="text-muted-foreground">Name</dt>
-              <dd className="font-medium">{currentUser.name}</dd>
-            </div>
-            <div className="flex justify-between gap-4">
-              <dt className="text-muted-foreground">Email</dt>
-              <dd className="font-medium">{currentUser.email}</dd>
-            </div>
-            {currentUser.institution ? (
-              <div className="flex justify-between gap-4">
-                <dt className="text-muted-foreground">Institution</dt>
-                <dd className="font-medium">{currentUser.institution}</dd>
-              </div>
-            ) : null}
-          </dl>
-        </CardContent>
-      </Card>
     </div>
   );
 }
