@@ -62,6 +62,16 @@ export default async function NewsDetailPage({ params }: PageProps) {
       ? (article.details as any).linkedinUrl
       : null;
 
+  const websiteUrl =
+    article.details?.kind === "news" && "websiteUrl" in article.details
+      ? (article.details as any).websiteUrl
+      : null;
+
+  const websiteLabel =
+    article.details?.kind === "news" && "websiteLabel" in article.details
+      ? (article.details as any).websiteLabel
+      : "VISIT OFFICIAL WEBSITE";
+
   const bodyParagraphs = article.body
     ? article.body.split("\\n").filter((p) => p.trim() !== "")
     : [];
@@ -119,25 +129,44 @@ export default async function NewsDetailPage({ params }: PageProps) {
         <div className="w-full h-px bg-[#0A192F]/10 my-16" />
 
         {/* Source Footer */}
-        <footer>
-          <span className="text-xs font-bold tracking-widest text-[#0A192F]/50 uppercase mb-6 block">
+        <footer className="flex flex-col gap-6">
+          <span className="text-xs font-bold tracking-widest text-[#0A192F]/50 uppercase block">
             Source
           </span>
 
-          {linkedinUrl ? (
-            <a
-              href={linkedinUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-3 text-xs font-bold tracking-widest text-white bg-[#0A192F] hover:bg-[#F26A21] px-8 py-5 transition-colors uppercase w-full sm:w-auto text-center"
-            >
-              View Original LinkedIn Post <ArrowUpRight className="w-4 h-4" />
-            </a>
-          ) : (
-            <p className="text-sm text-[#0A192F]/60 font-serif italic">
-              Internal SSSIA Publication
-            </p>
-          )}
+          <div className="flex flex-col sm:flex-row gap-4">
+            {websiteUrl && (
+              <a
+                href={websiteUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-3 text-xs font-bold tracking-widest text-white bg-[#F26A21] hover:bg-[#0A192F] px-8 py-5 transition-colors uppercase w-full sm:w-auto text-center"
+              >
+                {websiteLabel} <ArrowUpRight className="w-4 h-4" />
+              </a>
+            )}
+
+            {linkedinUrl && (
+              <a
+                href={linkedinUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`inline-flex items-center justify-center gap-3 text-xs font-bold tracking-widest px-8 py-5 transition-colors uppercase w-full sm:w-auto text-center ${
+                  websiteUrl 
+                    ? "text-[#0A192F] bg-transparent border border-[#0A192F]/20 hover:border-[#0A192F]/50" 
+                    : "text-white bg-[#0A192F] hover:bg-[#F26A21]"
+                }`}
+              >
+                View Original LinkedIn Post <ArrowUpRight className="w-4 h-4" />
+              </a>
+            )}
+
+            {!websiteUrl && !linkedinUrl && (
+              <p className="text-sm text-[#0A192F]/60 font-serif italic">
+                Internal SSSIA Publication
+              </p>
+            )}
+          </div>
         </footer>
       </article>
     </div>

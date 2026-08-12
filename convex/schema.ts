@@ -235,6 +235,8 @@ const newsDetails = v.object({
   category: v.optional(v.string()),
   metric: v.optional(v.string()),
   linkedinUrl: v.optional(v.string()),
+  websiteUrl: v.optional(v.string()),
+  websiteLabel: v.optional(v.string()),
 });
 
 export const contentDetailsValidator = v.union(
