@@ -16,7 +16,8 @@ const nextConfig: NextConfig = {
     return [
       // Authenticated pages moved under /dashboard so the route group and the
       // URL agree, and so the auth matcher covers them structurally.
-      { source: "/account", destination: "/dashboard/account", permanent: true },
+      { source: "/account", destination: "/dashboard/profile", permanent: true },
+      { source: "/dashboard/account", destination: "/dashboard/profile", permanent: true },
       // The jobs board is retired; /jobs URLs are already indexed, so send
       // them home rather than serving 404s.
       { source: "/jobs", destination: "/", permanent: true },
@@ -27,6 +28,14 @@ const nextConfig: NextConfig = {
       { source: "/workshops", destination: "/programs", permanent: true },
       // The waitlist is replaced by open sign-up.
       { source: "/waitlist", destination: "/sign-up", permanent: true },
+      // The admin CMS moved under /dashboard so there is one authenticated
+      // surface, filtered by role, rather than two.
+      { source: "/admin", destination: "/dashboard", permanent: true },
+      { source: "/admin/content/:path*", destination: "/dashboard/content/:path*", permanent: true },
+      { source: "/admin/media", destination: "/dashboard/media", permanent: true },
+      { source: "/admin/organizations", destination: "/dashboard/organisations", permanent: true },
+      { source: "/admin/settings", destination: "/dashboard/settings", permanent: true },
+      { source: "/admin/users", destination: "/dashboard/users", permanent: true },
     ];
   },
 

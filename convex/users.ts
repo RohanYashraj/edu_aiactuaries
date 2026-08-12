@@ -235,7 +235,7 @@ export const adminSetRole = mutation({
     if (!target) throw new Error("User not found");
 
     // Never allow the last admin to be demoted — that locks everyone out of
-    // /admin with no in-app way back.
+    // the admin surfaces in /dashboard with no in-app way back.
     if (target.role === "admin" && args.role !== "admin") {
       const admins = await ctx.db
         .query("users")

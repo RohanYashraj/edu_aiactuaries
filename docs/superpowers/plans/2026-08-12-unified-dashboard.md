@@ -137,18 +137,23 @@ git rm -r "app/(admin)"
 
 `app/(admin)/admin/page.tsx` is deleted rather than moved — its `AdminOverview` is folded into the role-aware Overview in Task 5. `admin-overview.tsx` itself was moved in Step 1 and is used there.
 
-- [ ] **Step 3: Fix component import paths**
+- [ ] **Step 3: Confirm imports need no changes**
 
-In the moved page files, `../_components/x` and `./_components/x` now resolve differently. Set every page's component import to the absolute alias:
+Do **not** rewrite the component imports. The move preserves relative depth exactly:
 
-- `content/page.tsx`: `import { ContentTable } from "@/app/(dashboard)/dashboard/_components/content-table";`
-- `content/new/page.tsx` and `content/[id]/page.tsx`: import `ContentEditor` from `@/app/(dashboard)/dashboard/_components/content-editor` (keep any other imports these files already have, adjusting the same way).
-- `media/page.tsx`: `MediaLibrary` from `@/app/(dashboard)/dashboard/_components/media-library`
-- `organisations/page.tsx`: `OrganizationsManager` from `@/app/(dashboard)/dashboard/_components/organizations-manager`
-- `settings/page.tsx`: `SettingsForm` from `@/app/(dashboard)/dashboard/_components/settings-form`
-- `users/page.tsx`: `UsersTable` from `@/app/(dashboard)/dashboard/_components/users-table`
+| File | Import | Old target | New target |
+|---|---|---|---|
+| `content/page.tsx` | `../_components/content-table` | `(admin)/admin/_components/` | `(dashboard)/dashboard/_components/` |
+| `content/new/page.tsx` | `../../_components/content-editor` | same | same |
+| `content/[id]/page.tsx` | `../../_components/content-editor` | same | same |
+| `users/page.tsx` | `../_components/users-table` | same | same |
 
-Do the same for cross-imports *between* moved components (e.g. `content-table.tsx` importing `status-badge`) — relative sibling imports like `./status-badge` still resolve correctly and need no change. Only `../_components/` paths need rewriting.
+Sibling imports inside `_components` (`./status-badge`, `./details-fields`,
+`./cover-image-field`, `./content-registrations`) are unaffected — the whole
+directory moved together.
+
+Leave every one of these import statements exactly as it is. `pnpm build` in Step 7
+is what proves it; if it resolves, they were right.
 
 - [ ] **Step 4: Rewrite internal /admin links**
 

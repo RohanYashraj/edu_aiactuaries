@@ -4,10 +4,11 @@ import { NextResponse } from "next/server";
 const isProtectedRoute = createRouteMatcher([
   "/dashboard(.*)",
   "/onboarding(.*)",
-  "/admin(.*)",
 ]);
 
-const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
+const isStaffRoute = createRouteMatcher([
+  "/dashboard/(content|media|organisations|settings|users)(.*)",
+]);
 
 const CONTENT_ROLES = new Set(["admin", "content_manager"]);
 
@@ -16,15 +17,15 @@ type PublicMetadata = { role?: string };
 /**
  * Authentication is enforced here; authorization is only hinted at.
  *
- * Middleware has no database access, so the admin check reads the Clerk
+ * Middleware has no database access, so the staff check reads the Clerk
  * session-claim mirror of the Convex role. It can be stale or absent, so it
- * only ever *denies* on a known-wrong role — the authoritative gates are the
- * server-side check in app/(admin)/admin/layout.tsx and `requireRole` in every
- * Convex mutation.
+ * only ever *denies* on a known-wrong role — the authoritative gate is the
+ * server-side check on each staff page under app/(dashboard)/dashboard/ and
+ * `requireRole`/`requireContentManager`/`requireAdmin` in every Convex mutation.
  *
  * The role claim needs `publicMetadata` added to the session token (Clerk
  * Dashboard → Sessions → Customize session token). Without it the role reads as
- * undefined and admin routes simply fall through to the server-side gate —
+ * undefined and staff routes simply fall through to the server-side gate —
  * degraded, not broken.
  *
  * The onboarding gate deliberately lives in app/(dashboard)/layout.tsx instead:
@@ -36,7 +37,7 @@ export default clerkMiddleware(async (auth, req) => {
 
   const { sessionClaims } = await auth.protect();
 
-  if (isAdminRoute(req)) {
+  if (isStaffRoute(req)) {
     const role = (sessionClaims?.publicMetadata as PublicMetadata | undefined)?.role;
     if (role && !CONTENT_ROLES.has(role)) {
       return NextResponse.redirect(new URL("/dashboard", req.url));

@@ -1,9 +1,17 @@
+import { redirect } from "next/navigation";
+
+import { gateStaff } from "@/lib/dashboard-user";
 import { buildMetadata } from "@/lib/seo";
+import { AccountSyncing } from "../_components/account-syncing";
 import { MediaLibrary } from "../_components/media-library";
 
 export const metadata = buildMetadata({ title: "Media", noindex: true });
 
-export default function AdminMediaPage() {
+export default async function AdminMediaPage() {
+  const gate = await gateStaff();
+  if (gate.status === "denied") redirect("/dashboard");
+  if (gate.status === "syncing") return <AccountSyncing />;
+
   return (
     <div>
       <header className="mb-6">

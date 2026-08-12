@@ -275,7 +275,7 @@ export function ContentEditor({
     }
 
     setIsSaving(false);
-    if (!doc) router.push(`/admin/content/${saved}`);
+    if (!doc) router.push(`/dashboard/content/${saved}`);
     else router.refresh();
   }
 
@@ -296,7 +296,7 @@ export function ContentEditor({
       <header className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <Button asChild variant="ghost" size="icon-sm">
-            <Link href="/admin/content" aria-label="Back to content">
+            <Link href="/dashboard/content" aria-label="Back to content">
               <ArrowLeft className="size-4" />
             </Link>
           </Button>
