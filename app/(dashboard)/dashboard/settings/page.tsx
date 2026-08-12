@@ -1,9 +1,15 @@
+import { redirect } from "next/navigation";
+
+import { getDashboardSession, isStaff } from "@/lib/dashboard-user";
 import { buildMetadata } from "@/lib/seo";
 import { SettingsForm } from "../_components/settings-form";
 
 export const metadata = buildMetadata({ title: "Settings", noindex: true });
 
-export default function AdminSettingsPage() {
+export default async function AdminSettingsPage() {
+  const { user } = await getDashboardSession();
+  if (!isStaff(user)) redirect("/dashboard");
+
   return (
     <div>
       <header className="mb-6">

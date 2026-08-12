@@ -46,13 +46,13 @@ export function AdminOverview() {
 
       <div className="flex flex-wrap gap-3">
         <Button asChild>
-          <Link href="/admin/content/new">
+          <Link href="/dashboard/content/new">
             <Plus className="size-4" />
             New content
           </Link>
         </Button>
         <Button asChild variant="outline">
-          <Link href="/admin/content">
+          <Link href="/dashboard/content">
             <FileText className="size-4" />
             All content
           </Link>
@@ -82,7 +82,7 @@ export function AdminOverview() {
               >
                 <div className="min-w-0">
                   <Link
-                    href={`/admin/content/${doc._id}`}
+                    href={`/dashboard/content/${doc._id}`}
                     className="font-medium hover:text-gold"
                   >
                     {doc.title}

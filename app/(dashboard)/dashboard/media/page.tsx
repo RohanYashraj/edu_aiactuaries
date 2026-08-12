@@ -1,9 +1,15 @@
+import { redirect } from "next/navigation";
+
+import { getDashboardSession, isStaff } from "@/lib/dashboard-user";
 import { buildMetadata } from "@/lib/seo";
 import { MediaLibrary } from "../_components/media-library";
 
 export const metadata = buildMetadata({ title: "Media", noindex: true });
 
-export default function AdminMediaPage() {
+export default async function AdminMediaPage() {
+  const { user } = await getDashboardSession();
+  if (!isStaff(user)) redirect("/dashboard");
+
   return (
     <div>
       <header className="mb-6">

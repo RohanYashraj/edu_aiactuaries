@@ -107,7 +107,7 @@ export function ContentTable() {
           </p>
         </div>
         <Button asChild>
-          <Link href="/admin/content/new">
+          <Link href="/dashboard/content/new">
             <Plus className="size-4" />
             New content
           </Link>
@@ -185,7 +185,7 @@ export function ContentTable() {
                 <TableRow key={doc._id}>
                   <TableCell>
                     <Link
-                      href={`/admin/content/${doc._id}`}
+                      href={`/dashboard/content/${doc._id}`}
                       className="font-medium hover:text-gold"
                     >
                       {doc.title}

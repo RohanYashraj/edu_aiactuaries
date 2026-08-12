@@ -1,24 +1,16 @@
-import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
-import { api } from "@/convex/_generated/api";
-import { fetchQuery } from "@/lib/convex-server";
+import { getDashboardSession, isAdmin } from "@/lib/dashboard-user";
 import { buildMetadata } from "@/lib/seo";
 import { UsersTable } from "../_components/users-table";
 
 export const metadata = buildMetadata({ title: "Users", noindex: true });
 
 export default async function AdminUsersPage() {
-  const { getToken } = await auth();
-
-  // The admin layout lets content managers through; user management is
-  // admin-only, so it gets its own check (and Convex enforces it again).
-  const user = await fetchQuery(
-    api.users.getCurrentUser,
-    {},
-    { token: (await getToken({ template: "convex" })) ?? undefined },
-  );
-  if (user?.role !== "admin") redirect("/admin");
+  // User management is admin-only, so it gets its own check beyond the
+  // staff check (and Convex enforces it again).
+  const { user } = await getDashboardSession();
+  if (!isAdmin(user)) redirect("/dashboard");
 
   return (
     <div>

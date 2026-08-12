@@ -1,9 +1,15 @@
+import { redirect } from "next/navigation";
+
+import { getDashboardSession, isStaff } from "@/lib/dashboard-user";
 import { buildMetadata } from "@/lib/seo";
 import { OrganizationsManager } from "../_components/organizations-manager";
 
 export const metadata = buildMetadata({ title: "Organisations", noindex: true });
 
-export default function AdminOrganizationsPage() {
+export default async function AdminOrganizationsPage() {
+  const { user } = await getDashboardSession();
+  if (!isStaff(user)) redirect("/dashboard");
+
   return (
     <div>
       <header className="mb-6">
