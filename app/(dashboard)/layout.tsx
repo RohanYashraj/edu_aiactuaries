@@ -1,116 +1,55 @@
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import Link from "next/link";
-import { UserButton } from "@clerk/nextjs";
-import { fetchQuery } from "convex/nextjs";
+import { redirect } from "next/navigation";
+import { auth } from "@clerk/nextjs/server";
 
-import { api } from "@/convex/_generated/api";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-
-const dashboardNav = [
-  { href: "/dashboard", label: "Overview" },
-  { href: "/dashboard/profile", label: "Profile" },
-  { href: "/dashboard/account", label: "Account" },
-] as const;
+import { DashboardSidebar } from "./_components/dashboard-sidebar";
+import { getDashboardSession, isAdmin, isStaff } from "@/lib/dashboard-user";
 
 export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { userId, getToken } = await auth();
+  const { userId } = await auth();
+  if (!userId) redirect("/sign-in");
 
-  if (!userId) {
-    redirect("/sign-in");
+  const { token, user } = await getDashboardSession();
+
+  // Distinguish "not allowed" from "couldn't ask". A null token means the Clerk
+  // JWT template named "convex" is missing; bouncing here would read as "the
+  // dashboard is broken" with no explanation.
+  if (!token) {
+    return (
+      <div className="mx-auto flex min-h-screen max-w-lg flex-col items-center justify-center px-4 text-center">
+        <h1 className="font-display text-2xl tracking-tight">
+          Can&apos;t verify your account
+        </h1>
+        <p className="mt-3 leading-relaxed text-muted-foreground">
+          Authentication isn&apos;t configured correctly — the Clerk JWT template
+          named “convex” is missing.
+        </p>
+        <Link href="/" className="mt-6 text-sm underline underline-offset-4 hover:text-foreground">
+          Back to site
+        </Link>
+      </div>
+    );
   }
 
   // Authoritative onboarding gate. The middleware can't do this — a brand-new
-  // user has no publicMetadata to read.
-  const user = await fetchQuery(
-    api.users.getCurrentUser,
-    {},
-    { token: (await getToken({ template: "convex" })) ?? undefined },
-  );
-
-  // `user` is null only in the brief window before the Clerk webhook (or the
-  // client-side syncCurrentUser fallback) creates the Convex row. Don't bounce
-  // them to onboarding for that; the page itself handles the empty case.
-  if (user && !user.onboardingCompletedAt) {
-    redirect("/onboarding");
-  }
-
-  const isContentManager =
-    user?.role === "admin" || user?.role === "content_manager";
+  // user has no publicMetadata to read. `user` is null only in the brief window
+  // before the Clerk webhook creates the Convex row; don't bounce for that.
+  if (user && !user.onboardingCompletedAt) redirect("/onboarding");
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-50 border-b border-primary-foreground/10 bg-primary text-primary-foreground">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-          {/* Logo (links to marketing home) */}
-          <div className="flex items-center gap-6">
-            <Link href="/" className="flex items-center gap-2.5">
-              <span className="flex size-8 items-center justify-center rounded-lg bg-gold text-xs font-bold text-gold-foreground shadow-sm">
-                edu.
-              </span>
-              <span className="hidden text-sm font-semibold tracking-tight sm:inline">
-                SSS CoE
-                <span className="ml-1 text-xs font-normal text-primary-foreground/60">
-                  Dashboard
-                </span>
-              </span>
-            </Link>
-          </div>
-
-          {/* Right-aligned dashboard nav + controls */}
-          <div className="flex items-center gap-3">
-            <nav className="hidden items-center gap-1 sm:flex">
-              {dashboardNav.map(({ href, label }) => (
-                <Link key={href} href={href}>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-primary-foreground/80 hover:bg-primary-foreground/10 hover:text-primary-foreground"
-                  >
-                    {label}
-                  </Button>
-                </Link>
-              ))}
-            </nav>
-            <Separator
-              orientation="vertical"
-              className="hidden h-6 bg-primary-foreground/15 sm:block"
-            />
-            <Link href="/">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-primary-foreground/70 hover:bg-primary-foreground/10 hover:text-primary-foreground"
-              >
-                Back to Site
-              </Button>
-            </Link>
-            {isContentManager ? (
-              <Link href="/admin">
-                <Button
-                  size="sm"
-                  className="bg-gold text-gold-foreground shadow-sm hover:bg-gold/90"
-                >
-                  Admin
-                </Button>
-              </Link>
-            ) : null}
-            <UserButton
-              afterSignOutUrl="/"
-              appearance={{
-                elements: { avatarBox: "size-8" },
-              }}
-            />
-          </div>
-        </div>
-      </header>
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-10">
-        {children}
+    <div className="flex min-h-screen flex-col md:flex-row">
+      <DashboardSidebar
+        staff={isStaff(user)}
+        admin={isAdmin(user)}
+        name={user?.name ?? "Member"}
+        role={user?.role ?? "member"}
+      />
+      <main className="min-w-0 flex-1 bg-muted/30 px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-6xl">{children}</div>
       </main>
     </div>
   );
