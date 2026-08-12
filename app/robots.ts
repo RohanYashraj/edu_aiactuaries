@@ -10,6 +10,12 @@ import { siteUrl } from "@/lib/site";
 const disallow = ["/dashboard", "/admin", "/onboarding", "/api/"];
 
 export default function robots(): MetadataRoute.Robots {
+  // Preview deployments share this code but not the domain: without this they
+  // would advertise a crawlable copy of the site under a *.vercel.app URL.
+  if (process.env.VERCEL_ENV && process.env.VERCEL_ENV !== "production") {
+    return { rules: [{ userAgent: "*", disallow: "/" }] };
+  }
+
   return {
     rules: [
       { userAgent: "*", allow: "/", disallow },
