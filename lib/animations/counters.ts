@@ -32,7 +32,7 @@ export function animateCounters(
       },
       onUpdate: () => {
         // Format with commas if large
-        target.innerHTML = Math.floor(obj.val).toLocaleString("en-US");
+        target.textContent = Math.floor(obj.val).toLocaleString("en-US");
       },
     });
   });
