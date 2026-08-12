@@ -5,22 +5,26 @@ import { ArrowUpRight, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import type { PublicContent } from "@/convex/content";
 
-const categories = [
-  "All",
-  "Education",
-  "Research",
-  "Events",
-  "Publications",
-  "Industry",
-  "International",
-  "Community",
-];
 
 export function NewsClient({ items }: { items: PublicContent[] }) {
   const [activeCategory, setActiveCategory] = useState("All");
 
   const featuredStory = items.find((item) => item.featured) || items[0];
   const otherNews = items.filter((item) => item !== featuredStory);
+
+  const categories = [
+    "All",
+    ...Array.from(
+      new Set(
+        items
+          .map((item) =>
+            item.details?.kind === "news" && "category" in item.details
+              ? (item.details as any).category || "Update"
+              : "Update"
+          )
+      )
+    ).sort(),
+  ];
 
   const filteredNews =
     activeCategory === "All"

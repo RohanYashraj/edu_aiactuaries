@@ -73,7 +73,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
       : "VISIT OFFICIAL WEBSITE";
 
   const bodyParagraphs = article.body
-    ? article.body.split("\\n").filter((p) => p.trim() !== "")
+    ? article.body.split(/\r?\n+|\\n+/).filter((p) => p.trim() !== "")
     : [];
 
   return (
