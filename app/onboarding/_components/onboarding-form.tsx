@@ -111,8 +111,13 @@ export function OnboardingForm() {
       // back here on the next navigation.
       await markOnboardingComplete();
 
+      // Do NOT add router.refresh() here. push() and refresh() each wrap their
+      // dispatch in startTransition, so calling both in the same tick batches
+      // them and the refresh replaces the push's cache node — the navigation
+      // fetches /dashboard but never commits, stranding the user on this page
+      // with the button stuck on "Saving". push() already fetches the
+      // destination fresh, so the refresh bought nothing.
       router.push("/dashboard");
-      router.refresh();
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Could not save your profile.",
