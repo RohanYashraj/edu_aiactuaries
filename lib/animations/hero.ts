@@ -7,6 +7,8 @@ export function animateHeroEntrance(
     titleLines: string;
     subtitle: string;
     buttons: string;
+    booksLabel?: string;
+    books?: string;
   }
 ) {
   const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
@@ -45,6 +47,29 @@ export function animateHeroEntrance(
       },
       "-=0.4"
     );
+
+  if (targets.booksLabel && targets.books) {
+    tl.from(
+      targets.booksLabel,
+      {
+        y: 20,
+        opacity: 0,
+        duration: 0.6,
+      },
+      "-=0.2"
+    ).from(
+      targets.books,
+      {
+        x: 60,
+        y: 20,
+        scale: 0.96,
+        opacity: 0,
+        duration: 0.5,
+        stagger: 0.1,
+      },
+      "-=0.4"
+    );
+  }
 
   return tl;
 }

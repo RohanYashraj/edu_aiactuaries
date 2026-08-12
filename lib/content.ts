@@ -14,6 +14,7 @@ export const CONTENT_ROUTES: Record<ContentType, string> = {
   program: "/events",
   workshop: "/workshops",
   certification: "/certifications",
+  internship: "/programs",
   news: "/news",
 };
 
@@ -22,6 +23,7 @@ export const CONTENT_TYPE_LABELS: Record<ContentType, string> = {
   program: "Program",
   workshop: "Workshop",
   certification: "Certification",
+  internship: "Internship",
   news: "News",
 };
 
@@ -33,11 +35,13 @@ export function contentHref(type: ContentType, slug: string): string {
 export function contentSectionLabel(type: ContentType): string {
   return type === "event" || type === "program"
     ? "Events"
-    : type === "workshop"
-      ? "Workshops"
-      : type === "certification"
-        ? "Certifications"
-        : "News";
+    : type === "internship"
+      ? "Internships"
+      : type === "workshop"
+        ? "Workshops"
+        : type === "certification"
+          ? "Certifications"
+          : "News";
 }
 
 const dateFormatter = new Intl.DateTimeFormat("en-GB", {

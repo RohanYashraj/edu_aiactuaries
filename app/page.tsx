@@ -19,13 +19,16 @@ import { contentHref } from "@/lib/content";
 export const revalidate = 300; // 5 minutes
 
 export default async function Home() {
-  const [{ userId }, featured, certifications, settings, organizations] =
+  const [{ userId }, featured, certifications, settings, organizations, programs, events, internships] =
     await Promise.all([
     auth(),
     fetchQuery(api.content.listFeatured, {}),
     fetchQuery(api.content.listByType, { type: "certification", limit: 4 }),
     fetchQuery(api.settings.get, {}),
     fetchQuery(api.organizations.listFeatured, {}),
+    fetchQuery(api.content.listByType, { type: "program" }),
+    fetchQuery(api.content.listByType, { type: "event" }),
+    fetchQuery(api.content.listByType, { type: "internship" }),
   ]);
 
   // Programs and events are the things a reader can still act on; news is
@@ -43,7 +46,12 @@ export default async function Home() {
       <Header />
 
       <main className="flex-1">
-        <HomeClient userId={userId} news={recent} />
+        <HomeClient 
+          userId={userId} 
+          news={recent} 
+          settings={settings} 
+          carouselItems={[...programs, ...events, ...internships]} 
+        />
       </main>
 
       <Footer />

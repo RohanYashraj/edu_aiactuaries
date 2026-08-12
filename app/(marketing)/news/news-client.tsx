@@ -4,37 +4,35 @@ import { useState } from "react";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import type { PublicContent } from "@/convex/content";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 
-export function NewsClient({ items }: { items: PublicContent[] }) {
+export function NewsClient({ items: initialItems }: { items: PublicContent[] }) {
+  const liveItems = useQuery(api.content.listByTypeChronological, { type: "news" });
+  const items = liveItems ?? initialItems;
+
   const [activeCategory, setActiveCategory] = useState("All");
 
-  const featuredStory = items.find((item) => item.featured) || items[0];
-  const otherNews = items.filter((item) => item !== featuredStory);
+  const featuredStory = items.find((item) => item.featured);
+  const otherNews = featuredStory ? items.filter((item) => item !== featuredStory) : items;
+
+  const getCategory = (item: PublicContent) => {
+    if (item.details?.kind === "news" && "category" in item.details) {
+      return (item.details as any).category || "Update";
+    }
+    return "Update";
+  };
 
   const categories = [
     "All",
-    ...Array.from(
-      new Set(
-        items
-          .map((item) =>
-            item.details?.kind === "news" && "category" in item.details
-              ? (item.details as any).category || "Update"
-              : "Update"
-          )
-      )
-    ).sort(),
-  ];
+    ...Array.from(new Set(items.map(getCategory))),
+  ].sort((a, b) => (a === "All" ? -1 : b === "All" ? 1 : a.localeCompare(b)));
 
   const filteredNews =
     activeCategory === "All"
       ? otherNews
-      : otherNews.filter(
-          (item) =>
-            item.details?.kind === "news" &&
-            "category" in item.details &&
-            (item.details as any).category === activeCategory
-        );
+      : otherNews.filter((item) => getCategory(item) === activeCategory);
 
   const getMetric = (item: PublicContent) => {
     if (item.details?.kind === "news" && "metric" in item.details) {
@@ -43,12 +41,7 @@ export function NewsClient({ items }: { items: PublicContent[] }) {
     return null;
   };
 
-  const getCategory = (item: PublicContent) => {
-    if (item.details?.kind === "news" && "category" in item.details) {
-      return (item.details as any).category || "Update";
-    }
-    return "Update";
-  };
+
 
   const getLinkedinUrl = (item: PublicContent) => {
     if (item.details?.kind === "news" && "linkedinUrl" in item.details) {

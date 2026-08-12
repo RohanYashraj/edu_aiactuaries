@@ -10,8 +10,12 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { animateHeroEntrance } from "@/lib/animations/hero";
 import { animateScrollReveal } from "@/lib/animations/scrollReveal";
 import { animateCounters } from "@/lib/animations/counters";
-import { animateHorizontalScroll } from "@/lib/animations/scrollReveal";
+import { ScrambleStory } from "./scramble-story";
 import { Button } from "@/components/ui/button";
+import { PublicationStack } from "./publication-stack";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { contentHref } from "@/lib/content";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -20,11 +24,23 @@ if (typeof window !== "undefined") {
 interface HomeClientProps {
   userId: string | null;
   news: any[];
+  settings?: any;
+  carouselItems?: any[];
 }
 
-export function HomeClient({ userId, news }: HomeClientProps) {
+export function HomeClient({ userId, news: initialNews, settings: initialSettings, carouselItems: initialCarouselItems }: HomeClientProps) {
+  const liveNews = useQuery(api.content.listByTypeChronological, { type: "news", limit: 5 });
+  const news = liveNews ?? initialNews;
+
+  const liveSettings = useQuery(api.settings.get);
+  const settings = liveSettings ?? initialSettings;
+
+  // We fetch programs, events, and internships for the carousel.
+  // Convex doesn't have an "or" query for listByType, so we rely on the pre-fetched items from page.tsx for SSR
+  // and we can optionally fetch them on the client, or just use the passed items.
+  const carouselItems = initialCarouselItems ?? [];
+
   const containerRef = useRef<HTMLDivElement>(null);
-  const horizontalRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
     // 1. Hero Entrance
@@ -33,26 +49,18 @@ export function HomeClient({ userId, news }: HomeClientProps) {
       titleLines: ".hero-title-line",
       subtitle: ".hero-subtitle",
       buttons: ".hero-btn",
+      booksLabel: ".hero-books-label",
+      books: ".hero-book, .hero-book-mobile-titles",
     });
 
     // 2. Statistics Counters
     const counters = gsap.utils.toArray(".stat-counter") as Element[];
-    animateCounters(counters);
+    if (counters.length > 0) animateCounters(counters);
 
     // 3. Scroll Reveals
     const revealElements = gsap.utils.toArray(".scroll-reveal") as Element[];
     revealElements.forEach((el) => {
       animateScrollReveal(el);
-    });
-
-    // 4. Horizontal Scroll Section
-    // Disable horizontal scroll on mobile (e.g. < 768px)
-    const mm = gsap.matchMedia();
-    mm.add("(min-width: 768px)", () => {
-      const sections = gsap.utils.toArray(".horizontal-panel") as Element[];
-      if (horizontalRef.current && sections.length > 0) {
-        animateHorizontalScroll(horizontalRef.current, sections);
-      }
     });
 
   }, { scope: containerRef });
@@ -64,22 +72,21 @@ export function HomeClient({ userId, news }: HomeClientProps) {
         {/* Subtle Technical Grid */}
         <div className="absolute inset-0 hero-grid-bg opacity-40 mix-blend-multiply pointer-events-none" />
         
-        <div className="relative z-10 w-full max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-end gap-12">
+        <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center lg:items-end gap-16 lg:gap-12">
           
-          <div className="flex-1">
+          <div className="w-full lg:w-[55%]">
             <div className="hero-badge inline-flex items-center gap-2 mb-8 text-xs font-bold tracking-widest uppercase text-[#F26A21]">
               <span className="w-2 h-2 bg-[#F26A21] rounded-full" />
               Powered by aiactuaries.org
             </div>
 
             <h1 className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-[85px] leading-[0.95] tracking-tight uppercase text-[#0A192F]">
-              <div className="overflow-hidden pb-2"><div className="hero-title-line">The Institute for</div></div>
-              <div className="overflow-hidden pb-2"><div className="hero-title-line">Actuarial</div></div>
-              <div className="overflow-hidden pb-2"><div className="hero-title-line">Science</div></div>
-              <div className="overflow-hidden pb-2"><div className="hero-title-line text-[#F26A21]">× AI</div></div>
+              <div className="overflow-hidden pb-2"><div className="hero-title-line">Sri Sathya Sai</div></div>
+              <div className="overflow-hidden pb-2"><div className="hero-title-line">Institute of</div></div>
+              <div className="overflow-hidden pb-2"><div className="hero-title-line">Actuaries</div></div>
             </h1>
 
-            <p className="hero-subtitle mt-8 max-w-xl text-lg md:text-xl font-light leading-relaxed text-[#0A192F]/80">
+            <p className="hero-subtitle mt-8 max-w-xl lg:text-[20px] md:text-xl font-light leading-relaxed text-[#F26A21]">
               Building the next generation of actuarial professionals through data science, AI, research and applied learning.
             </p>
 
@@ -109,128 +116,66 @@ export function HomeClient({ userId, news }: HomeClientProps) {
             </div>
           </div>
 
-          <div className="hidden md:flex flex-col items-end gap-2 text-xs font-bold tracking-widest uppercase text-[#0A192F]/40 hero-subtitle">
-            <p>2026</p>
-            <p>01 / 04</p>
+          <div className="w-full lg:w-[45%] flex justify-end lg:-translate-y-16">
+            <PublicationStack />
           </div>
         </div>
       </section>
 
-      {/* ================= STATISTICS SECTION ================= */}
-      <section className="border-b border-[#0A192F]/10 bg-white">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-16">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8 divide-y md:divide-y-0 md:divide-x divide-[#0A192F]/10">
-            
-            <div className="scroll-reveal flex flex-col pt-8 md:pt-0 md:px-8">
-              <span className="text-5xl md:text-7xl font-display text-[#0A192F] stat-counter" data-target="3">0</span>
-              <span className="mt-4 text-xs font-bold tracking-widest text-[#0A192F]/60 uppercase leading-relaxed max-w-[150px]">
-                Editions of the Summer Program
-              </span>
-            </div>
-            
-            <div className="scroll-reveal flex flex-col pt-8 md:pt-0 md:px-8">
-              <span className="text-5xl md:text-7xl font-display text-[#0A192F]">
-                ₹<span className="stat-counter inline-block" data-target="0">0</span>
-              </span>
-              <span className="mt-4 text-xs font-bold tracking-widest text-[#0A192F]/60 uppercase leading-relaxed max-w-[150px]">
-                Cost to Students
-              </span>
-            </div>
-            
-            <div className="scroll-reveal flex flex-col pt-8 md:pt-0 md:px-8">
-              <span className="text-5xl md:text-7xl font-display text-[#0A192F] stat-counter" data-target="5">0</span>
-              <span className="mt-4 text-xs font-bold tracking-widest text-[#0A192F]/60 uppercase leading-relaxed max-w-[150px]">
-                Professional Bodies Engaged
-              </span>
-            </div>
-
-          </div>
-        </div>
-      </section>
 
       {/* ================= PROGRAMS SECTION ================= */}
-      <section className="py-24 md:py-32 px-6 md:px-12 max-w-5xl mx-auto">
-        <div className="scroll-reveal mb-16 md:mb-24">
+      <section className="py-24 md:py-32 overflow-hidden border-t border-[#0A192F]/10">
+        <div className="scroll-reveal mb-16 md:mb-24 px-6 md:px-12 max-w-5xl mx-auto">
           <h2 className="font-display text-4xl md:text-6xl text-[#0A192F] uppercase tracking-tight">Our Programs</h2>
           <span className="text-xs font-bold tracking-widest text-[#F26A21] uppercase mt-4 block">Core Pillars</span>
         </div>
 
-        <div className="flex flex-col border-t border-[#0A192F]/10">
-          {[
-            { id: "01", title: "Actuarial Data Science", desc: "Foundations → Applied Learning", href: "/programs" },
-            { id: "02", title: "Artificial Intelligence", desc: "ML → Generative AI → Agents", href: "/programs" },
-            { id: "03", title: "Professional Development", desc: "Workshops → Certifications", href: "/certifications" },
-            { id: "04", title: "Research", desc: "Research → Publications → SUTRA", href: "https://sutra.sssia.org" },
-          ].map((item, i) => (
-            <Link key={i} href={item.href} className="group flex flex-col md:flex-row md:items-center border-b border-[#0A192F]/10 py-10 transition-all hover:bg-white/50 relative overflow-hidden">
-              <div className="absolute left-0 bottom-0 h-[2px] w-full bg-[#F26A21] origin-left scale-x-0 transition-transform duration-500 ease-out group-hover:scale-x-100" />
-              
-              <div className="text-xs font-bold text-[#0A192F]/40 tracking-widest mb-4 md:mb-0 md:w-24 group-hover:text-[#F26A21] transition-colors">{item.id}</div>
-              
-              <div className="flex-1 md:pr-12">
-                <h3 className="font-display text-2xl md:text-4xl text-[#0A192F] group-hover:translate-x-2 transition-transform duration-300 uppercase">{item.title}</h3>
-                <p className="mt-2 text-sm text-[#0A192F]/60 font-light tracking-wide uppercase group-hover:translate-x-2 transition-transform duration-300 delay-75">{item.desc}</p>
-              </div>
-              
-              <div className="hidden md:flex items-center justify-end w-16">
-                <ArrowRight className="size-6 text-[#0A192F]/30 group-hover:text-[#F26A21] group-hover:translate-x-2 transition-all duration-300" />
-              </div>
-            </Link>
-          ))}
-        </div>
+        {carouselItems.length === 0 ? (
+          <div className="px-6 md:px-12 max-w-5xl mx-auto text-[#0A192F]/60">
+            No programs, events, or internships are currently published.
+          </div>
+        ) : (
+          <div className="relative flex overflow-x-hidden group">
+            <div className="animate-marquee flex items-stretch py-4 whitespace-nowrap min-w-max">
+              {/* Render the items enough times for continuous looping on large screens */}
+              {Array.from({ length: 10 }).flatMap(() => carouselItems).map((item, i) => (
+                <Link 
+                  key={`${item._id}-${i}`} 
+                  href={contentHref(item.type, item.slug)} 
+                  className="mx-4 flex flex-col justify-between p-8 border border-[#0A192F]/10 hover:border-[#F26A21] hover:bg-white transition-colors w-[350px] md:w-[450px] h-[250px] shrink-0"
+                >
+                  <div>
+                    <div className="text-xs font-bold text-[#F26A21] tracking-widest mb-4 uppercase">0{((i % carouselItems.length) + 1)}</div>
+                    <h3 className="font-display text-2xl md:text-3xl text-[#0A192F] uppercase whitespace-normal leading-tight line-clamp-3">{item.title}</h3>
+                  </div>
+                  <div className="flex items-center justify-between mt-6">
+                    <span className="text-xs font-bold tracking-widest text-[#0A192F]/50 uppercase">{item.type}</span>
+                    <ArrowRight className="size-5 text-[#0A192F]/30 group-hover:text-[#F26A21] transition-colors" />
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </section>
 
-      {/* ================= HORIZONTAL SCROLL STORYTELLING ================= */}
-      <section className="bg-[#0A192F] text-white hidden md:block overflow-hidden" ref={horizontalRef}>
-        <div className="flex w-[500vw] h-screen">
-          {[
-            { title: "ACTUARIAL SCIENCE", desc: "The foundation of risk modeling and financial security." },
-            { title: "DATA SCIENCE", desc: "Expanding capabilities through robust engineering and analytics." },
-            { title: "GENERATIVE AI", desc: "Transforming workflows with LLMs and prompt engineering." },
-            { title: "AGENTIC AI", desc: "Autonomous multi-agent systems for production-scale tasks." },
-            { title: "RESEARCH", desc: "Pioneering the future of the actuarial profession." },
-          ].map((panel, idx) => (
-            <div key={idx} className="horizontal-panel w-screen h-screen flex flex-col justify-center px-12 md:px-24 border-r border-white/10">
-              <span className="text-[#F26A21] text-xs font-bold tracking-widest mb-6 uppercase">0{idx + 1} / 05</span>
-              <h2 className="font-display text-6xl md:text-8xl lg:text-[120px] uppercase leading-[0.9] tracking-tight">{panel.title}</h2>
-              <p className="mt-8 max-w-md text-lg text-white/60 font-light leading-relaxed">{panel.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-      
-      {/* Mobile fallback for horizontal section */}
-      <section className="bg-[#0A192F] text-white md:hidden py-24 px-6 flex flex-col gap-16">
-        {[
-          { title: "ACTUARIAL SCIENCE", desc: "The foundation of risk modeling and financial security." },
-          { title: "DATA SCIENCE", desc: "Expanding capabilities through robust engineering and analytics." },
-          { title: "GENERATIVE AI", desc: "Transforming workflows with LLMs and prompt engineering." },
-          { title: "AGENTIC AI", desc: "Autonomous multi-agent systems for production-scale tasks." },
-          { title: "RESEARCH", desc: "Pioneering the future of the actuarial profession." },
-        ].map((panel, idx) => (
-          <div key={idx} className="scroll-reveal flex flex-col">
-            <span className="text-[#F26A21] text-xs font-bold tracking-widest mb-4 uppercase">0{idx + 1} / 05</span>
-            <h2 className="font-display text-4xl uppercase leading-tight tracking-tight">{panel.title}</h2>
-            <p className="mt-4 text-sm text-white/60 font-light leading-relaxed">{panel.desc}</p>
-          </div>
-        ))}
-      </section>
+      <ScrambleStory />
 
       {/* ================= RESEARCH / SUTRA / FULL STACK ================= */}
       <section className="py-24 md:py-32 bg-white">
         <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-2 gap-24">
           
-          {/* Research Intro */}
+          {/* Agentic AI Book Intro */}
           <div className="scroll-reveal flex flex-col justify-center">
-            <span className="text-xs font-bold tracking-widest text-[#F26A21] uppercase mb-8">Research / 01</span>
+            <span className="text-xs font-bold tracking-widest text-[#F26A21] uppercase mb-8">Publication / 01</span>
             <h2 className="font-display text-5xl md:text-6xl text-[#0A192F] uppercase leading-[1.1] tracking-tight mb-8">
-              Where Actuarial<br/>Science Meets<br/>New Computation
+              Agentic AI<br/>for Actuaries
             </h2>
             <p className="text-lg text-[#0A192F]/70 font-light max-w-md mb-10 leading-relaxed">
-              Research, publications and applied work shaping the future of the profession.
+              A comprehensive guide to autonomous multi-agent systems and their application in modern actuarial production workloads.
             </p>
             <Link href="https://sutra.sssia.org" className="group inline-flex items-center gap-3 text-xs font-bold tracking-widest text-[#0A192F] uppercase hover:text-[#F26A21] transition-colors w-max pb-2 border-b border-[#0A192F]/20 hover:border-[#F26A21]">
-              Explore Research <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+              Read the Book <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
             </Link>
           </div>
 
@@ -298,21 +243,27 @@ export function HomeClient({ userId, news }: HomeClientProps) {
         <div className="max-w-7xl mx-auto px-6 md:px-12 text-center">
           <span className="text-xs font-bold tracking-widest text-[#F26A21] uppercase mb-16 block">Impact at Scale</span>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-12 md:gap-8">
-            {[
-              { num: "1,200", suffix: "+", label: "Community Members" },
-              { num: "180", suffix: "+", label: "Institutions" },
-              { num: "54", suffix: "+", label: "Student Projects" },
-              { num: "100", suffix: "+", label: "Actuarial Students" },
-            ].map((stat, i) => (
-              <div key={i} className="scroll-reveal flex flex-col items-center">
-                <span className="text-5xl md:text-6xl font-display text-[#0A192F] mb-4">
-                  <span className="stat-counter" data-target={stat.num.replace(/,/g, "")}>0</span>
-                  {stat.suffix}
-                </span>
-                <span className="text-xs font-bold tracking-widest text-[#0A192F]/50 uppercase">{stat.label}</span>
-              </div>
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
+            {(settings?.achievements?.filter((a: any) => !a.hidden) || [
+              { value: "1,200+", label: "Community Members" },
+              { value: "180+", label: "Institutions" },
+              { value: "54+", label: "Student Projects" }
+            ]).map((stat: any, i: number) => {
+              // Extract just the numbers for GSAP target, keeping any + or text outside
+              const numMatch = stat.value.match(/[\d,.]+/);
+              const targetNum = numMatch ? numMatch[0].replace(/,/g, "") : "0";
+              const suffix = stat.value.replace(/[\d,.]+/g, "");
+
+              return (
+                <div key={i} className="scroll-reveal flex flex-col items-center">
+                  <span className="text-5xl md:text-6xl font-display text-[#0A192F] mb-4">
+                    <span className="stat-counter" data-target={targetNum}>0</span>
+                    {suffix}
+                  </span>
+                  <span className="text-xs font-bold tracking-widest text-[#0A192F]/50 uppercase">{stat.label}</span>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>

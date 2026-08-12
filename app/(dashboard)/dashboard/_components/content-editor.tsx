@@ -49,6 +49,7 @@ const TYPES: ContentType[] = [
   "program",
   "workshop",
   "certification",
+  "internship",
   "news",
 ];
 const STATUSES: ContentStatus[] = ["draft", "scheduled", "published", "archived"];

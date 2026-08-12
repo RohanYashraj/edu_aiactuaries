@@ -77,7 +77,7 @@ export function jsonLdDocument(nodes: (JsonLdNode | null | undefined)[]) {
 /* -------------------------------------------------------------------------- */
 
 type ContentLike = {
-  type: "event" | "workshop" | "certification" | "program" | "news";
+  type: "event" | "workshop" | "certification" | "program" | "internship" | "news";
   slug: string;
   title: string;
   summary: string;
@@ -95,7 +95,7 @@ const iso = (ms?: number) =>
 
 /**
  * Maps a content document onto the schema.org type search engines actually
- * reward: Course for certifications, Event for events/programs/workshops,
+ * reward: Course for certifications, Event for events/programs/workshops/internships,
  * Article for news.
  */
 export function contentSchema(doc: ContentLike, url: string): JsonLdNode {

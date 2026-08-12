@@ -18,11 +18,10 @@ const SINGLETON = "singleton";
  * has engaged. Anything else starts hidden with an empty value.
  */
 export const DEFAULT_ACHIEVEMENTS = [
-  { value: "3", label: "Editions of the summer course" },
-  { value: "₹0", label: "Cost to students" },
-  { value: "5", label: "Professional bodies engaged" },
-  { value: "", label: "Students taught", hidden: true },
-] as const;
+  { value: "1,200+", label: "Community Members" },
+  { value: "180+", label: "Institutions" },
+  { value: "54+", label: "Student Projects" },
+];
 
 async function readSettings(ctx: Parameters<typeof requireContentManager>[0]) {
   return await ctx.db

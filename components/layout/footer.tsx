@@ -40,8 +40,8 @@ export function Footer() {
       <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div className="lg:col-span-1">
-            <p className="font-display text-lg leading-snug">{siteName}</p>
-            <p className="mt-1 text-sm text-primary-foreground/70">
+            <img src="/SSSIA Logo 3.0.webp" alt="SSSIA Logo" className="h-12 w-auto" />
+            <p className="mt-4 text-sm text-primary-foreground/70">
               {siteTagline}
             </p>
             <a

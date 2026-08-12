@@ -49,9 +49,7 @@ export function Header() {
         {/* Logo (links to home) */}
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center gap-2.5">
-            <span className="flex size-8 items-center justify-center rounded-lg bg-gold text-xs font-bold text-gold-foreground shadow-sm">
-              edu.
-            </span>
+            <img src="/SSSIA Logo 3.0.webp" alt="SSSIA Logo" className="h-12 w-auto rounded-md" />
           </Link>
         </div>
 
@@ -104,13 +102,11 @@ export function Header() {
 
           <SignedOut>
             <SignInButton mode="modal">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="hidden text-primary-foreground/80 hover:bg-primary-foreground/10 hover:text-primary-foreground sm:inline-flex"
+              <span
+                className="hidden sm:inline-flex cursor-pointer items-center justify-center rounded-md text-sm font-medium h-8 px-3 text-primary-foreground/80 hover:bg-primary-foreground/10 hover:text-primary-foreground transition-colors"
               >
                 Sign In
-              </Button>
+              </span>
             </SignInButton>
             <Link href="/sign-up">
               <Button
