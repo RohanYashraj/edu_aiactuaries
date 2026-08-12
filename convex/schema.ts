@@ -231,6 +231,10 @@ const newsDetails = v.object({
   authorName: v.optional(v.string()),
   sourceUrl: v.optional(v.string()),
   sourceName: v.optional(v.string()),
+  sourceType: v.optional(v.string()),
+  category: v.optional(v.string()),
+  metric: v.optional(v.string()),
+  linkedinUrl: v.optional(v.string()),
 });
 
 export const contentDetailsValidator = v.union(
