@@ -114,7 +114,11 @@ sidebar plus a slim top bar over a muted canvas.
 - **User block** (sidebar foot) shows avatar, name and role badge, and wraps Clerk's
   `<UserButton />` — which keeps sign-out and Clerk's own account-management modal
   reachable without a bespoke menu.
-- **Top bar** carries the page title and at most one primary action. No branding.
+- **No top bar component.** Every page already renders its own `<h1>` and its own
+  primary action (`content-table.tsx:110` owns the "New" button), so a title bar in
+  the layout would duplicate what pages own. On mobile, where the sidebar collapses,
+  a slim bar appears carrying only the brand mark and a menu button that opens the
+  nav in a `Sheet`.
 
 Removed: the wordmark block, "Back to Site", the "Admin" button, the header
 `UserButton`, `AdminNav`, and the whole `app/(admin)/` directory.
@@ -186,8 +190,8 @@ password. Drops the raw user ID — a debugging detail with no user value.
 | File | Change |
 |---|---|
 | `app/(dashboard)/layout.tsx` | rewritten: sidebar + top bar shell, role resolution, onboarding gate, JWT-missing error state |
-| `app/(dashboard)/_components/dashboard-sidebar.tsx` | new: role-filtered nav, brand mark, user block |
-| `app/(dashboard)/_components/dashboard-topbar.tsx` | new: page title + optional primary action |
+| `app/(dashboard)/_components/dashboard-sidebar.tsx` | new: role-filtered nav, brand mark, user block, mobile sheet |
+| `lib/dashboard-user.ts` | new: shared session/role resolution for the layout and every gated page |
 | `app/(dashboard)/dashboard/page.tsx` | role-aware composition |
 | `app/(dashboard)/dashboard/_components/dashboard-content.tsx` | drop the Account card |
 | `app/(dashboard)/dashboard/profile/page.tsx` | add identity section |
