@@ -16,7 +16,8 @@ const nextConfig: NextConfig = {
     return [
       // Authenticated pages moved under /dashboard so the route group and the
       // URL agree, and so the auth matcher covers them structurally.
-      { source: "/account", destination: "/dashboard/account", permanent: true },
+      { source: "/account", destination: "/dashboard/profile", permanent: true },
+      { source: "/dashboard/account", destination: "/dashboard/profile", permanent: true },
       // The jobs board is retired; /jobs URLs are already indexed, so send
       // them home rather than serving 404s.
       { source: "/jobs", destination: "/", permanent: true },
