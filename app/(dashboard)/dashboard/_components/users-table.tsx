@@ -65,7 +65,7 @@ export function UsersTable() {
     try {
       await setRole({ userId: user._id as Id<"users">, role });
       // Keep the Clerk metadata mirror in step so the middleware fast-path
-      // doesn't bounce them away from /admin on their next navigation.
+      // doesn't bounce them away from /dashboard/users on their next navigation.
       await mirrorRole(user.clerkId, role);
       toast.success(`${user.name} is now ${ROLE_LABELS[role].toLowerCase()}`);
     } catch (err) {

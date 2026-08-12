@@ -45,8 +45,8 @@ export default async function DashboardLayout({
       <DashboardSidebar
         staff={isStaff(user)}
         admin={isAdmin(user)}
-        name={user?.name ?? "Member"}
-        role={user?.role ?? "member"}
+        name={user?.name ?? "—"}
+        role={user?.role}
       />
       <main className="min-w-0 flex-1 bg-muted/30 px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto w-full max-w-6xl">{children}</div>

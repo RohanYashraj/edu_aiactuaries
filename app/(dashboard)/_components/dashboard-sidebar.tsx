@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
@@ -17,6 +18,7 @@ import {
 
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { ROLE_LABEL } from "@/lib/dashboard-roles";
 import { cn } from "@/lib/utils";
 
 type Access = "all" | "staff" | "admin";
@@ -38,17 +40,12 @@ const LINKS: NavLink[] = [
   { href: "/dashboard/users", label: "Users", icon: Users, access: "admin" },
 ];
 
-const ROLE_LABEL: Record<string, string> = {
-  member: "Member",
-  content_manager: "Content manager",
-  admin: "Administrator",
-};
-
 export type DashboardSidebarProps = {
   staff: boolean;
   admin: boolean;
   name: string;
-  role: string;
+  /** Undefined when the Convex row hasn't synced yet — distinct from an actual "member" role. */
+  role: string | undefined;
 };
 
 function visibleLinks(staff: boolean, admin: boolean): NavLink[] {
@@ -114,14 +111,14 @@ function BrandMark() {
   );
 }
 
-function UserBlock({ name, role }: { name: string; role: string }) {
+function UserBlock({ name, role }: { name: string; role: string | undefined }) {
   return (
     <div className="flex items-center gap-3 border-t border-border px-3 py-4">
       <UserButton afterSignOutUrl="/" appearance={{ elements: { avatarBox: "size-8" } }} />
       <div className="min-w-0">
         <p className="truncate text-sm font-medium">{name}</p>
         <p className="truncate text-xs text-muted-foreground">
-          {ROLE_LABEL[role] ?? "Member"}
+          {(role && ROLE_LABEL[role]) ?? "—"}
         </p>
       </div>
     </div>
@@ -129,10 +126,15 @@ function UserBlock({ name, role }: { name: string; role: string }) {
 }
 
 export function DashboardSidebar({ staff, admin, name, role }: DashboardSidebarProps) {
+  // Controlled so navigating (via NavList's onNavigate) can close the sheet —
+  // Radix doesn't close on route change by itself, and left open the drawer
+  // sits on top of the page the tap just navigated to.
+  const [open, setOpen] = useState(false);
+
   return (
     <>
       {/* Desktop: fixed rail */}
-      <aside className="hidden w-60 shrink-0 border-r border-border bg-background md:flex md:flex-col">
+      <aside className="hidden w-60 shrink-0 border-r border-border bg-background md:sticky md:top-0 md:flex md:h-screen md:flex-col md:overflow-y-auto">
         <div className="px-3 py-4">
           <BrandMark />
         </div>
@@ -143,9 +145,9 @@ export function DashboardSidebar({ staff, admin, name, role }: DashboardSidebarP
       </aside>
 
       {/* Mobile: top bar with a sheet */}
-      <div className="flex items-center justify-between border-b border-border px-4 py-3 md:hidden">
+      <div className="sticky top-0 z-50 flex items-center justify-between border-b border-border bg-background px-4 py-3 md:hidden">
         <BrandMark />
-        <Sheet>
+        <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
             <Button variant="ghost" size="sm" aria-label="Open menu">
               <Menu className="size-5" />
@@ -158,7 +160,7 @@ export function DashboardSidebar({ staff, admin, name, role }: DashboardSidebarP
                 <BrandMark />
               </div>
               <nav className="flex-1 px-3">
-                <NavList staff={staff} admin={admin} />
+                <NavList staff={staff} admin={admin} onNavigate={() => setOpen(false)} />
               </nav>
               <UserBlock name={name} role={role} />
             </div>

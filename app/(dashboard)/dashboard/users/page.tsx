@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
 
-import { getDashboardSession, isAdmin } from "@/lib/dashboard-user";
+import { gateAdmin } from "@/lib/dashboard-user";
 import { buildMetadata } from "@/lib/seo";
+import { AccountSyncing } from "../_components/account-syncing";
 import { UsersTable } from "../_components/users-table";
 
 export const metadata = buildMetadata({ title: "Users", noindex: true });
@@ -9,8 +10,9 @@ export const metadata = buildMetadata({ title: "Users", noindex: true });
 export default async function AdminUsersPage() {
   // User management is admin-only, so it gets its own check beyond the
   // staff check (and Convex enforces it again).
-  const { user } = await getDashboardSession();
-  if (!isAdmin(user)) redirect("/dashboard");
+  const gate = await gateAdmin();
+  if (gate.status === "denied") redirect("/dashboard");
+  if (gate.status === "syncing") return <AccountSyncing />;
 
   return (
     <div>

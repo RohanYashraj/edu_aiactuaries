@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { buildMetadata } from "@/lib/seo";
 import { getDashboardSession } from "@/lib/dashboard-user";
+import { ROLE_LABEL } from "@/lib/dashboard-roles";
 import { ProfileForm } from "./_components/profile-form";
 
 export const metadata = buildMetadata({
@@ -12,12 +13,6 @@ export const metadata = buildMetadata({
   path: "/dashboard/profile",
   noindex: true,
 });
-
-const ROLE_LABEL: Record<string, string> = {
-  member: "Member",
-  content_manager: "Content manager",
-  admin: "Administrator",
-};
 
 export default async function ProfilePage() {
   const clerkUser = await currentUser();
@@ -66,7 +61,7 @@ export default async function ProfilePage() {
               <p className="mt-1 text-xs text-muted-foreground">Member since {joined}</p>
             ) : null}
           </div>
-          <Badge variant="secondary">{ROLE_LABEL[user?.role ?? "member"] ?? "Member"}</Badge>
+          <Badge variant="secondary">{(user && ROLE_LABEL[user.role]) ?? "—"}</Badge>
         </CardContent>
       </Card>
 

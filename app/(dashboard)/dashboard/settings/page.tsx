@@ -1,14 +1,16 @@
 import { redirect } from "next/navigation";
 
-import { getDashboardSession, isStaff } from "@/lib/dashboard-user";
+import { gateStaff } from "@/lib/dashboard-user";
 import { buildMetadata } from "@/lib/seo";
+import { AccountSyncing } from "../_components/account-syncing";
 import { SettingsForm } from "../_components/settings-form";
 
 export const metadata = buildMetadata({ title: "Settings", noindex: true });
 
 export default async function AdminSettingsPage() {
-  const { user } = await getDashboardSession();
-  if (!isStaff(user)) redirect("/dashboard");
+  const gate = await gateStaff();
+  if (gate.status === "denied") redirect("/dashboard");
+  if (gate.status === "syncing") return <AccountSyncing />;
 
   return (
     <div>
