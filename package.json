@@ -8,7 +8,7 @@
     "dev:backend": "convex dev",
     "predev": "convex dev --until-success && convex dashboard",
     "build": "next build",
-    "build:vercel": "convex deploy --cmd 'pnpm build'",
+    "build:vercel": "convex deploy -y && convex deploy --cmd 'pnpm build'",
     "start": "next start",
     "lint": "eslint ."
   },
