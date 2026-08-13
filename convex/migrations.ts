@@ -255,3 +255,31 @@ export const linkPartnersToOrganizations = internalMutation({
     return { linked };
   },
 });
+
+export const moveSocialLinksToRoot = internalMutation({
+  args: {},
+  handler: async (ctx) => {
+    const contents = await ctx.db.query("content").collect();
+    let updated = 0;
+    for (const item of contents) {
+      if (item.details?.kind === "news") {
+        const details = item.details as any;
+        if (
+          details.linkedinUrl !== undefined ||
+          details.websiteUrl !== undefined ||
+          details.websiteLabel !== undefined
+        ) {
+          const { linkedinUrl, websiteUrl, websiteLabel, ...restDetails } = details;
+          await ctx.db.patch(item._id, {
+            details: restDetails,
+            linkedinUrl: linkedinUrl ?? item.linkedinUrl,
+            websiteUrl: websiteUrl ?? item.websiteUrl,
+            websiteLabel: websiteLabel ?? item.websiteLabel,
+          });
+          updated++;
+        }
+      }
+    }
+    return { migrated: updated };
+  },
+});

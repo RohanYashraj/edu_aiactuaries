@@ -44,10 +44,7 @@ export function NewsClient({ items: initialItems }: { items: PublicContent[] }) 
 
 
   const getLinkedinUrl = (item: PublicContent) => {
-    if (item.details?.kind === "news" && "linkedinUrl" in item.details) {
-      return (item.details as any).linkedinUrl;
-    }
-    return null;
+    return item.linkedinUrl || undefined;
   };
 
   return (

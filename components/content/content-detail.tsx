@@ -91,7 +91,7 @@ export function ContentDetail({
   // Events, programmes and workshops can be registered for in-app;
   // certifications and news keep plain call-to-action links.
   const isRegistrable =
-    doc.type === "event" || doc.type === "program" || doc.type === "workshop";
+    doc.type === "event" || doc.type === "program" || doc.type === "workshop" || doc.type === "internship";
   const registrationUrl =
     "registrationUrl" in details ? details.registrationUrl : undefined;
 
@@ -300,6 +300,22 @@ export function ContentDetail({
             externalLabel={primaryCta?.label ?? "Register externally"}
             signedIn={signedIn}
           />
+          {secondaryCtas.length > 0 ? (
+            <div className="mt-6 flex flex-wrap gap-3">
+              {secondaryCtas.map((cta) => (
+                <Button key={cta.href} asChild variant="outline" size="lg">
+                  <a
+                    href={cta.href}
+                    {...(cta.href.startsWith("http")
+                      ? { target: "_blank", rel: "noopener noreferrer" }
+                      : {})}
+                  >
+                    {cta.label}
+                  </a>
+                </Button>
+              ))}
+            </div>
+          ) : null}
         </div>
       ) : primaryCta || secondaryCtas.length > 0 ? (
         <div className="mt-12 flex flex-wrap items-center gap-3 border-t border-border pt-8">
@@ -334,6 +350,40 @@ export function ContentDetail({
           ))}
         </div>
       ) : null}
+
+      {(doc.websiteUrl || doc.linkedinUrl) && (
+        <div className="mt-16 border-t border-border pt-12">
+          <span className="text-xs font-bold tracking-widest text-muted-foreground uppercase block mb-6">
+            Source
+          </span>
+          <div className="flex flex-col sm:flex-row gap-4">
+            {doc.websiteUrl && (
+              <a
+                href={doc.websiteUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-3 text-xs font-bold tracking-widest text-white bg-[#F26A21] hover:bg-[#0A192F] px-8 py-5 transition-colors uppercase w-full sm:w-auto text-center"
+              >
+                {doc.websiteLabel || "VISIT OFFICIAL WEBSITE"} <ArrowRight className="w-4 h-4 -rotate-45" />
+              </a>
+            )}
+            {doc.linkedinUrl && (
+              <a
+                href={doc.linkedinUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`inline-flex items-center justify-center gap-3 text-xs font-bold tracking-widest px-8 py-5 transition-colors uppercase w-full sm:w-auto text-center ${
+                  doc.websiteUrl 
+                    ? "text-[#0A192F] bg-transparent border border-[#0A192F]/20 hover:border-[#0A192F]/50" 
+                    : "text-white bg-[#0A192F] hover:bg-[#F26A21]"
+                }`}
+              >
+                View Original LinkedIn Post <ArrowRight className="w-4 h-4 -rotate-45" />
+              </a>
+            )}
+          </div>
+        </div>
+      )}
 
       <p className="mt-10 text-sm text-muted-foreground">
         <Link href={sectionHref} className="hover:text-foreground">

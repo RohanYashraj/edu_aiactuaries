@@ -193,6 +193,9 @@ const newsDetails = z.object({
   authorName: optionalString,
   sourceUrl: optionalUrl,
   sourceName: optionalString,
+  sourceType: optionalString,
+  category: optionalString,
+  metric: optionalString,
 });
 
 export const contentDetailsSchema = z.discriminatedUnion("kind", [
@@ -241,6 +244,10 @@ export const contentFormSchema = z
     faqs: z.array(faqSchema).optional(),
 
     details: contentDetailsSchema,
+
+    linkedinUrl: optionalUrl,
+    websiteUrl: optionalUrl,
+    websiteLabel: optionalString,
 
     metaTitle: optionalString,
     metaDescription: optionalString,

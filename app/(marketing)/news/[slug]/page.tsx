@@ -57,20 +57,9 @@ export default async function NewsDetailPage({ params }: PageProps) {
       ? (article.details as any).metric
       : null;
 
-  const linkedinUrl =
-    article.details?.kind === "news" && "linkedinUrl" in article.details
-      ? (article.details as any).linkedinUrl
-      : null;
-
-  const websiteUrl =
-    article.details?.kind === "news" && "websiteUrl" in article.details
-      ? (article.details as any).websiteUrl
-      : null;
-
-  const websiteLabel =
-    article.details?.kind === "news" && "websiteLabel" in article.details
-      ? (article.details as any).websiteLabel
-      : "VISIT OFFICIAL WEBSITE";
+  const websiteLabel = article.websiteLabel || "VISIT OFFICIAL WEBSITE";
+  const websiteUrl = article.websiteUrl;
+  const linkedinUrl = article.linkedinUrl;
 
   const bodyParagraphs = article.body
     ? article.body.split(/\r?\n+|\\n+/).filter((p) => p.trim() !== "")

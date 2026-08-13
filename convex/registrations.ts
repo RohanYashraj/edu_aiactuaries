@@ -13,7 +13,7 @@ import { requireContentManager, requireUser } from "./lib/auth";
  */
 
 /** Only time-bound content can be registered for. */
-const REGISTRABLE = ["event", "program", "workshop"] as const;
+const REGISTRABLE = ["event", "program", "workshop", "internship"] as const;
 
 async function contentSummary(ctx: QueryCtx, contentId: Doc<"content">["_id"]) {
   const doc = await ctx.db.get(contentId);

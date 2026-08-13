@@ -217,6 +217,9 @@ const UNSETTABLE_FIELDS = [
   "featureRank",
   "scheduledFor",
   "seo",
+  "linkedinUrl",
+  "websiteUrl",
+  "websiteLabel",
 ] as const;
 
 type UnsettableField = (typeof UNSETTABLE_FIELDS)[number];

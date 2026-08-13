@@ -190,12 +190,12 @@ export const upsert18Initiatives = mutation({
             kind: "news",
             category: item.category,
             metric: item.metric,
-            linkedinUrl: linkedinUrlValue,
             sourceName: sourceNameValue,
             sourceType: sourceTypeValue,
-            websiteUrl: websiteUrlValue,
-            websiteLabel: websiteLabelValue,
           },
+          linkedinUrl: linkedinUrlValue,
+          websiteUrl: websiteUrlValue,
+          websiteLabel: websiteLabelValue,
           updatedAt: Date.now(),
         });
       } else {
@@ -214,12 +214,12 @@ export const upsert18Initiatives = mutation({
             kind: "news",
             category: item.category,
             metric: item.metric,
-            linkedinUrl: linkedinUrlValue,
             sourceName: sourceNameValue,
             sourceType: sourceTypeValue,
-            websiteUrl: websiteUrlValue,
-            websiteLabel: websiteLabelValue,
           },
+          linkedinUrl: linkedinUrlValue,
+          websiteUrl: websiteUrlValue,
+          websiteLabel: websiteLabelValue,
         });
       }
       order++;

@@ -246,9 +246,6 @@ const newsDetails = v.object({
   sourceType: v.optional(v.string()),
   category: v.optional(v.string()),
   metric: v.optional(v.string()),
-  linkedinUrl: v.optional(v.string()),
-  websiteUrl: v.optional(v.string()),
-  websiteLabel: v.optional(v.string()),
 });
 
 export const contentDetailsValidator = v.union(
@@ -299,6 +296,10 @@ export const contentFields = {
   partners: v.optional(v.array(partnerValidator)),
   faqs: v.optional(v.array(faqValidator)),
 
+  linkedinUrl: v.optional(v.string()),
+  websiteUrl: v.optional(v.string()),
+  websiteLabel: v.optional(v.string()),
+
   details: contentDetailsValidator,
   seo: v.optional(seoValidator),
 
@@ -340,6 +341,10 @@ export const contentPatchFields = {
   ctas: v.optional(v.array(ctaValidator)),
   partners: v.optional(v.array(partnerValidator)),
   faqs: v.optional(v.array(faqValidator)),
+
+  linkedinUrl: v.optional(v.string()),
+  websiteUrl: v.optional(v.string()),
+  websiteLabel: v.optional(v.string()),
 
   details: v.optional(contentDetailsValidator),
   seo: v.optional(seoValidator),

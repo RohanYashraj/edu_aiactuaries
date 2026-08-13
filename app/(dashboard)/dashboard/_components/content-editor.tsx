@@ -108,6 +108,9 @@ function initialValues(doc?: Doc<"content">): ContentFormValues {
     partners: doc.partners ?? [],
     faqs: doc.faqs ?? [],
     details: doc.details,
+    linkedinUrl: doc.linkedinUrl,
+    websiteUrl: doc.websiteUrl,
+    websiteLabel: doc.websiteLabel,
     metaTitle: doc.seo?.metaTitle,
     metaDescription: doc.seo?.metaDescription,
     canonicalUrl: doc.seo?.canonicalUrl,
@@ -195,6 +198,9 @@ export function ContentEditor({
       // Empty arrays are sent as [] rather than undefined: undefined is
       // stripped from mutation args, so deleting the last FAQ or tag used to
       // leave the old list in place.
+      linkedinUrl: data.linkedinUrl,
+      websiteUrl: data.websiteUrl,
+      websiteLabel: data.websiteLabel,
       tags: data.tags ?? [],
       facts: data.facts ?? [],
       ctas: data.ctas ?? [],
@@ -241,6 +247,9 @@ export function ContentEditor({
         "featureRank",
         "scheduledFor",
         "seo",
+        "linkedinUrl",
+        "websiteUrl",
+        "websiteLabel",
       ] as const) {
         if (cleared(field)) unset.push(field);
       }
@@ -529,6 +538,36 @@ export function ContentEditor({
               Overrides the formatted dates on the page. Use it for ranges that
               don&apos;t read well automatically.
             </p>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="space-y-2">
+              <Label htmlFor="linkedinUrl">LinkedIn URL</Label>
+              <Input
+                id="linkedinUrl"
+                value={values.linkedinUrl ?? ""}
+                onChange={(e) => set("linkedinUrl", e.target.value)}
+                placeholder="https://linkedin.com/posts/..."
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="websiteUrl">Custom Website URL</Label>
+              <Input
+                id="websiteUrl"
+                value={values.websiteUrl ?? ""}
+                onChange={(e) => set("websiteUrl", e.target.value)}
+                placeholder="https://example.com"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="websiteLabel">Website Button Label</Label>
+              <Input
+                id="websiteLabel"
+                value={values.websiteLabel ?? ""}
+                onChange={(e) => set("websiteLabel", e.target.value)}
+                placeholder="e.g. Read Report"
+              />
+            </div>
           </div>
 
           <CoverImageField
