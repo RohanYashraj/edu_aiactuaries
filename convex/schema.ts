@@ -43,6 +43,7 @@ export const contentTypeValidator = v.union(
   v.literal("workshop"),
   v.literal("certification"),
   v.literal("program"),
+  v.literal("internship"),
   v.literal("news"),
 );
 
@@ -226,11 +227,25 @@ const programDetails = v.object({
   ),
 });
 
+const internshipDetails = v.object({
+  kind: v.literal("internship"),
+  lifecycle: lifecycleValidator,
+  mode: deliveryModeValidator,
+  durationLabel: v.optional(v.string()),
+  stipend: v.optional(v.string()),
+  eligibility: v.optional(v.array(v.string())),
+  registrationUrl: v.optional(v.string()),
+  registrationDeadline: v.optional(v.number()),
+});
+
 const newsDetails = v.object({
   kind: v.literal("news"),
   authorName: v.optional(v.string()),
   sourceUrl: v.optional(v.string()),
   sourceName: v.optional(v.string()),
+  sourceType: v.optional(v.string()),
+  category: v.optional(v.string()),
+  metric: v.optional(v.string()),
 });
 
 export const contentDetailsValidator = v.union(
@@ -238,6 +253,7 @@ export const contentDetailsValidator = v.union(
   workshopDetails,
   certificationDetails,
   programDetails,
+  internshipDetails,
   newsDetails,
 );
 
@@ -280,6 +296,10 @@ export const contentFields = {
   partners: v.optional(v.array(partnerValidator)),
   faqs: v.optional(v.array(faqValidator)),
 
+  linkedinUrl: v.optional(v.string()),
+  websiteUrl: v.optional(v.string()),
+  websiteLabel: v.optional(v.string()),
+
   details: contentDetailsValidator,
   seo: v.optional(seoValidator),
 
@@ -321,6 +341,10 @@ export const contentPatchFields = {
   ctas: v.optional(v.array(ctaValidator)),
   partners: v.optional(v.array(partnerValidator)),
   faqs: v.optional(v.array(faqValidator)),
+
+  linkedinUrl: v.optional(v.string()),
+  websiteUrl: v.optional(v.string()),
+  websiteLabel: v.optional(v.string()),
 
   details: v.optional(contentDetailsValidator),
   seo: v.optional(seoValidator),

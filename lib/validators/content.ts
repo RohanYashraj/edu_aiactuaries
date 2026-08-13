@@ -38,6 +38,7 @@ export const contentTypeEnum = z.enum([
   "workshop",
   "certification",
   "program",
+  "internship",
   "news",
 ]);
 
@@ -176,11 +177,25 @@ const programDetails = z.object({
   weeklySchedule: z.array(weekSchema).optional(),
 });
 
+export const internshipDetails = z.object({
+  kind: z.literal("internship"),
+  lifecycle: lifecycleEnum,
+  mode: modeEnum,
+  durationLabel: optionalString,
+  stipend: optionalString,
+  eligibility: z.array(z.string()).optional(),
+  registrationUrl: optionalUrl,
+  registrationDeadline: z.number().optional(),
+});
+
 const newsDetails = z.object({
   kind: z.literal("news"),
   authorName: optionalString,
   sourceUrl: optionalUrl,
   sourceName: optionalString,
+  sourceType: optionalString,
+  category: optionalString,
+  metric: optionalString,
 });
 
 export const contentDetailsSchema = z.discriminatedUnion("kind", [
@@ -188,6 +203,7 @@ export const contentDetailsSchema = z.discriminatedUnion("kind", [
   workshopDetails,
   certificationDetails,
   programDetails,
+  internshipDetails,
   newsDetails,
 ]);
 
@@ -228,6 +244,10 @@ export const contentFormSchema = z
     faqs: z.array(faqSchema).optional(),
 
     details: contentDetailsSchema,
+
+    linkedinUrl: optionalUrl,
+    websiteUrl: optionalUrl,
+    websiteLabel: optionalString,
 
     metaTitle: optionalString,
     metaDescription: optionalString,
@@ -272,6 +292,8 @@ export function defaultDetailsFor(
       return { kind: "program", lifecycle: "upcoming", mode: "online" };
     case "certification":
       return { kind: "certification", enrollmentStatus: "coming_soon" };
+    case "internship":
+      return { kind: "internship", lifecycle: "upcoming", mode: "online" };
     case "news":
       return { kind: "news" };
   }

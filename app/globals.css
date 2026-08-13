@@ -9,7 +9,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-body);
   --font-mono: var(--font-geist-mono);
-  --font-display: var(--font-dm-serif-display);
+  --font-display: var(--font-flaviotte);
   --color-gold: var(--gold);
   --color-gold-foreground: var(--gold-foreground);
   --color-gold-light: var(--gold-light);
@@ -168,6 +168,18 @@
 }
 
 /* ------------------------------------------------------------------ */
+/*  Custom Fonts                                                       */
+/* ------------------------------------------------------------------ */
+@font-face {
+  font-family: 'Flaviotte';
+  src: url('/fonts/Flaviotte/Flaviotte.woff2') format('woff2'),
+       url('/fonts/Flaviotte/Flaviotte.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ------------------------------------------------------------------ */
 /*  Animations                                                         */
 /* ------------------------------------------------------------------ */
 @keyframes fade-in-up {
@@ -252,6 +264,21 @@
 }
 
 /* ------------------------------------------------------------------ */
+/*  Hero Grid Background                                               */
+/* ------------------------------------------------------------------ */
+.hero-grid-bg {
+  background-size: 60px 60px;
+  background-image:
+    linear-gradient(to right, oklch(0.18 0.05 260 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(0.18 0.05 260 / 0.05) 1px, transparent 1px);
+}
+.dark .hero-grid-bg {
+  background-image:
+    linear-gradient(to right, oklch(0.93 0.005 80 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(0.93 0.005 80 / 0.05) 1px, transparent 1px);
+}
+
+/* ------------------------------------------------------------------ */
 /*  Gold text utility                                                  */
 /* ------------------------------------------------------------------ */
 .text-gradient-gold {
@@ -280,5 +307,17 @@
   [data-slot="card"]:hover {
     transition: none;
     transform: none;
+  }
+}
+
+@theme {
+  --animate-marquee: marquee 60s linear infinite;
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
   }
 }

@@ -27,9 +27,10 @@ export const revalidate = 300; // 5 minutes
  * are consolidated here, so nothing already indexed moves.
  */
 export default async function ProgramsPage() {
-  const [certifications, workshops] = await Promise.all([
+  const [certifications, programs, internships] = await Promise.all([
     fetchQuery(api.content.listByType, { type: "certification" }),
-    fetchQuery(api.content.listByTypeChronological, { type: "workshop" }),
+    fetchQuery(api.content.listByTypeChronological, { type: "program" }),
+    fetchQuery(api.content.listByTypeChronological, { type: "internship" }),
   ]);
 
   const flagship = certifications.find((c) => c.featured);
@@ -44,8 +45,44 @@ export default async function ProgramsPage() {
       <SectionHeader
         as="h1"
         title="Programs"
-        description="Certifications and workshops bridging actuarial science, data science, and artificial intelligence."
+        description="Comprehensive, long-form courses blending actuarial science and AI, alongside structured certifications that build toward a credential."
       />
+
+      <section aria-labelledby="programs-heading" className="mb-16">
+        <h2
+          id="programs-heading"
+          className="font-display text-2xl tracking-tight sm:text-3xl"
+        >
+          Programs
+        </h2>
+        <p className="mt-2 max-w-2xl leading-relaxed text-muted-foreground">
+          Comprehensive, long-form courses blending actuarial science and AI.
+        </p>
+
+        {programs.length === 0 ? (
+          <EmptyState
+            title="No programs published"
+            description="Upcoming programs will be listed here as dates are confirmed."
+          />
+        ) : (
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {programs.map((item, index) => (
+              <ContentCard
+                key={item._id}
+                item={{
+                  ...item,
+                  badge:
+                    item.badge ??
+                    (item.details.kind === "program"
+                      ? lifecycleLabel(item.details.lifecycle)
+                      : undefined),
+                }}
+                delayMs={index * 80}
+              />
+            ))}
+          </div>
+        )}
+      </section>
 
       {flagship ? (
         <section className="mb-16 border-y border-border py-10">
@@ -97,34 +134,32 @@ export default async function ProgramsPage() {
         )}
       </section>
 
-      <section aria-labelledby="workshops-heading">
+      <section aria-labelledby="internships-heading" className="mb-16">
         <h2
-          id="workshops-heading"
+          id="internships-heading"
           className="font-display text-2xl tracking-tight sm:text-3xl"
         >
-          Workshops
+          Internships
         </h2>
         <p className="mt-2 max-w-2xl leading-relaxed text-muted-foreground">
-          Short, hands-on sessions on a single technique or tool.
+          Practical experience and real-world application of actuarial science.
         </p>
 
-        {workshops.length === 0 ? (
+        {internships.length === 0 ? (
           <EmptyState
-            title="No workshops published"
-            description="Upcoming workshops will be listed here as dates are confirmed."
+            title="No internships published"
+            description="Upcoming internship opportunities will be listed here."
           />
         ) : (
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {workshops.map((item, index) => (
+            {internships.map((item, index) => (
               <ContentCard
                 key={item._id}
-                // Without the old status tabs, a finished workshop would be
-                // indistinguishable from an upcoming one.
                 item={{
                   ...item,
                   badge:
                     item.badge ??
-                    (item.details.kind === "workshop"
+                    (item.details.kind === "internship"
                       ? lifecycleLabel(item.details.lifecycle)
                       : undefined),
                 }}
@@ -134,6 +169,7 @@ export default async function ProgramsPage() {
           </div>
         )}
       </section>
+
     </div>
   );
 }

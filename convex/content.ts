@@ -88,13 +88,13 @@ export const listByTypeChronological = query({
   },
 });
 
-/** Events and programs share the /events surface, so they list together. */
-export const listEventsAndPrograms = query({
+/** Events and workshops share the /events surface, so they list together. */
+export const listEventsAndWorkshops = query({
   args: { limit: v.optional(v.number()) },
   handler: async (ctx, args) => {
     const limit = args.limit ?? 100;
 
-    const [events, programs] = await Promise.all([
+    const [events, workshops] = await Promise.all([
       ctx.db
         .query("content")
         .withIndex("by_type_status_startDate", (q) =>
@@ -105,14 +105,14 @@ export const listEventsAndPrograms = query({
       ctx.db
         .query("content")
         .withIndex("by_type_status_startDate", (q) =>
-          q.eq("type", "program").eq("status", "published"),
+          q.eq("type", "workshop").eq("status", "published"),
         )
         .order("desc")
         .take(limit),
     ]);
 
     // Undated items sort last rather than to the epoch.
-    const merged = [...events, ...programs]
+    const merged = [...events, ...workshops]
       .sort((a, b) => (b.startDate ?? -Infinity) - (a.startDate ?? -Infinity))
       .slice(0, limit);
 

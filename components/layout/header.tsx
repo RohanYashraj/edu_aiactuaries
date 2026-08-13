@@ -3,7 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
-import { Menu } from "lucide-react";
+import { Menu, ArrowRight } from "lucide-react";
+import { useRef } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -25,20 +28,28 @@ const navLinks = [
 
 export function Header() {
   const pathname = usePathname();
+  const headerRef = useRef<HTMLElement>(null);
+
+  useGSAP(() => {
+    gsap.from(headerRef.current, {
+      yPercent: -100,
+      opacity: 0,
+      duration: 0.8,
+      ease: "power3.out",
+    });
+  }, { scope: headerRef });
 
   /** External links are absolute URLs and can never match a pathname. */
   const isActive = (href: string, external: boolean) =>
     !external && (pathname === href || pathname.startsWith(`${href}/`));
 
   return (
-    <header className="sticky top-0 z-50 border-b border-primary-foreground/10 bg-primary text-primary-foreground">
+    <header ref={headerRef} className="sticky top-0 z-50 border-b border-primary-foreground/10 bg-primary text-primary-foreground">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         {/* Logo (links to home) */}
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center gap-2.5">
-            <span className="flex size-8 items-center justify-center rounded-lg bg-gold text-xs font-bold text-gold-foreground shadow-sm">
-              edu.
-            </span>
+            <img src="/SSSIA Logo 3.0.webp" alt="SSSIA Logo" className="h-12 w-auto rounded-md" />
           </Link>
         </div>
 
@@ -61,8 +72,8 @@ export function Header() {
                     size="sm"
                     className={
                       active
-                        ? "bg-primary-foreground/15 font-semibold text-primary-foreground hover:bg-primary-foreground/20 hover:text-primary-foreground"
-                        : "text-primary-foreground/80 hover:bg-primary-foreground/10 hover:text-primary-foreground"
+                        ? "bg-transparent font-semibold text-primary-foreground relative after:absolute after:bottom-1.5 after:left-2 after:h-[2px] after:w-[calc(100%-16px)] after:bg-gold"
+                        : "bg-transparent text-primary-foreground/80 hover:bg-transparent hover:text-primary-foreground relative after:absolute after:bottom-1.5 after:left-2 after:h-[2px] after:w-[calc(100%-16px)] after:origin-left after:scale-x-0 after:bg-gold after:transition-transform after:duration-300 hover:after:scale-x-100"
                     }
                   >
                     {label}
@@ -91,20 +102,19 @@ export function Header() {
 
           <SignedOut>
             <SignInButton mode="modal">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="hidden text-primary-foreground/80 hover:bg-primary-foreground/10 hover:text-primary-foreground sm:inline-flex"
+              <span
+                className="hidden sm:inline-flex cursor-pointer items-center justify-center rounded-md text-sm font-medium h-8 px-3 text-primary-foreground/80 hover:bg-primary-foreground/10 hover:text-primary-foreground transition-colors"
               >
                 Sign In
-              </Button>
+              </span>
             </SignInButton>
             <Link href="/sign-up">
               <Button
                 size="sm"
-                className="bg-gold text-gold-foreground shadow-sm hover:bg-gold/90"
+                className="group relative overflow-hidden bg-gold text-gold-foreground shadow-sm hover:bg-gold/90 transition-all duration-300 gap-1.5 pr-3"
               >
                 Become a Member
+                <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-1" />
               </Button>
             </Link>
           </SignedOut>

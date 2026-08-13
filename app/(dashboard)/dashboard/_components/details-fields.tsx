@@ -563,6 +563,60 @@ export function DetailsFields({
         </div>
       );
 
+    case "internship":
+      return (
+        <div className="space-y-5">
+          {lifecycleAndMode}
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="durationLabel">Duration</Label>
+              <Input
+                id="durationLabel"
+                value={details.durationLabel ?? ""}
+                onChange={(e) => patch({ durationLabel: e.target.value })}
+                placeholder="e.g. 3 Months"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="stipend">Stipend</Label>
+              <Input
+                id="stipend"
+                value={details.stipend ?? ""}
+                onChange={(e) => patch({ stipend: e.target.value })}
+                placeholder="e.g. Paid, Unpaid"
+              />
+            </div>
+          </div>
+          <StringListField
+            label="Eligibility"
+            value={details.eligibility ?? []}
+            onChange={(v) => patch({ eligibility: v })}
+            placeholder="Add a criterion"
+          />
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="registrationUrl">Registration link</Label>
+              <Input
+                id="registrationUrl"
+                value={details.registrationUrl ?? ""}
+                onChange={(e) => patch({ registrationUrl: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="registrationDeadline">Registration closes</Label>
+              <Input
+                id="registrationDeadline"
+                type="date"
+                value={toDateInput(details.registrationDeadline)}
+                onChange={(e) =>
+                  patch({ registrationDeadline: fromDateInput(e.target.value) })
+                }
+              />
+            </div>
+          </div>
+        </div>
+      );
+
     case "news":
       return (
         <div className="grid gap-4 sm:grid-cols-3">

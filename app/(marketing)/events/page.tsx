@@ -18,8 +18,8 @@ export const revalidate = 300; // 5 minutes
 
 export default async function EventsPage() {
   // Server-side so the listing is in the initial HTML, not fetched after
-  // hydration. Programs list alongside events — they share this URL space.
-  const items = await fetchQuery(api.content.listEventsAndPrograms, {});
+  // hydration. Workshops list alongside events — they share this URL space.
+  const items = await fetchQuery(api.content.listEventsAndWorkshops, {});
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">

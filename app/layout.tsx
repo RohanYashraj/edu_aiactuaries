@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import {
-  DM_Serif_Display,
   Plus_Jakarta_Sans,
   Geist_Mono,
 } from "next/font/google";
@@ -18,12 +17,7 @@ import {
   siteUrl,
 } from "@/lib/site";
 
-const dmSerifDisplay = DM_Serif_Display({
-  weight: "400",
-  variable: "--font-dm-serif-display",
-  subsets: ["latin"],
-  display: "swap",
-});
+
 
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-body",
@@ -73,7 +67,8 @@ export default function RootLayout({
         <JsonLd nodes={[organizationSchema(), webSiteSchema()]} />
       </head>
       <body
-        className={`${dmSerifDisplay.variable} ${plusJakarta.variable} ${geistMono.variable} antialiased`}
+        className={`font-flaviotte-var ${plusJakarta.variable} ${geistMono.variable} antialiased`}
+        style={{ '--font-flaviotte': 'Flaviotte, serif' } as React.CSSProperties}
       >
         <ClerkProvider dynamic>
           <ConvexClientProvider>{children}</ConvexClientProvider>
