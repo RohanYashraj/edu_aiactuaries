@@ -20,7 +20,7 @@ export const siteDescription =
   "Pioneering the future of Actuarial Science through AI and Data Science. Professional certifications, workshops, and events for members across India.";
 
 /** Default social card. Replaced per-page by generated OG images where available. */
-export const defaultOgImage = "/sssia.png";
+export const defaultOgImage = "/sssia-logo.jpeg";
 
 export const socialLinks = [
   "https://aiactuaries.org",

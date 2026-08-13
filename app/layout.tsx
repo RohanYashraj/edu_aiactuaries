@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import {
-  Plus_Jakarta_Sans,
+  Poppins,
   Geist_Mono,
 } from "next/font/google";
 import "./globals.css";
@@ -19,9 +19,10 @@ import {
 
 
 
-const plusJakarta = Plus_Jakarta_Sans({
+const poppins = Poppins({
   variable: "--font-body",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
   display: "swap",
 });
 
@@ -38,7 +39,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   alternates: { canonical: "/" },
   icons: {
-    icon: "/icon.png",
+    icon: "/sssia-logo.jpeg",
   },
   openGraph: {
     type: "website",
@@ -67,8 +68,7 @@ export default function RootLayout({
         <JsonLd nodes={[organizationSchema(), webSiteSchema()]} />
       </head>
       <body
-        className={`font-flaviotte-var ${plusJakarta.variable} ${geistMono.variable} antialiased`}
-        style={{ '--font-flaviotte': 'Flaviotte, serif' } as React.CSSProperties}
+        className={`${poppins.variable} ${geistMono.variable} antialiased`}
       >
         <ClerkProvider dynamic>
           <ConvexClientProvider>{children}</ConvexClientProvider>

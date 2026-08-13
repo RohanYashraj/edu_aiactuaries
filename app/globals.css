@@ -9,7 +9,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-body);
   --font-mono: var(--font-geist-mono);
-  --font-display: var(--font-flaviotte);
+  --font-display: var(--font-body);
   --color-gold: var(--gold);
   --color-gold-foreground: var(--gold-foreground);
   --color-gold-light: var(--gold-light);
@@ -165,18 +165,6 @@
   body {
     @apply bg-background text-foreground;
   }
-}
-
-/* ------------------------------------------------------------------ */
-/*  Custom Fonts                                                       */
-/* ------------------------------------------------------------------ */
-@font-face {
-  font-family: 'Flaviotte';
-  src: url('/fonts/Flaviotte/Flaviotte.woff2') format('woff2'),
-       url('/fonts/Flaviotte/Flaviotte.woff') format('woff');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
 }
 
 /* ------------------------------------------------------------------ */

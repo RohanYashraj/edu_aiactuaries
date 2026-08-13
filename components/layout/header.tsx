@@ -49,7 +49,7 @@ export function Header() {
         {/* Logo (links to home) */}
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center gap-2.5">
-            <img src="/SSSIA Logo 3.0.webp" alt="SSSIA Logo" className="h-12 w-auto rounded-md" />
+            <img src="/sssia-logo.jpeg" alt="SSSIA Logo" className="h-12 w-auto rounded-md" />
           </Link>
         </div>
 
