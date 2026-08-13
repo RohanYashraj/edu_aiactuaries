@@ -277,6 +277,7 @@ export function ContentEditor({
         "/events",
         "/workshops",
         "/certifications",
+        "/programs",
         "/news",
         "/",
       ]);

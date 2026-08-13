@@ -67,13 +67,7 @@ function IconList({
  * which is what keeps a new event looking like every other event without
  * anyone hand-building a page.
  */
-export function ContentDetail({
-  doc,
-  signedIn,
-}: {
-  doc: ContentDetailDoc;
-  signedIn: boolean;
-}) {
+export function ContentDetail({ doc }: { doc: ContentDetailDoc }) {
   const sectionLabel = contentSectionLabel(doc.type);
   const sectionHref = CONTENT_ROUTES[doc.type];
   const date = formatContentDate(doc);
@@ -298,7 +292,6 @@ export function ContentDetail({
             contentId={doc._id}
             externalUrl={registrationUrl}
             externalLabel={primaryCta?.label ?? "Register externally"}
-            signedIn={signedIn}
           />
           {secondaryCtas.length > 0 ? (
             <div className="mt-6 flex flex-wrap gap-3">

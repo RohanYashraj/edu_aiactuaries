@@ -11,7 +11,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { PartnerLogo, type Partner } from "@/components/content/partner-callout";
-import { contentHref, formatContentDate, type ContentType } from "@/lib/content";
+import {
+  CONTENT_TYPE_LABELS,
+  contentHref,
+  formatContentDate,
+  type ContentType,
+} from "@/lib/content";
 import { cn } from "@/lib/utils";
 
 export type ContentCardItem = {
@@ -52,6 +57,11 @@ export function ContentCard({
       style={{ animationDelay: `${delayMs}ms` }}
     >
       <CardHeader>
+        {/* Listings mix types (events + workshops, programs + internships), so
+            the card itself says what kind of thing it links to. */}
+        <span className="text-[11px] font-semibold uppercase tracking-widest text-gold">
+          {CONTENT_TYPE_LABELS[item.type]}
+        </span>
         <div className="flex items-start justify-between gap-3">
           <CardTitle className="text-lg leading-snug">
             <Link href={href} className="hover:text-gold">

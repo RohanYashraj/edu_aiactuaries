@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useAuth } from "@clerk/nextjs";
 import { useMutation, useQuery } from "convex/react";
 import { Bookmark, Check, Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -21,17 +22,17 @@ export function RegisterActions({
   contentId,
   externalUrl,
   externalLabel = "Register externally",
-  signedIn,
 }: {
   contentId: string;
   externalUrl?: string;
   externalLabel?: string;
-  /**
-   * Known on the server, so the signed-out call to action renders in the
-   * initial HTML instead of a spinner — this is the page's primary action.
-   */
-  signedIn: boolean;
 }) {
+  // Client-side on purpose: the detail pages are statically generated, so the
+  // server cannot know the visitor. While Clerk is still loading, isSignedIn is
+  // undefined and the signed-out call to action renders — matching the static
+  // HTML, so there is no hydration mismatch and no spinner on the primary action.
+  const { isSignedIn } = useAuth();
+  const signedIn = isSignedIn === true;
   const id = contentId as Id<"content">;
   const status = useQuery(api.registrations.statusFor, { contentId: id });
   const register = useMutation(api.registrations.register);

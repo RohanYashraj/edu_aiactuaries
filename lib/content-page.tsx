@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { auth } from "@clerk/nextjs/server";
+import { notFound, permanentRedirect } from "next/navigation";
 
 import { api } from "@/convex/_generated/api";
 import { ContentDetail } from "@/components/content/content-detail";
@@ -24,9 +23,14 @@ type Params = Promise<{ slug: string }>;
 
 async function loadDoc(slug: string, allowed: readonly ContentType[]) {
   const doc = await fetchQuery(api.content.getBySlug, { slug });
-  // A published doc of the wrong type must 404 here rather than render under
-  // the wrong URL, which would create two canonical paths for one document.
-  if (!doc || !allowed.includes(doc.type)) return null;
+  if (!doc) return null;
+  // A known slug requested under the wrong tree redirects to its canonical
+  // URL rather than rendering there (two canonical paths for one document) or
+  // 404ing (which would break every legacy URL from before types got their
+  // own trees, e.g. programs under /events).
+  if (!allowed.includes(doc.type)) {
+    permanentRedirect(contentHref(doc.type, doc.slug));
+  }
   return doc;
 }
 
@@ -61,10 +65,11 @@ export async function renderContentPage(
   allowed: readonly ContentType[],
 ) {
   const { slug } = await params;
-  const [doc, { userId }] = await Promise.all([
-    loadDoc(slug, allowed),
-    auth(),
-  ]);
+  // No auth() here: these routes are static (revalidate + generateStaticParams),
+  // and request-bound APIs throw DYNAMIC_SERVER_USAGE during ISR rendering —
+  // which 500'd every newly created slug. Signed-in state is derived
+  // client-side inside RegisterActions instead.
+  const doc = await loadDoc(slug, allowed);
   if (!doc) notFound();
 
   const url = absoluteUrl(contentHref(doc.type, doc.slug));
@@ -77,7 +82,7 @@ export async function renderContentPage(
         // would duplicate the node.
         nodes={[contentSchema(doc, url), faqSchema(doc.faqs ?? [])]}
       />
-      <ContentDetail doc={doc} signedIn={Boolean(userId)} />
+      <ContentDetail doc={doc} />
     </>
   );
 }

@@ -22,10 +22,11 @@ const nextConfig: NextConfig = {
       // them home rather than serving 404s.
       { source: "/jobs", destination: "/", permanent: true },
       { source: "/jobs/:path*", destination: "/", permanent: true },
-      // Certification and workshop indexes are consolidated into /programs.
-      // Their detail pages keep their own URLs and are untouched.
+      // Certification, workshop and internship indexes are consolidated into
+      // /programs. Their detail pages keep their own URLs and are untouched.
       { source: "/certifications", destination: "/programs", permanent: true },
       { source: "/workshops", destination: "/programs", permanent: true },
+      { source: "/internships", destination: "/programs", permanent: true },
       // The waitlist is replaced by open sign-up.
       { source: "/waitlist", destination: "/sign-up", permanent: true },
       // The admin CMS moved under /dashboard so there is one authenticated

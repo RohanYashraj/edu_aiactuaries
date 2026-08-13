@@ -7,10 +7,7 @@ import {
 } from "@/lib/content-page";
 import type { ContentType } from "@/lib/content";
 
-// Programs used to share this route; their slugs now 308-redirect to
-// /programs/[slug] via loadDoc, so circulated URLs like
-// /events/summer-program-2026 keep resolving.
-const ALLOWED: readonly ContentType[] = ["event"];
+const ALLOWED: readonly ContentType[] = ["internship"];
 
 // Next requires a literal here; it can't statically read an imported constant.
 export const revalidate = 3600; // 1 hour

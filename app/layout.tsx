@@ -70,7 +70,10 @@ export default function RootLayout({
       <body
         className={`${poppins.variable} ${geistMono.variable} antialiased`}
       >
-        <ClerkProvider dynamic>
+        {/* No `dynamic` prop: it reads request headers during SSR, which throws
+            DYNAMIC_SERVER_USAGE on the statically generated (ISR) pages. Auth
+            state resolves client-side instead. */}
+        <ClerkProvider>
           <ConvexClientProvider>{children}</ConvexClientProvider>
         </ClerkProvider>
         <Toaster position="bottom-right" />

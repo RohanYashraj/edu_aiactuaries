@@ -7,7 +7,9 @@ import {
 } from "@/lib/content-page";
 import type { ContentType } from "@/lib/content";
 
-const ALLOWED: readonly ContentType[] = ["internship"];
+// Internships used to live here; their slugs now 308-redirect to
+// /internships/[slug] via loadDoc.
+const ALLOWED: readonly ContentType[] = ["program"];
 
 // Next requires a literal here; it can't statically read an imported constant.
 export const revalidate = 3600; // 1 hour

@@ -3,18 +3,18 @@ import type { Doc } from "@/convex/_generated/dataModel";
 export type ContentType = Doc<"content">["type"];
 
 /**
- * Where each content type lives in the URL space.
- *
- * Programs share `/events` with events on purpose: the summer program already
- * lives at /events/summer-program-2026 and that URL is in circulation, so
- * giving programs their own tree would buy a redirect and nothing else.
+ * Where each content type lives in the URL space — one tree per type, so the
+ * URL alone says what kind of thing it is. Legacy URLs from the era when
+ * programs lived under /events and internships under /programs still resolve:
+ * the detail routes 308-redirect a known slug of the wrong type to its
+ * canonical tree (see loadDoc in lib/content-page.tsx).
  */
 export const CONTENT_ROUTES: Record<ContentType, string> = {
   event: "/events",
-  program: "/events",
+  program: "/programs",
   workshop: "/workshops",
   certification: "/certifications",
-  internship: "/programs",
+  internship: "/internships",
   news: "/news",
 };
 

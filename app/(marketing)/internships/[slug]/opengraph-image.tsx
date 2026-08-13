@@ -8,7 +8,7 @@ export const alt = siteName;
 export const size = OG_SIZE;
 export const contentType = OG_CONTENT_TYPE;
 
-const ALLOWED = ["event"] as const;
+const ALLOWED = ["internship"] as const;
 
 export default async function Image({
   params,

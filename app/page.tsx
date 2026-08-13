@@ -1,5 +1,3 @@
-import { auth } from "@clerk/nextjs/server";
-import { SignInButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -19,9 +17,11 @@ import { contentHref } from "@/lib/content";
 export const revalidate = 300; // 5 minutes
 
 export default async function Home() {
-  const [{ userId }, featured, certifications, settings, organizations, programs, events, internships] =
+  // No auth() here: this page is statically regenerated (revalidate above), so
+  // request-bound APIs would throw DYNAMIC_SERVER_USAGE during ISR. The hero's
+  // signed-in variant is resolved client-side in HomeClient.
+  const [featured, certifications, settings, organizations, programs, events, internships] =
     await Promise.all([
-    auth(),
     fetchQuery(api.content.listFeatured, {}),
     fetchQuery(api.content.listByType, { type: "certification", limit: 4 }),
     fetchQuery(api.settings.get, {}),
@@ -46,9 +46,8 @@ export default async function Home() {
       <Header />
 
       <main className="flex-1">
-        <HomeClient 
-          userId={userId} 
-          news={recent} 
+        <HomeClient
+          news={recent}
           settings={settings} 
           carouselItems={[...programs, ...events, ...internships]} 
         />

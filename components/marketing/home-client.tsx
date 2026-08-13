@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import Link from "next/link";
+import { useAuth } from "@clerk/nextjs";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -22,13 +23,16 @@ if (typeof window !== "undefined") {
 }
 
 interface HomeClientProps {
-  userId: string | null;
   news: any[];
   settings?: any;
   carouselItems?: any[];
 }
 
-export function HomeClient({ userId, news: initialNews, settings: initialSettings, carouselItems: initialCarouselItems }: HomeClientProps) {
+export function HomeClient({ news: initialNews, settings: initialSettings, carouselItems: initialCarouselItems }: HomeClientProps) {
+  // Resolved client-side because the page is statically generated and the
+  // server cannot know the visitor. Undefined while Clerk loads, which renders
+  // the signed-out hero — the same thing the static HTML shows.
+  const { isSignedIn } = useAuth();
   const liveNews = useQuery(api.content.listByTypeChronological, { type: "news", limit: 5 });
   const news = liveNews ?? initialNews;
 
@@ -91,7 +95,7 @@ export function HomeClient({ userId, news: initialNews, settings: initialSetting
             </p>
 
             <div className="mt-12 flex flex-col sm:flex-row gap-6">
-              {userId ? (
+              {isSignedIn ? (
                 <Button asChild size="lg" className="hero-btn group bg-[#0A192F] text-white hover:bg-[#F26A21] rounded-none px-8 py-6 uppercase tracking-widest text-xs font-bold transition-colors">
                   <Link href="/programs">
                     Explore Programs
