@@ -10,6 +10,7 @@ interface Book {
   rotation: string; // Tailwind transform class or inline style
   zIndex: number;
   offset: string;
+  label?: string;
 }
 
 const defaultBooks: Book[] = [
@@ -19,15 +20,15 @@ const defaultBooks: Book[] = [
     href: "https://fullstackactuary.com/",
     rotation: "-rotate-3",
     zIndex: 10,
-    offset: "translate-x-4 -translate-y-12 md:translate-x-8 md:-translate-y-20 scale-95",
+    offset: "translate-x-20 -translate-y-24 md:translate-x-24 md:-translate-y-40 scale-95",
   },
   {
     id: "book-2",
     title: "Agentic AI for Actuaries",
-    href: "https://sutra.sssia.org/",
+    href: "https://aiforactuaries.sssia.org",
     rotation: "rotate-0",
     zIndex: 30,
-    offset: "-translate-x-24 translate-y-8 md:-translate-x-40 md:translate-y-16 scale-100",
+    offset: "-translate-x-24 -translate-y-16 md:-translate-x-32 md:-translate-y-24 scale-100",
   },
   {
     id: "book-3",
@@ -35,7 +36,17 @@ const defaultBooks: Book[] = [
     href: "/news", // Fallback until official URL is provided
     rotation: "rotate-3",
     zIndex: 20,
-    offset: "translate-x-20 translate-y-24 md:translate-x-40 md:translate-y-40 scale-90",
+    offset: "translate-x-56 -translate-y-12 md:translate-x-44 md:translate-y-32 scale-90",
+    label: "Index",
+  },
+  {
+    id: "book-4",
+    title: "SUTRA",
+    href: "https://sutra.sssia.org/",
+    rotation: "-rotate-6",
+    zIndex: 40,
+    offset: "-translate-x-12 translate-y-32 md:-translate-x-16 md:translate-y-44 scale-95",
+    label: "Platform",
   },
 ];
 
@@ -44,7 +55,7 @@ export function PublicationStack({ className }: { className?: string }) {
     <div className={cn("flex flex-col items-center lg:items-end w-full", className)}>
       <div className="text-right mb-8 lg:mb-12 hero-books-label">
         <span className="text-xs font-bold tracking-widest text-[#F26A21] uppercase block">
-          Publications / 03
+          Platforms & Publications / 04
         </span>
       </div>
 
@@ -52,7 +63,7 @@ export function PublicationStack({ className }: { className?: string }) {
         Container for the overlapping books. 
         Uses absolute positioning internally for desktop, and a flex fallback for mobile if needed.
       */}
-      <div className="relative w-full max-w-[350px] md:max-w-[450px] h-[280px] md:h-[350px] flex justify-center items-center">
+      <div className="relative w-full max-w-[450px] md:max-w-[600px] h-[400px] md:h-[500px] flex justify-center items-center mt-8">
         {defaultBooks.map((book, index) => (
           <div
             key={book.id}
@@ -82,7 +93,7 @@ export function PublicationStack({ className }: { className?: string }) {
                 ) : (
                   <div className="flex flex-col items-center justify-center gap-4 h-full">
                     <div className="text-[10px] font-bold tracking-widest text-[#0A192F]/40 uppercase">
-                      Publication
+                      {book.label || "Publication"}
                     </div>
                     <div className="w-8 h-[2px] bg-[#F26A21]" />
                     <h3 className="font-display text-lg lg:text-xl text-[#0A192F] group-hover:text-[#F26A21] transition-colors leading-tight">

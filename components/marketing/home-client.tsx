@@ -161,50 +161,6 @@ export function HomeClient({ userId, news: initialNews, settings: initialSetting
 
       <ScrambleStory />
 
-      {/* ================= RESEARCH / SUTRA / FULL STACK ================= */}
-      <section className="py-24 md:py-32 bg-white">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-2 gap-24">
-          
-          {/* Agentic AI Book Intro */}
-          <div className="scroll-reveal flex flex-col justify-center">
-            <span className="text-xs font-bold tracking-widest text-[#F26A21] uppercase mb-8">Publication / 01</span>
-            <h2 className="font-display text-5xl md:text-6xl text-[#0A192F] uppercase leading-[1.1] tracking-tight mb-8">
-              Agentic AI<br/>for Actuaries
-            </h2>
-            <p className="text-lg text-[#0A192F]/70 font-light max-w-md mb-10 leading-relaxed">
-              A comprehensive guide to autonomous multi-agent systems and their application in modern actuarial production workloads.
-            </p>
-            <Link href="https://sutra.sssia.org" className="group inline-flex items-center gap-3 text-xs font-bold tracking-widest text-[#0A192F] uppercase hover:text-[#F26A21] transition-colors w-max pb-2 border-b border-[#0A192F]/20 hover:border-[#F26A21]">
-              Read the Book <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
-            </Link>
-          </div>
-
-          {/* Featured Publications */}
-          <div className="flex flex-col gap-12 border-t md:border-t-0 md:border-l border-[#0A192F]/10 pt-12 md:pt-0 md:pl-12">
-            
-            <div className="scroll-reveal group">
-              <p className="text-xs font-bold tracking-widest text-[#0A192F]/40 uppercase mb-4">Platform</p>
-              <h3 className="font-display text-3xl text-[#0A192F] mb-4 group-hover:text-[#F26A21] transition-colors">SUTRA</h3>
-              <p className="text-sm text-[#0A192F]/70 mb-6 max-w-sm leading-relaxed">The official research and publication hub of Sri Sathya Sai Institute of Actuaries.</p>
-              <a href="https://sutra.sssia.org/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-xs font-bold text-[#0A192F] uppercase group-hover:text-[#F26A21] transition-colors">
-                Explore SUTRA <ArrowUpRight className="size-3" />
-              </a>
-            </div>
-
-            <div className="w-full h-px bg-[#0A192F]/10" />
-
-            <div className="scroll-reveal group">
-              <p className="text-xs font-bold tracking-widest text-[#0A192F]/40 uppercase mb-4">Publication</p>
-              <h3 className="font-display text-3xl text-[#0A192F] mb-4 group-hover:text-[#F26A21] transition-colors">The Full Stack Actuary</h3>
-              <p className="text-sm text-[#0A192F]/70 mb-6 max-w-sm leading-relaxed">A comprehensive guide for modern actuaries to expand their skillsets across data engineering and ML.</p>
-              <a href="https://fullstackactuary.com/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-xs font-bold text-[#0A192F] uppercase group-hover:text-[#F26A21] transition-colors">
-                Explore The Full Stack Actuary <ArrowUpRight className="size-3" />
-              </a>
-            </div>
-
-          </div>
-        </div>
-      </section>
 
       {/* ================= NEWS PREVIEW ================= */}
       <section className="py-24 md:py-32 px-6 md:px-12 border-t border-[#0A192F]/10">
