@@ -128,10 +128,9 @@ export function HomeClient({ news: initialNews, settings: initialSettings, carou
 
 
       {/* ================= PROGRAMS SECTION ================= */}
-      <section className="py-24 md:py-32 overflow-hidden border-t border-[#0A192F]/10">
-        <div className="scroll-reveal mb-16 md:mb-24 px-6 md:px-12 max-w-5xl mx-auto">
+      <section className="py-16 md:py-32 overflow-hidden border-t border-[#0A192F]/10">
+        <div className="scroll-reveal mb-12 md:mb-24 px-6 md:px-12 max-w-5xl mx-auto">
           <h2 className="font-display text-4xl md:text-6xl text-[#0A192F] uppercase tracking-tight">Our Programs</h2>
-          <span className="text-xs font-bold tracking-widest text-[#F26A21] uppercase mt-4 block">Core Pillars</span>
         </div>
 
         {carouselItems.length === 0 ? (
@@ -146,15 +145,15 @@ export function HomeClient({ news: initialNews, settings: initialSettings, carou
                 <Link 
                   key={`${item._id}-${i}`} 
                   href={contentHref(item.type, item.slug)} 
-                  className="mx-4 flex flex-col justify-between p-8 border border-[#0A192F]/10 hover:border-[#F26A21] hover:bg-white transition-colors w-[350px] md:w-[450px] h-[250px] shrink-0"
+                  className="mx-2 md:mx-4 flex flex-col justify-between p-6 md:p-8 border border-[#0A192F]/10 hover:border-[#F26A21] hover:bg-white transition-colors w-[260px] sm:w-[350px] md:w-[450px] h-[200px] md:h-[250px] shrink-0"
                 >
                   <div>
-                    <div className="text-xs font-bold text-[#F26A21] tracking-widest mb-4 uppercase">0{((i % carouselItems.length) + 1)}</div>
-                    <h3 className="font-display text-2xl md:text-3xl text-[#0A192F] uppercase whitespace-normal leading-tight line-clamp-3">{item.title}</h3>
+                    <div className="text-[10px] md:text-xs font-bold text-[#F26A21] tracking-widest mb-3 md:mb-4 uppercase">0{((i % carouselItems.length) + 1)}</div>
+                    <h3 className="font-display text-xl sm:text-2xl md:text-3xl text-[#0A192F] uppercase whitespace-normal leading-tight line-clamp-3">{item.title}</h3>
                   </div>
-                  <div className="flex items-center justify-between mt-6">
-                    <span className="text-xs font-bold tracking-widest text-[#0A192F]/50 uppercase">{item.type}</span>
-                    <ArrowRight className="size-5 text-[#0A192F]/30 group-hover:text-[#F26A21] transition-colors" />
+                  <div className="flex items-center justify-between mt-4 md:mt-6">
+                    <span className="text-[10px] md:text-xs font-bold tracking-widest text-[#0A192F]/50 uppercase">{item.type}</span>
+                    <ArrowRight className="size-4 md:size-5 text-[#0A192F]/30 group-hover:text-[#F26A21] transition-colors" />
                   </div>
                 </Link>
               ))}
@@ -167,9 +166,9 @@ export function HomeClient({ news: initialNews, settings: initialSettings, carou
 
 
       {/* ================= NEWS PREVIEW ================= */}
-      <section className="py-24 md:py-32 px-6 md:px-12 border-t border-[#0A192F]/10">
+      <section className="py-16 md:py-32 px-6 md:px-12 border-t border-[#0A192F]/10">
         <div className="max-w-5xl mx-auto">
-          <div className="scroll-reveal flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+          <div className="scroll-reveal flex flex-col md:flex-row justify-between items-start md:items-end mb-10 md:mb-16 gap-6">
             <div>
               <span className="text-xs font-bold tracking-widest text-[#F26A21] uppercase mb-4 block">Latest / News</span>
               <h2 className="font-display text-4xl md:text-6xl text-[#0A192F] uppercase tracking-tight">Updates</h2>
@@ -181,15 +180,15 @@ export function HomeClient({ news: initialNews, settings: initialSettings, carou
 
           <div className="flex flex-col">
             {news.map((item, idx) => (
-              <Link key={item.slug} href={`/news/${item.slug}`} className="scroll-reveal group flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#0A192F]/10 py-8 transition-colors hover:bg-white/50 relative overflow-hidden">
+              <Link key={item.slug} href={`/news/${item.slug}`} className="scroll-reveal group flex flex-row items-center justify-between border-b border-[#0A192F]/10 py-6 md:py-8 transition-colors hover:bg-white/50 relative overflow-hidden">
                 <div className="absolute left-0 bottom-0 h-[1px] w-full bg-[#F26A21] origin-left scale-x-0 transition-transform duration-500 ease-out group-hover:scale-x-100" />
                 
-                <div className="flex items-center gap-8 md:gap-16">
+                <div className="flex flex-row items-center gap-4 md:gap-16 pr-4">
                   <span className="text-xs font-bold text-[#0A192F]/30 tracking-widest group-hover:text-[#F26A21] group-hover:-translate-y-1 transition-all">0{idx + 1}</span>
-                  <h3 className="font-display text-2xl md:text-3xl text-[#0A192F] group-hover:translate-x-2 transition-transform duration-300">{item.title}</h3>
+                  <h3 className="font-display text-xl md:text-3xl text-[#0A192F] group-hover:translate-x-2 transition-transform duration-300 line-clamp-2 md:line-clamp-none">{item.title}</h3>
                 </div>
                 
-                <div className="mt-4 sm:mt-0 sm:pl-8 text-right">
+                <div className="flex-shrink-0">
                   <ArrowRight className="size-5 text-[#0A192F]/30 group-hover:text-[#F26A21] group-hover:translate-x-2 transition-all duration-300" />
                 </div>
               </Link>
@@ -199,11 +198,11 @@ export function HomeClient({ news: initialNews, settings: initialSettings, carou
       </section>
 
       {/* ================= IMPACT ================= */}
-      <section className="py-24 bg-white border-t border-[#0A192F]/10">
+      <section className="py-16 md:py-24 bg-white border-t border-[#0A192F]/10">
         <div className="max-w-7xl mx-auto px-6 md:px-12 text-center">
-          <span className="text-xs font-bold tracking-widest text-[#F26A21] uppercase mb-16 block">Impact at Scale</span>
+          <span className="text-xs font-bold tracking-widest text-[#F26A21] uppercase mb-12 md:mb-16 block">Impact at Scale</span>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
             {(settings?.achievements?.filter((a: any) => !a.hidden) || [
               { value: "1,200+", label: "Community Members" },
               { value: "180+", label: "Institutions" },
@@ -229,12 +228,12 @@ export function HomeClient({ news: initialNews, settings: initialSettings, carou
       </section>
 
       {/* ================= FINAL CTA ================= */}
-      <section className="bg-[#0A192F] text-white py-32 px-6 relative overflow-hidden">
+      <section className="bg-[#0A192F] text-white py-24 md:py-32 px-6 relative overflow-hidden">
         {/* Subtle background element */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#F26A21]/5 rounded-full blur-3xl pointer-events-none" />
         
         <div className="scroll-reveal max-w-4xl mx-auto text-center relative z-10 flex flex-col items-center">
-          <h2 className="font-display text-5xl md:text-7xl lg:text-8xl uppercase leading-[0.9] tracking-tight mb-8">
+          <h2 className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-8xl uppercase leading-[0.9] tracking-tight mb-8">
             Build What<br/>The Profession<br/>Needs Next.
           </h2>
           <p className="text-lg md:text-xl text-white/70 font-light mb-12">
