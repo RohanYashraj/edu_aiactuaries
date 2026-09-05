@@ -7,9 +7,6 @@ import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { HomeClient } from "@/components/marketing/home-client";
-import { JsonLd } from "@/components/seo/json-ld";
-import { faqSchema } from "@/lib/jsonld";
-import { SITE_FAQS } from "@/lib/site-faqs";
 import { fetchQuery } from "@/lib/convex-server";
 import { contentHref } from "@/lib/content";
 
@@ -55,7 +52,6 @@ export default async function Home() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <JsonLd nodes={[faqSchema([...SITE_FAQS])]} />
       <Header />
 
       <main className="flex-1">

@@ -2,7 +2,6 @@ import { api } from "@/convex/_generated/api";
 import { fetchQuery } from "@/lib/convex-server";
 import { absoluteUrl, siteDescription, siteName, siteUrl } from "@/lib/site";
 import { contentHref, CONTENT_TYPE_LABELS, type ContentType } from "@/lib/content";
-import { SITE_FAQS } from "@/lib/site-faqs";
 
 /**
  * A plain-text digest of the site for answer engines.
@@ -52,11 +51,6 @@ export async function GET() {
     lines.push("");
   }
 
-  lines.push("## Frequently asked questions", "");
-  for (const faq of SITE_FAQS) {
-    lines.push(`### ${faq.question}`, faq.answer, "");
-  }
-
   lines.push(
     "## Key pages",
     "",
@@ -64,7 +58,6 @@ export async function GET() {
     `- [Events](${absoluteUrl("/events")}): upcoming programmes and events`,
     `- [News](${absoluteUrl("/news")}): partnerships and engagements`,
     `- [About](${absoluteUrl("/about")}): the Institute and the bodies it works with`,
-    `- [FAQ](${absoluteUrl("/faq")})`,
     "",
   );
 
