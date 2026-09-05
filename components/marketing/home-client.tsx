@@ -13,6 +13,13 @@ import { animateScrollReveal } from "@/lib/animations/scrollReveal";
 import { animateCounters } from "@/lib/animations/counters";
 import { ScrambleStory } from "./scramble-story";
 import { Button } from "@/components/ui/button";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import { PublicationStack } from "./publication-stack";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -129,35 +136,47 @@ export function HomeClient({ news: initialNews, settings: initialSettings, carou
 
       {/* ================= PROGRAMS SECTION ================= */}
       <section className="py-16 md:py-32 overflow-hidden border-t border-[#0A192F]/10">
-        <div className="scroll-reveal mb-12 md:mb-24 px-6 md:px-12 max-w-5xl mx-auto">
+        <div className="scroll-reveal mb-8 md:mb-12 px-6 md:px-12 max-w-7xl mx-auto flex items-end justify-between">
           <h2 className="font-display text-4xl md:text-6xl text-[#0A192F] uppercase tracking-tight">Our Programs</h2>
         </div>
 
         {carouselItems.length === 0 ? (
-          <div className="px-6 md:px-12 max-w-5xl mx-auto text-[#0A192F]/60">
+          <div className="px-6 md:px-12 max-w-7xl mx-auto text-[#0A192F]/60">
             No programs, events, or internships are currently published.
           </div>
         ) : (
-          <div className="relative flex overflow-x-hidden group">
-            <div className="animate-marquee flex items-stretch py-4 whitespace-nowrap min-w-max">
-              {/* Render the items enough times for continuous looping on large screens */}
-              {Array.from({ length: 10 }).flatMap(() => carouselItems).map((item, i) => (
-                <Link 
-                  key={`${item._id}-${i}`} 
-                  href={contentHref(item.type, item.slug)} 
-                  className="mx-2 md:mx-4 flex flex-col justify-between p-6 md:p-8 border border-[#0A192F]/10 hover:border-[#F26A21] hover:bg-white transition-colors w-[260px] sm:w-[350px] md:w-[450px] h-[200px] md:h-[250px] shrink-0"
-                >
-                  <div>
-                    <div className="text-[10px] md:text-xs font-bold text-[#F26A21] tracking-widest mb-3 md:mb-4 uppercase">0{((i % carouselItems.length) + 1)}</div>
-                    <h3 className="font-display text-xl sm:text-2xl md:text-3xl text-[#0A192F] uppercase whitespace-normal leading-tight line-clamp-3">{item.title}</h3>
-                  </div>
-                  <div className="flex items-center justify-between mt-4 md:mt-6">
-                    <span className="text-[10px] md:text-xs font-bold tracking-widest text-[#0A192F]/50 uppercase">{item.type}</span>
-                    <ArrowRight className="size-4 md:size-5 text-[#0A192F]/30 group-hover:text-[#F26A21] transition-colors" />
-                  </div>
-                </Link>
-              ))}
-            </div>
+          <div className="px-6 md:px-12 max-w-7xl mx-auto">
+            <Carousel
+              opts={{
+                align: "start",
+                loop: true,
+              }}
+              className="w-full relative"
+            >
+              <CarouselContent className="-ml-4">
+                {carouselItems.map((item, i) => (
+                  <CarouselItem key={`${item._id}-${i}`} className="pl-4 basis-[85%] sm:basis-1/2 md:basis-1/3 lg:basis-1/3">
+                    <Link 
+                      href={contentHref(item.type, item.slug)} 
+                      className="group flex flex-col justify-between p-6 md:p-8 border border-[#0A192F]/10 hover:border-[#F26A21] hover:bg-white transition-colors h-[200px] md:h-[250px] w-full"
+                    >
+                      <div>
+                        <div className="text-[10px] md:text-xs font-bold text-[#F26A21] tracking-widest mb-3 md:mb-4 uppercase">0{i + 1}</div>
+                        <h3 className="font-display text-xl sm:text-2xl md:text-3xl text-[#0A192F] uppercase leading-tight line-clamp-3">{item.title}</h3>
+                      </div>
+                      <div className="flex items-center justify-between mt-4 md:mt-6">
+                        <span className="text-[10px] md:text-xs font-bold tracking-widest text-[#0A192F]/50 uppercase">{item.type}</span>
+                        <ArrowRight className="size-4 md:size-5 text-[#0A192F]/30 group-hover:text-[#F26A21] transition-colors" />
+                      </div>
+                    </Link>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <div className="flex justify-start md:justify-end gap-3 mt-8">
+                <CarouselPrevious className="static transform-none h-12 w-12 rounded-none border-[#0A192F]/20 hover:bg-[#F26A21] hover:text-white hover:border-[#F26A21]" />
+                <CarouselNext className="static transform-none h-12 w-12 rounded-none border-[#0A192F]/20 hover:bg-[#F26A21] hover:text-white hover:border-[#F26A21]" />
+              </div>
+            </Carousel>
           </div>
         )}
       </section>

@@ -3,9 +3,17 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useMutation } from "convex/react";
-import { ArrowLeft, Eye, Loader2, Save } from "lucide-react";
+import { useMutation, useAction } from "convex/react";
+import { ArrowLeft, Eye, Loader2, Save, Wand2 } from "lucide-react";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 import { api } from "@/convex/_generated/api";
 import type { Doc, Id } from "@/convex/_generated/dataModel";
@@ -135,6 +143,53 @@ export function ContentEditor({
   );
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSaving, setIsSaving] = useState(false);
+
+  const generateAI = useAction(api.ai.generateContentDetails);
+  const [aiInput, setAiInput] = useState("");
+  const [isAiLoading, setIsAiLoading] = useState(false);
+  const [isAiDialogOpen, setIsAiDialogOpen] = useState(false);
+
+  const handleAiGenerate = async () => {
+    if (!aiInput.trim()) return;
+    setIsAiLoading(true);
+    try {
+      const result = await generateAI({ input: aiInput }) as any;
+      if (result) {
+        setValues((current) => ({
+          ...current,
+          title: result.title || current.title,
+          subtitle: result.subtitle || current.subtitle,
+          summary: result.summary || current.summary,
+          type: (result.type as ContentType) || current.type,
+          body: result.body || current.body,
+          badge: result.badge || current.badge,
+          startDate: result.startDate || current.startDate,
+          endDate: result.endDate || current.endDate,
+          dateLabel: result.dateLabel || current.dateLabel,
+          location: result.location || current.location,
+          slug: result.slug || current.slug,
+          tags: result.tags || current.tags,
+          metaTitle: result.metaTitle || current.metaTitle,
+          metaDescription: result.metaDescription || current.metaDescription,
+          linkedinUrl: result.linkedinUrl || current.linkedinUrl,
+          websiteUrl: result.websiteUrl || current.websiteUrl,
+          websiteLabel: result.websiteLabel || current.websiteLabel,
+          featured: result.featured !== undefined ? result.featured : current.featured,
+          details: {
+             ...current.details,
+             kind: (result.type as ContentType) || current.type,
+          } as any
+        }));
+        toast.success("Form updated with AI!");
+        setIsAiDialogOpen(false);
+        setAiInput("");
+      }
+    } catch (e: any) {
+      toast.error(e.message || "Failed to generate content via AI");
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
 
   const set = <K extends keyof ContentFormValues>(
     key: K,
@@ -331,6 +386,40 @@ export function ContentEditor({
               </Link>
             </Button>
           ) : null}
+          <Dialog open={isAiDialogOpen} onOpenChange={setIsAiDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="secondary" size="sm" type="button">
+                <Wand2 className="size-4 mr-2" />
+                Auto-fill
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Auto-fill with AI</DialogTitle>
+              </DialogHeader>
+              <div className="py-4">
+                <p className="text-sm text-muted-foreground mb-4">
+                  Paste a LinkedIn post URL or raw text here. Gemini will analyze it and automatically populate the content fields.
+                </p>
+                <Textarea
+                  placeholder="Paste URL or raw text..."
+                  value={aiInput}
+                  onChange={(e) => setAiInput(e.target.value)}
+                  className="resize-none overflow-y-auto bg-background"
+                  style={{ height: "200px", minHeight: "200px", maxHeight: "200px", fieldSizing: "fixed" } as any}
+                />
+              </div>
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={() => setIsAiDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button type="button" onClick={handleAiGenerate} disabled={isAiLoading}>
+                  {isAiLoading ? <Loader2 className="size-4 animate-spin mr-2" /> : <Wand2 className="size-4 mr-2" />}
+                  Generate
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
           <Button type="submit" disabled={isSaving}>
             {isSaving ? (
               <Loader2 className="size-4 animate-spin" />
