@@ -40,6 +40,19 @@ export default async function Home() {
 
   const flagship = certifications.find((c) => c.featured) ?? certifications[0];
 
+  // Combine programs, events, internships, and any other featured items (like workshops)
+  const carouselItemsRaw = [
+    ...programs,
+    ...events,
+    ...internships,
+    ...featured.filter((item) => item.type !== "news"),
+  ];
+
+  // Deduplicate by _id
+  const carouselItemsMap = new Map();
+  carouselItemsRaw.forEach((item) => carouselItemsMap.set(item._id, item));
+  const carouselItems = Array.from(carouselItemsMap.values());
+
   return (
     <div className="flex min-h-screen flex-col">
       <JsonLd nodes={[faqSchema([...SITE_FAQS])]} />
@@ -49,7 +62,7 @@ export default async function Home() {
         <HomeClient
           news={recent}
           settings={settings} 
-          carouselItems={[...programs, ...events, ...internships]} 
+          carouselItems={carouselItems} 
         />
       </main>
 

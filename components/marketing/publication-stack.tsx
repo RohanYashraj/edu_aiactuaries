@@ -20,7 +20,7 @@ const defaultBooks: Book[] = [
     href: "https://fullstackactuary.com/",
     rotation: "-rotate-3",
     zIndex: 10,
-    offset: "translate-x-20 -translate-y-24 md:translate-x-24 md:-translate-y-40 scale-95",
+    offset: "translate-x-24 -translate-y-40 scale-95",
   },
   {
     id: "book-2",
@@ -28,7 +28,7 @@ const defaultBooks: Book[] = [
     href: "https://aiforactuaries.sssia.org",
     rotation: "rotate-0",
     zIndex: 30,
-    offset: "-translate-x-24 -translate-y-16 md:-translate-x-32 md:-translate-y-24 scale-100",
+    offset: "-translate-x-32 -translate-y-24 scale-100",
   },
   {
     id: "book-3",
@@ -36,7 +36,7 @@ const defaultBooks: Book[] = [
     href: "https://climateindex.sssia.org", // Fallback until official URL is provided
     rotation: "rotate-3",
     zIndex: 20,
-    offset: "translate-x-56 -translate-y-12 md:translate-x-44 md:translate-y-32 scale-90",
+    offset: "translate-x-44 translate-y-32 scale-90",
     label: "Index",
   },
   {
@@ -45,7 +45,7 @@ const defaultBooks: Book[] = [
     href: "https://sutra.sssia.org/",
     rotation: "-rotate-6",
     zIndex: 40,
-    offset: "-translate-x-12 translate-y-32 md:-translate-x-16 md:translate-y-44 scale-95",
+    offset: "-translate-x-16 translate-y-44 scale-95",
     label: "Platform",
   },
 ];
@@ -60,10 +60,10 @@ export function PublicationStack({ className }: { className?: string }) {
       </div>
 
       {/* 
-        Container for the overlapping books. 
-        Uses absolute positioning internally for desktop, and a flex fallback for mobile if needed.
+        DESKTOP CONTAINER
+        Uses absolute positioning internally.
       */}
-      <div className="relative w-full max-w-[450px] md:max-w-[600px] h-[400px] md:h-[500px] flex justify-center items-center mt-8">
+      <div className="relative hidden md:flex w-full max-w-[600px] h-[500px] justify-center items-center mt-8">
         {defaultBooks.map((book, index) => (
           <div
             key={book.id}
@@ -81,7 +81,7 @@ export function PublicationStack({ className }: { className?: string }) {
               className="block transition-transform duration-500 ease-out group hover:-translate-y-4 hover:scale-[1.03] hover:z-50"
               aria-label={`${book.title} — publication`}
             >
-              <div className="relative aspect-[4/5] w-36 md:w-40 lg:w-48 p-6 bg-white border border-[#0A192F]/10 shadow-sm group-hover:shadow-md transition-shadow duration-500 overflow-hidden flex flex-col justify-center items-center text-center">
+              <div className="relative aspect-[4/5] w-40 lg:w-48 p-6 bg-white border border-[#0A192F]/10 shadow-sm group-hover:shadow-md transition-shadow duration-500 overflow-hidden flex flex-col justify-center items-center text-center">
                 <div className="absolute left-0 bottom-0 h-[2px] w-full bg-[#F26A21] origin-left scale-x-0 transition-transform duration-500 ease-out group-hover:scale-x-100" />
                 
                 {book.cover ? (
@@ -112,15 +112,37 @@ export function PublicationStack({ className }: { className?: string }) {
         ))}
       </div>
       
-      {/* Mobile-only visible titles fallback */}
-      <div className="mt-8 flex flex-col gap-3 items-center md:hidden w-full hero-book-mobile-titles">
+      {/* MOBILE CONTAINER: 2x2 Grid */}
+      <div className="grid grid-cols-2 gap-4 md:hidden w-full px-2 max-w-sm mx-auto hero-book-mobile-titles mt-8">
         {defaultBooks.map((book) => (
-          <Link 
-            key={book.id} 
-            href={book.href} 
-            className="text-xs font-bold tracking-widest text-[#0A192F]/60 uppercase flex items-center gap-2 hover:text-[#F26A21]"
+          <Link
+            key={book.id}
+            href={book.href}
+            target={book.href.startsWith("http") ? "_blank" : undefined}
+            rel={book.href.startsWith("http") ? "noopener noreferrer" : undefined}
+            className="block group hero-book"
           >
-            {book.title} <ArrowRight className="size-3" />
+             <div className="relative aspect-[4/5] w-full p-4 bg-white border border-[#0A192F]/10 shadow-sm overflow-hidden flex flex-col justify-center items-center text-center hover:border-[#F26A21] transition-colors">
+                <div className="absolute left-0 bottom-0 h-[2px] w-full bg-[#F26A21] origin-left scale-x-0 transition-transform duration-500 ease-out group-hover:scale-x-100" />
+                
+                {book.cover ? (
+                  <img
+                    src={book.cover}
+                    alt={book.title}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="flex flex-col items-center justify-center gap-3 h-full">
+                    <div className="text-[9px] font-bold tracking-widest text-[#0A192F]/40 uppercase">
+                      {book.label || "Publication"}
+                    </div>
+                    <div className="w-6 h-[2px] bg-[#F26A21]" />
+                    <h3 className="font-display text-sm sm:text-base text-[#0A192F] transition-colors leading-tight">
+                      {book.title}
+                    </h3>
+                  </div>
+                )}
+              </div>
           </Link>
         ))}
       </div>

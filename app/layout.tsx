@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import {
-  Poppins,
+  Inter,
+  Playfair_Display,
   Geist_Mono,
 } from "next/font/google";
 import "./globals.css";
@@ -17,12 +18,15 @@ import {
   siteUrl,
 } from "@/lib/site";
 
-
-
-const poppins = Poppins({
+const inter = Inter({
   variable: "--font-body",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
+  display: "swap",
+});
+
+const playfair = Playfair_Display({
+  variable: "--font-display-custom",
+  subsets: ["latin"],
   display: "swap",
 });
 
@@ -68,7 +72,7 @@ export default function RootLayout({
         <JsonLd nodes={[organizationSchema(), webSiteSchema()]} />
       </head>
       <body
-        className={`${poppins.variable} ${geistMono.variable} antialiased`}
+        className={`${playfair.variable} ${inter.variable} ${geistMono.variable} antialiased`}
       >
         {/* No `dynamic` prop: it reads request headers during SSR, which throws
             DYNAMIC_SERVER_USAGE on the statically generated (ISR) pages. Auth
