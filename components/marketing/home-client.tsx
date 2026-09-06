@@ -20,6 +20,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import AutoScroll from "embla-carousel-auto-scroll";
 import { PublicationStack } from "./publication-stack";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -36,6 +37,8 @@ interface HomeClientProps {
 }
 
 export function HomeClient({ news: initialNews, settings: initialSettings, carouselItems: initialCarouselItems }: HomeClientProps) {
+  const autoScrollPlugin = useRef(AutoScroll({ speed: 1, stopOnInteraction: true, stopOnMouseEnter: true }));
+  
   // Resolved client-side because the page is statically generated and the
   // server cannot know the visitor. Undefined while Clerk loads, which renders
   // the signed-out hero — the same thing the static HTML shows.
@@ -49,7 +52,14 @@ export function HomeClient({ news: initialNews, settings: initialSettings, carou
   // We fetch programs, events, and internships for the carousel.
   // Convex doesn't have an "or" query for listByType, so we rely on the pre-fetched items from page.tsx for SSR
   // and we can optionally fetch them on the client, or just use the passed items.
-  const carouselItems = initialCarouselItems ?? [];
+  let carouselItems = initialCarouselItems ?? [];
+  
+  // Duplicate items if there are too few, so the carousel can actually loop and scroll!
+  if (carouselItems.length > 0 && carouselItems.length < 6) {
+    while (carouselItems.length < 6) {
+      carouselItems = [...carouselItems, ...carouselItems];
+    }
+  }
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -151,6 +161,7 @@ export function HomeClient({ news: initialNews, settings: initialSettings, carou
                 align: "start",
                 loop: true,
               }}
+              plugins={[autoScrollPlugin.current]}
               className="w-full relative"
             >
               <CarouselContent className="-ml-4">
@@ -172,10 +183,8 @@ export function HomeClient({ news: initialNews, settings: initialSettings, carou
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <div className="flex justify-start md:justify-end gap-3 mt-8">
-                <CarouselPrevious className="static transform-none h-12 w-12 rounded-none border-[#0A192F]/20 hover:bg-[#F26A21] hover:text-white hover:border-[#F26A21]" />
-                <CarouselNext className="static transform-none h-12 w-12 rounded-none border-[#0A192F]/20 hover:bg-[#F26A21] hover:text-white hover:border-[#F26A21]" />
-              </div>
+              <CarouselPrevious className="hidden md:flex h-12 w-12 rounded-none border-[#0A192F]/20 hover:bg-[#F26A21] hover:text-white hover:border-[#F26A21] -left-16" />
+              <CarouselNext className="hidden md:flex h-12 w-12 rounded-none border-[#0A192F]/20 hover:bg-[#F26A21] hover:text-white hover:border-[#F26A21] -right-16" />
             </Carousel>
           </div>
         )}
