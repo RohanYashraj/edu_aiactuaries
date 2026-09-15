@@ -31,7 +31,7 @@ const partnerships = [
       "Industry workshops on Agentic AI for Actuaries, actuarial summer programs, and outreach initiatives with universities and educational institutions.",
   },
   {
-    name: "Casualty Actuarial Society (CAS, USA)",
+    name: "Casualty Actuarial Society (CAS, International)",
     description:
       "Agentic AI funded research projects, global actuarial case studies, and workshops at the CAS Teaching Summit.",
   },

@@ -38,7 +38,7 @@ interface HomeClientProps {
 
 export function HomeClient({ news: initialNews, settings: initialSettings, carouselItems: initialCarouselItems }: HomeClientProps) {
   const autoScrollPlugin = useRef(AutoScroll({ speed: 1, stopOnInteraction: true, stopOnMouseEnter: true }));
-  
+
   // Resolved client-side because the page is statically generated and the
   // server cannot know the visitor. Undefined while Clerk loads, which renders
   // the signed-out hero — the same thing the static HTML shows.
@@ -53,7 +53,7 @@ export function HomeClient({ news: initialNews, settings: initialSettings, carou
   // Convex doesn't have an "or" query for listByType, so we rely on the pre-fetched items from page.tsx for SSR
   // and we can optionally fetch them on the client, or just use the passed items.
   let carouselItems = initialCarouselItems ?? [];
-  
+
   // Duplicate items if there are too few, so the carousel can actually loop and scroll!
   if (carouselItems.length > 0 && carouselItems.length < 6) {
     while (carouselItems.length < 6) {
@@ -92,9 +92,9 @@ export function HomeClient({ news: initialNews, settings: initialSettings, carou
       <section className="relative flex flex-col items-center justify-center min-h-[90vh] px-4 py-24 sm:py-32 overflow-hidden border-b border-[#0A192F]/10">
         {/* Subtle Technical Grid */}
         <div className="absolute inset-0 hero-grid-bg opacity-40 mix-blend-multiply pointer-events-none" />
-        
+
         <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center lg:items-end gap-16 lg:gap-12">
-          
+
           <div className="w-full lg:w-[55%]">
             <div className="hero-badge inline-flex items-center gap-2 mb-8 text-xs font-bold tracking-widest uppercase text-[#F26A21]">
               <span className="w-2 h-2 bg-[#F26A21] rounded-full" />
@@ -147,7 +147,7 @@ export function HomeClient({ news: initialNews, settings: initialSettings, carou
       {/* ================= PROGRAMS SECTION ================= */}
       <section className="py-16 md:py-32 overflow-hidden border-t border-[#0A192F]/10">
         <div className="scroll-reveal mb-8 md:mb-12 px-6 md:px-12 max-w-7xl mx-auto flex items-end justify-between">
-          <h2 className="font-display text-4xl md:text-6xl text-[#0A192F] uppercase tracking-tight">Our Programs</h2>
+          <h2 className="font-display text-4xl md:text-6xl text-[#0A192F] uppercase tracking-tight">Highlights</h2>
         </div>
 
         {carouselItems.length === 0 ? (
@@ -167,8 +167,8 @@ export function HomeClient({ news: initialNews, settings: initialSettings, carou
               <CarouselContent className="-ml-4">
                 {carouselItems.map((item, i) => (
                   <CarouselItem key={`${item._id}-${i}`} className="pl-4 basis-[85%] sm:basis-1/2 md:basis-1/3 lg:basis-1/3">
-                    <Link 
-                      href={contentHref(item.type, item.slug)} 
+                    <Link
+                      href={contentHref(item.type, item.slug)}
                       className="group flex flex-col justify-between p-6 md:p-8 border border-[#0A192F]/10 hover:border-[#F26A21] hover:bg-white transition-colors h-[200px] md:h-[250px] w-full"
                     >
                       <div>
@@ -210,12 +210,12 @@ export function HomeClient({ news: initialNews, settings: initialSettings, carou
             {news.map((item, idx) => (
               <Link key={item.slug} href={`/news/${item.slug}`} className="scroll-reveal group flex flex-row items-center justify-between border-b border-[#0A192F]/10 py-6 md:py-8 transition-colors hover:bg-white/50 relative overflow-hidden">
                 <div className="absolute left-0 bottom-0 h-[1px] w-full bg-[#F26A21] origin-left scale-x-0 transition-transform duration-500 ease-out group-hover:scale-x-100" />
-                
+
                 <div className="flex flex-row items-center gap-4 md:gap-16 pr-4">
                   <span className="text-xs font-bold text-[#0A192F]/30 tracking-widest group-hover:text-[#F26A21] group-hover:-translate-y-1 transition-all">0{idx + 1}</span>
                   <h3 className="font-display text-xl md:text-3xl text-[#0A192F] group-hover:translate-x-2 transition-transform duration-300 line-clamp-2 md:line-clamp-none">{item.title}</h3>
                 </div>
-                
+
                 <div className="flex-shrink-0">
                   <ArrowRight className="size-5 text-[#0A192F]/30 group-hover:text-[#F26A21] group-hover:translate-x-2 transition-all duration-300" />
                 </div>
@@ -229,7 +229,7 @@ export function HomeClient({ news: initialNews, settings: initialSettings, carou
       <section className="py-16 md:py-24 bg-white border-t border-[#0A192F]/10">
         <div className="max-w-7xl mx-auto px-6 md:px-12 text-center">
           <span className="text-xs font-bold tracking-widest text-[#F26A21] uppercase mb-12 md:mb-16 block">Impact at Scale</span>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
             {(settings?.achievements?.filter((a: any) => !a.hidden) || [
               { value: "1,200+", label: "Community Members" },
@@ -259,15 +259,15 @@ export function HomeClient({ news: initialNews, settings: initialSettings, carou
       <section className="bg-[#0A192F] text-white py-24 md:py-32 px-6 relative overflow-hidden">
         {/* Subtle background element */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#F26A21]/5 rounded-full blur-3xl pointer-events-none" />
-        
+
         <div className="scroll-reveal max-w-4xl mx-auto text-center relative z-10 flex flex-col items-center">
           <h2 className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-8xl uppercase leading-[0.9] tracking-tight mb-8">
-            Build What<br/>The Profession<br/>Needs Next.
+            Build What<br />The Profession<br />Needs Next.
           </h2>
           <p className="text-lg md:text-xl text-white/70 font-light mb-12">
             Learn actuarial science. Build with AI. Research what comes next.
           </p>
-          
+
           <Button asChild size="lg" className="group bg-[#F26A21] text-white hover:bg-white hover:text-[#0A192F] rounded-none px-10 py-7 uppercase tracking-widest text-sm font-bold transition-colors">
             <Link href="/sign-up">
               Become a Member
