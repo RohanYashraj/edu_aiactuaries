@@ -309,3 +309,90 @@
     }
   }
 }
+
+/* Footer visitor counter: one split-flap block per digit. Each block counts up
+   from 0 by folding a flap over, like a flip clock; see visitor-counter.tsx.
+   Tiles are tints of the footer's own foreground colour, so they read on both
+   the light-mode navy footer and the dark-mode amber one. They must stay
+   opaque (mixed into --primary, not transparent): the moving flap sits over the
+   static halves, and a see-through tile would show the old digit behind it. */
+.flip {
+  /* Whole pixels so the two halves of a glyph meet exactly at the fold. */
+  --h: 28px;
+  --flip-ms: 90ms;
+  position: relative;
+  width: 20px;
+  height: var(--h);
+  perspective: 160px;
+  color: var(--primary-foreground);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.flip-half {
+  position: absolute;
+  inset-inline: 0;
+  height: calc(var(--h) / 2);
+  overflow: hidden;
+  backface-visibility: hidden;
+}
+
+/* The two halves differ slightly in shade so the fold reads without a line. */
+.flip-top {
+  top: 0;
+  border-radius: 4px 4px 0 0;
+  background: color-mix(in srgb, var(--primary-foreground) 20%, var(--primary));
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--primary-foreground) 14%, transparent);
+  transform-origin: bottom;
+}
+
+.flip-bottom {
+  bottom: 0;
+  border-radius: 0 0 4px 4px;
+  background: color-mix(in srgb, var(--primary-foreground) 11%, var(--primary));
+  transform-origin: top;
+}
+
+.flip-half > span {
+  display: block;
+  height: var(--h);
+  line-height: var(--h);
+  text-align: center;
+}
+
+.flip-bottom > span {
+  margin-top: calc(var(--h) / -2);
+}
+
+.flip-flap-top {
+  animation: flip-top var(--flip-ms) ease-in both;
+}
+
+/* No forward fill: once landed it drops its transform, so the digit is drawn
+   exactly like the static halves instead of from a 3D layer. */
+.flip-flap-bottom {
+  animation: flip-bottom var(--flip-ms) ease-out var(--flip-ms) backwards;
+}
+
+@keyframes flip-top {
+  to {
+    transform: rotateX(-90deg);
+  }
+}
+
+@keyframes flip-bottom {
+  from {
+    transform: rotateX(90deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flip-flap-top,
+  .flip-flap-bottom {
+    animation: none;
+  }
+
+  .flip-flap-top {
+    transform: rotateX(-90deg);
+  }
+}

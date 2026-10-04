@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { Separator } from "@/components/ui/separator";
+import { VisitorCounter } from "@/components/layout/visitor-counter";
 import { siteName, siteTagline } from "@/lib/site";
 
 /**
@@ -79,9 +80,12 @@ export function Footer() {
 
         <Separator className="mt-12 bg-primary-foreground/10" />
 
-        <p className="mt-6 text-sm text-primary-foreground/60">
-          &copy; {new Date().getFullYear()} sssia.org. All rights reserved.
-        </p>
+        <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-primary-foreground/60">
+            &copy; {new Date().getFullYear()} sssia.org. All rights reserved.
+          </p>
+          <VisitorCounter />
+        </div>
       </div>
     </footer>
   );
