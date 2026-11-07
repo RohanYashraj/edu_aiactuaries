@@ -43,7 +43,7 @@ To learn more about developing your project with Convex, check out:
 - The rest of [Convex docs](https://docs.convex.dev/) to learn about all Convex features.
 - [Stack](https://stack.convex.dev/) for in-depth articles on advanced topics.
 
-## Join the community
+### Join the community
 
 Join thousands of developers building full-stack apps with Convex:
 
